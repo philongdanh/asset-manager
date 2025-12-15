@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Asset } from '../../domain/asset/asset.entity';
+import { Asset } from 'src/domain/asset/asset.entity';
 import {
   type IAssetRepository,
   ASSET_REPOSITORY,
-} from '../../domain/asset/asset.repository.interface';
+} from 'src/domain/asset/asset.repository.interface';
 
 export interface CreateAssetCommand {
   organizationId: number;

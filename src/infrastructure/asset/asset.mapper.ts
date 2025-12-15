@@ -1,6 +1,6 @@
 // src/infrastructure/asset/asset.mapper.ts
 import { Prisma, Asset as PrismaAsset } from 'generated/prisma/client'; // Import type từ Prisma
-import { Asset } from '../../domain/asset/asset.entity';
+import { Asset } from 'src/domain/asset/asset.entity';
 
 // Chuyển đổi từ Domain Entity sang Prisma/DB Object
 export class AssetMapper {

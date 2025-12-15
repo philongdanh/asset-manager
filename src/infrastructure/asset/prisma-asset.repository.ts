@@ -2,10 +2,10 @@
 // Lớp ngoài cùng phụ thuộc vào Prisma
 
 import { Injectable } from '@nestjs/common';
-import { IAssetRepository } from '../../domain/asset/asset.repository.interface';
-import { Asset } from '../../domain/asset/asset.entity';
+import { IAssetRepository } from 'src/domain/asset/asset.repository.interface';
+import { Asset } from 'src/domain/asset/asset.entity';
 import { AssetMapper } from './asset.mapper'; // Mapper để chuyển đổi
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()
 export class PrismaAssetRepository implements IAssetRepository {

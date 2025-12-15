@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AssetController } from './asset.controller';
-import { CreateAssetUseCase } from '../../application/asset/create-asset.use-case';
-import { ASSET_REPOSITORY } from '../../domain/asset/asset.repository.interface';
-import { PrismaAssetRepository } from '../../infrastructure/asset/prisma-asset.repository';
+import { CreateAssetUseCase } from 'src/application/asset/create-asset.use-case';
+import { ASSET_REPOSITORY } from 'src/domain/asset/asset.repository.interface';
+import { PrismaAssetRepository } from 'src/infrastructure/asset/prisma-asset.repository';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 // Import PrismaService ở đây hoặc Global Module
 
