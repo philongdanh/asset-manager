@@ -3,6 +3,7 @@ import { AssetController } from './asset.controller';
 import { CreateAssetUseCase } from '../../application/asset/create-asset.use-case';
 import { ASSET_REPOSITORY } from '../../domain/asset/asset.repository.interface';
 import { PrismaAssetRepository } from '../../infrastructure/asset/prisma-asset.repository';
+import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 // Import PrismaService ở đây hoặc Global Module
 
 @Module({
@@ -16,6 +17,7 @@ import { PrismaAssetRepository } from '../../infrastructure/asset/prisma-asset.r
       useClass: PrismaAssetRepository,
     },
     // ... các Use Case và Repository khác cho Asset
+    PrismaService,
   ],
 })
 export class AssetModule {}
