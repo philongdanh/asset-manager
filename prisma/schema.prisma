@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Organization {
+  organization_id Int     @id @default(autoincrement()) @map("organization_id")
+  org_name        String
+  status          String?
+  users           User[]
+  assets          Asset[]
+  categories      AssetCategory[]
+  roles           Role[]
+
+  @@map("organizations")
+}
+
+model User {
+  user_id             Int                 @id @default(autoincrement()) @map("user_id")
+  organization_id     Int                 
+  organization        Organization        @relation(fields: [organization_id], references: [organization_id])
+  username            String              @unique
+  email               String?             @unique
+  display_name        String?
+  is_active           Boolean             @default(true)
+  createdAssets       Asset[]             @relation("UserCreatedAssets")
+  transactions        AssetTransaction[]  @relation("UserTransactions")
+
+  @@map("users")
+}
+
+model Role {
+  role_id         Int    @id @default(autoincrement()) @map("role_id")
+  organization_id Int
+  organization    Organization @relation(fields: [organization_id], references: [organization_id])
+  role_name       String
+  @@unique([organization_id, role_name])
+  @@map("roles")
+}
+
+model Permission {
+  permission_id Int    @id @default(autoincrement()) @map("permission_id")
+  name          String @unique
+  @@map("permissions")
+}
+
+model UserRole {
+  user_id Int
+  role_id Int
+  @@id([user_id, role_id])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  role_id       Int
+  permission_id Int
+  @@id([role_id, permission_id])
+  @@map("role_permissions")
+}
+
+model AssetCategory {
+  category_id        Int     @id @default(autoincrement()) @map("category_id")
+  organization_id    Int
+  organization       Organization @relation(fields: [organization_id], references: [organization_id])
+  category_name      String
+  depreciation_method String?
+  default_life_years Int?
+  assets             Asset[]
+  @@unique([organization_id, category_name])
+  @@map("asset_categories")
+}
+
+model Asset {
+  asset_id             Int                 @id @default(autoincrement()) @map("asset_id")
+  organization_id      Int
+  organization         Organization        @relation(fields: [organization_id], references: [organization_id])
+  asset_code           String?
+  asset_name           String?
+  category_id          Int?                
+  category             AssetCategory?      @relation(fields: [category_id], references: [category_id])
+  purchase_date        DateTime?
+  original_cost        Float?
+  current_value        Float?
+  asset_status         String?
+  current_location     String?
+  created_by_user_id   Int?
+  created_by           User?               @relation(fields: [created_by_user_id], references: [user_id], name: "UserCreatedAssets")
+  depreciations        AssetDepreciation[]
+  transactions         AssetTransaction[]
+  @@unique([organization_id, asset_code])
+  @@map("assets")
+}
+
+model AssetDepreciation {
+  depreciation_id         Int     @id @default(autoincrement()) @map("depreciation_id")
+  asset_id                Int
+  asset                   Asset   @relation(fields: [asset_id], references: [asset_id])
+  depreciation_date       DateTime
+  depreciation_amount     Float
+  accumulated_depreciation Float
+  remaining_value         Float
+  @@unique([asset_id, depreciation_date])
+  @@map("asset_depreciation")
+}
+
+model AssetTransaction {
+  transaction_id       Int      @id @default(autoincrement()) @map("transaction_id")
+  asset_id             Int
+  asset                 Asset    @relation(fields: [asset_id], references: [asset_id])
+  transaction_type     String
+  transaction_date     DateTime?
+  from_location        String?
+  to_location          String?
+  performed_by_user_id Int?
+  performed_by         User?    @relation(fields: [performed_by_user_id], references: [user_id], name: "UserTransactions")
+  @@map("asset_transactions")
+}
