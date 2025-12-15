@@ -1,130 +1,419 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
-  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
 }
 
-model Organization {
-  organization_id Int             @id @default(autoincrement()) @map("organization_id")
-  org_name        String
-  status          String?
-  categories      AssetCategory[]
-  assets          Asset[]
-  roles           Role[]
-  users           User[]
+// ---------------------------------------------------------
+// Core Models
+// ---------------------------------------------------------
 
-  @@map("organizations")
+model Organization {
+  id        Int      @id @default(autoincrement()) @map("organization_id")
+  orgName   String   @map("org_name")
+  status    String   @default("ACTIVE")
+
+  // Relations
+  departments       Department[]
+  users             User[]
+  assetCategories   AssetCategory[]
+  assets            Asset[]
+  assetDepreciations AssetDepreciation[]
+  maintenanceSchedules MaintenanceSchedule[]
+  assetTransfers    AssetTransfer[]
+  assetDisposals    AssetDisposal[]
+  assetDocuments    AssetDocument[]
+  inventoryChecks   InventoryCheck[]
+  budgetPlans       BudgetPlan[]
+  auditLogs         AuditLog[]
+  roles             Role[]
+  accountingEntries AccountingEntry[]
+
+  @@map("Organizations")
+}
+
+model Department {
+  id             Int      @id @default(autoincrement()) @map("department_id")
+  organizationId Int      @map("organization_id")
+  name           String
+  parentId       Int?     @map("parent_department_id")
+
+  // Relations
+  organization     Organization @relation(fields: [organizationId], references: [id])
+  parent           Department?  @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children         Department[] @relation("DepartmentHierarchy")
+  
+  users            User[]
+  currentAssets    Asset[]      @relation("AssetCurrentDepartment")
+  fromTransfers    AssetTransfer[] @relation("TransferFromDepartment")
+  toTransfers      AssetTransfer[] @relation("TransferToDepartment")
+  budgetPlans      BudgetPlan[]
+
+  @@map("Departments")
 }
 
 model User {
-  user_id         Int                @id @default(autoincrement()) @map("user_id")
-  organization_id Int
-  username        String             @unique
-  email           String?            @unique
-  display_name    String?
-  is_active       Boolean            @default(true)
-  transactions    AssetTransaction[] @relation("UserTransactions")
-  createdAssets   Asset[]            @relation("UserCreatedAssets")
-  organization    Organization       @relation(fields: [organization_id], references: [organization_id])
+  id             Int      @id @default(autoincrement()) @map("user_id")
+  organizationId Int      @map("organization_id")
+  departmentId   Int?     @map("department_id")
+  username       String   @unique
+  email          String   @unique
 
-  @@map("users")
+  // Relations
+  organization     Organization @relation(fields: [organizationId], references: [id])
+  department       Department?  @relation(fields: [departmentId], references: [id])
+  
+  // Auth & Roles
+  userRoles        UserRole[]
+
+  // Asset Lifecycle Actions
+  createdAssets           Asset[]                @relation("AssetCreator")
+  currentAssets           Asset[]                @relation("AssetHolder")
+  
+  performedMaintenances   MaintenanceSchedule[]  @relation("MaintenancePerformer")
+  
+  transfersFrom           AssetTransfer[]        @relation("TransferFromUser")
+  transfersTo             AssetTransfer[]        @relation("TransferToUser")
+  approvedTransfers       AssetTransfer[]        @relation("TransferApprover")
+  
+  approvedDisposals       AssetDisposal[]        @relation("DisposalApprover")
+  
+  uploadedDocuments       AssetDocument[]        @relation("DocumentUploader")
+  
+  createdInventoryChecks  InventoryCheck[]       @relation("InventoryCreator")
+  checkedInventoryDetails InventoryDetail[]      @relation("InventoryChecker")
+  
+  auditLogs               AuditLog[]
+  createdEntries          AccountingEntry[]      @relation("EntryCreator")
+
+  @@map("Users")
 }
 
-model Role {
-  role_id         Int          @id @default(autoincrement()) @map("role_id")
-  organization_id Int
-  role_name       String
-  organization    Organization @relation(fields: [organization_id], references: [organization_id])
-
-  @@unique([organization_id, role_name])
-  @@map("roles")
-}
-
-model Permission {
-  permission_id Int    @id @default(autoincrement()) @map("permission_id")
-  name          String @unique
-
-  @@map("permissions")
-}
-
-model UserRole {
-  user_id Int
-  role_id Int
-
-  @@id([user_id, role_id])
-  @@map("user_roles")
-}
-
-model RolePermission {
-  role_id       Int
-  permission_id Int
-
-  @@id([role_id, permission_id])
-  @@map("role_permissions")
-}
+// ---------------------------------------------------------
+// Asset Management Models
+// ---------------------------------------------------------
 
 model AssetCategory {
-  category_id         Int          @id @default(autoincrement()) @map("category_id")
-  organization_id     Int
-  category_name       String
-  depreciation_method String?
-  default_life_years  Int?
-  organization        Organization @relation(fields: [organization_id], references: [organization_id])
-  assets              Asset[]
+  id             Int      @id @default(autoincrement()) @map("category_id")
+  organizationId Int      @map("organization_id")
+  categoryName   String   @map("category_name")
+  code           String
+  parentId       Int?     @map("parent_category_id")
 
-  @@unique([organization_id, category_name])
-  @@map("asset_categories")
+  // Relations
+  organization   Organization    @relation(fields: [organizationId], references: [id])
+  parent         AssetCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children       AssetCategory[] @relation("CategoryHierarchy")
+  assets         Asset[]
+
+  @@map("AssetCategories")
 }
 
 model Asset {
-  asset_id           Int                 @id @default(autoincrement()) @map("asset_id")
-  organization_id    Int
-  asset_code         String?
-  asset_name         String?
-  category_id        Int?
-  purchase_date      DateTime?
-  original_cost      Float?
-  current_value      Float?
-  asset_status       String?
-  current_location   String?
-  created_by_user_id Int?
-  depreciations      AssetDepreciation[]
-  transactions       AssetTransaction[]
-  category           AssetCategory?      @relation(fields: [category_id], references: [category_id])
-  created_by         User?               @relation("UserCreatedAssets", fields: [created_by_user_id], references: [user_id])
-  organization       Organization        @relation(fields: [organization_id], references: [organization_id])
+  id                 Int       @id @default(autoincrement()) @map("asset_id")
+  assetCode          String    @unique @map("asset_code")
+  organizationId     Int       @map("organization_id")
+  categoryId         Int       @map("category_id")
+  createdByUserId    Int       @map("created_by_user_id")
+  currentDepartmentId Int?     @map("current_department_id")
+  currentUserId      Int?      @map("current_user_id")
+  
+  assetName          String    @map("asset_name")
+  model              String?
+  serialNumber       String?   @map("serial_number")
+  manufacturer       String?
+  purchaseDate       DateTime? @map("purchase_date") @db.Date
+  purchasePrice      Decimal   @map("purchase_price") @db.Decimal(15, 2)
+  originalCost       Decimal   @map("original_cost") @db.Decimal(15, 2)
+  currentValue       Decimal   @map("current_value") @db.Decimal(15, 2)
+  status             String    // Đang sử dụng, Bảo trì, Thanh lý...
+  warrantyExpiryDate DateTime? @map("warranty_expiry_date") @db.Date
+  location           String?
+  specifications     String?   @db.Text
+  condition          String?   // Tốt, Trung bình, Kém
 
-  @@unique([organization_id, asset_code])
-  @@map("assets")
+  // Relations
+  organization      Organization @relation(fields: [organizationId], references: [id])
+  category          AssetCategory @relation(fields: [categoryId], references: [id])
+  creator           User          @relation("AssetCreator", fields: [createdByUserId], references: [id])
+  currentDepartment Department?   @relation("AssetCurrentDepartment", fields: [currentDepartmentId], references: [id])
+  currentUser       User?         @relation("AssetHolder", fields: [currentUserId], references: [id])
+
+  depreciations     AssetDepreciation[]
+  maintenances      MaintenanceSchedule[]
+  transfers         AssetTransfer[]
+  disposals         AssetDisposal[]
+  documents         AssetDocument[]
+  inventoryDetails  InventoryDetail[]
+  accountingEntries AccountingEntry[]
+
+  @@map("Assets")
 }
 
 model AssetDepreciation {
-  depreciation_id          Int      @id @default(autoincrement()) @map("depreciation_id")
-  asset_id                 Int
-  depreciation_date        DateTime
-  depreciation_amount      Float
-  accumulated_depreciation Float
-  remaining_value          Float
-  asset                    Asset    @relation(fields: [asset_id], references: [asset_id])
+  id                      Int      @id @default(autoincrement()) @map("depreciation_id")
+  assetId                 Int      @map("asset_id")
+  organizationId          Int      @map("organization_id")
+  depreciationDate        DateTime @map("depreciation_date") @db.Date
+  method                  String   // Đường thẳng, Số dư giảm dần
+  depreciationValue       Decimal  @map("depreciation_value") @db.Decimal(15, 2)
+  accumulatedDepreciation Decimal  @map("accumulated_depreciation") @db.Decimal(15, 2)
+  remainingValue          Decimal  @map("remaining_value") @db.Decimal(15, 2)
+  accountingEntryId       Int?     @map("accounting_entry_id")
 
-  @@unique([asset_id, depreciation_date])
-  @@map("asset_depreciation")
+  // Relations
+  asset        Asset        @relation(fields: [assetId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@map("AssetDepreciation")
 }
 
-model AssetTransaction {
-  transaction_id       Int       @id @default(autoincrement()) @map("transaction_id")
-  asset_id             Int
-  transaction_type     String
-  transaction_date     DateTime?
-  from_location        String?
-  to_location          String?
-  performed_by_user_id Int?
-  asset                Asset     @relation(fields: [asset_id], references: [asset_id])
-  performed_by         User?     @relation("UserTransactions", fields: [performed_by_user_id], references: [user_id])
+model MaintenanceSchedule {
+  id               Int       @id @default(autoincrement()) @map("schedule_id")
+  assetId          Int       @map("asset_id")
+  organizationId   Int       @map("organization_id")
+  maintenanceType  String    @map("maintenance_type")
+  scheduledDate    DateTime  @map("scheduled_date") @db.Date
+  actualDate       DateTime? @map("actual_date") @db.Date
+  status           String
+  description      String?
+  estimatedCost    Decimal?  @map("estimated_cost") @db.Decimal(15, 2)
+  actualCost       Decimal?  @map("actual_cost") @db.Decimal(15, 2)
+  performedByUserId Int?     @map("performed_by_user_id")
+  result           String?
 
-  @@map("asset_transactions")
+  // Relations
+  asset        Asset        @relation(fields: [assetId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  performer    User?        @relation("MaintenancePerformer", fields: [performedByUserId], references: [id])
+
+  @@map("MaintenanceSchedules")
+}
+
+model AssetTransfer {
+  id               Int      @id @default(autoincrement()) @map("transfer_id")
+  assetId          Int      @map("asset_id")
+  organizationId   Int      @map("organization_id")
+  transferDate     DateTime @map("transfer_date") @db.Date
+  fromDepartmentId Int?     @map("from_department_id")
+  toDepartmentId   Int?     @map("to_department_id")
+  fromUserId       Int?     @map("from_user_id")
+  toUserId         Int?     @map("to_user_id")
+  approvedByUserId Int?     @map("approved_by_user_id")
+  transferType     String   @map("transfer_type")
+  reason           String?  @db.Text
+  status           String
+
+  // Relations
+  asset          Asset        @relation(fields: [assetId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  fromDepartment Department?  @relation("TransferFromDepartment", fields: [fromDepartmentId], references: [id])
+  toDepartment   Department?  @relation("TransferToDepartment", fields: [toDepartmentId], references: [id])
+  fromUser       User?        @relation("TransferFromUser", fields: [fromUserId], references: [id])
+  toUser         User?        @relation("TransferToUser", fields: [toUserId], references: [id])
+  approver       User?        @relation("TransferApprover", fields: [approvedByUserId], references: [id])
+
+  @@map("AssetTransfers")
+}
+
+model AssetDisposal {
+  id               Int      @id @default(autoincrement()) @map("disposal_id")
+  assetId          Int      @map("asset_id")
+  organizationId   Int      @map("organization_id")
+  disposalDate     DateTime @map("disposal_date") @db.Date
+  disposalType     String   @map("disposal_type")
+  disposalValue    Decimal  @map("disposal_value") @db.Decimal(15, 2)
+  reason           String?  @db.Text
+  approvedByUserId Int?     @map("approved_by_user_id")
+  status           String
+  accountingEntryId Int?    @map("accounting_entry_id")
+
+  // Relations
+  asset        Asset        @relation(fields: [assetId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  approver     User?        @relation("DisposalApprover", fields: [approvedByUserId], references: [id])
+
+  @@map("AssetDisposals")
+}
+
+model AssetDocument {
+  id               Int      @id @default(autoincrement()) @map("document_id")
+  assetId          Int      @map("asset_id")
+  organizationId   Int      @map("organization_id")
+  documentType     String   @map("document_type")
+  documentName     String   @map("document_name")
+  filePath         String   @map("file_path")
+  fileType         String   @map("file_type")
+  uploadDate       DateTime @default(now()) @map("upload_date")
+  uploadedByUserId Int      @map("uploaded_by_user_id")
+  description      String?  @db.Text
+
+  // Relations
+  asset        Asset        @relation(fields: [assetId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+  uploader     User         @relation("DocumentUploader", fields: [uploadedByUserId], references: [id])
+
+  @@map("AssetDocuments")
+}
+
+// ---------------------------------------------------------
+// Inventory & Auditing
+// ---------------------------------------------------------
+
+model InventoryCheck {
+  id              Int      @id @default(autoincrement()) @map("inventory_id")
+  organizationId  Int      @map("organization_id")
+  inventoryDate   DateTime @map("inventory_date") @db.Date
+  inventoryName   String   @map("inventory_name")
+  status          String
+  createdByUserId Int      @map("created_by_user_id")
+
+  // Relations
+  organization Organization      @relation(fields: [organizationId], references: [id])
+  creator      User              @relation("InventoryCreator", fields: [createdByUserId], references: [id])
+  details      InventoryDetail[]
+
+  @@map("InventoryChecks")
+}
+
+model InventoryDetail {
+  id              Int      @id @default(autoincrement()) @map("inventory_detail_id")
+  inventoryId     Int      @map("inventory_id")
+  assetId         Int      @map("asset_id")
+  checkedDate     DateTime @default(now()) @map("checked_date")
+  checkedByUserId Int      @map("checked_by_user_id")
+  physicalStatus  String   @map("physical_status")
+  isMatched       Boolean  @map("is_matched")
+  notes           String?  @db.Text
+
+  // Relations
+  inventoryCheck InventoryCheck @relation(fields: [inventoryId], references: [id])
+  asset          Asset          @relation(fields: [assetId], references: [id])
+  checker        User           @relation("InventoryChecker", fields: [checkedByUserId], references: [id])
+
+  @@map("InventoryDetails")
+}
+
+model AuditLog {
+  id             Int      @id @default(autoincrement()) @map("log_id")
+  organizationId Int      @map("organization_id")
+  userId         Int      @map("user_id")
+  action         String
+  entityType     String   @map("entity_type")
+  entityId       Int      @map("entity_id")
+  oldValue       String?  @map("old_value") @db.Text
+  newValue       String?  @map("new_value") @db.Text
+  actionTime     DateTime @default(now()) @map("action_time")
+  ipAddress      String?  @map("ip_address")
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@map("AuditLogs")
+}
+
+// ---------------------------------------------------------
+// Finance
+// ---------------------------------------------------------
+
+model AccountingEntry {
+  id             Int      @id @default(autoincrement()) @map("entry_id")
+  organizationId Int      @map("organization_id")
+  entryType      String   @map("entry_type")
+  entryDate      DateTime @map("entry_date") @db.Date
+  amount         Decimal  @db.Decimal(15, 2)
+  description    String?
+  assetId        Int?     @map("asset_id")
+  
+  // Polymorphic References (stored as scalar since Prisma handles polymorphism differently)
+  referenceId    Int?     @map("reference_id")
+  referenceType  String?  @map("reference_type")
+  
+  createdByUserId Int     @map("created_by_user_id")
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id])
+  asset        Asset?       @relation(fields: [assetId], references: [id])
+  creator      User         @relation("EntryCreator", fields: [createdByUserId], references: [id])
+
+  @@map("AccountingEntries")
+}
+
+model BudgetPlan {
+  id              Int     @id @default(autoincrement()) @map("budget_id")
+  organizationId  Int     @map("organization_id")
+  departmentId    Int     @map("department_id")
+  fiscalYear      Int     @map("fiscal_year")
+  budgetType      String  @map("budget_type")
+  allocatedAmount Decimal @map("allocated_amount") @db.Decimal(15, 2)
+  spentAmount     Decimal @default(0) @map("spent_amount") @db.Decimal(15, 2)
+  status          String
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id])
+  department   Department   @relation(fields: [departmentId], references: [id])
+
+  @@map("BudgetPlans")
+}
+
+// ---------------------------------------------------------
+// RBAC (Role Based Access Control)
+// ---------------------------------------------------------
+
+model Role {
+  id             Int    @id @default(autoincrement()) @map("role_id")
+  organizationId Int    @map("organization_id")
+  roleName       String @unique @map("role_name")
+
+  // Relations
+  organization    Organization     @relation(fields: [organizationId], references: [id])
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@map("Roles")
+}
+
+model Permission {
+  id          Int    @id @default(autoincrement()) @map("permission_id")
+  name        String @unique // e.g. "asset:create"
+  description String?
+
+  // Relations
+  rolePermissions RolePermission[]
+
+  @@map("Permissions")
+}
+
+// Bảng trung gian User <-> Role (Explicit Many-to-Many)
+model UserRole {
+  userId Int @map("user_id")
+  roleId Int @map("role_id")
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+  @@map("UserRoles")
+}
+
+// Bảng trung gian Role <-> Permission (Explicit Many-to-Many)
+model RolePermission {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@map("RolePermissions")
 }
