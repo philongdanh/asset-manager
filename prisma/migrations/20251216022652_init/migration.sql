@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Organizations" (
-    "organization_id" SERIAL NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "org_name" TEXT NOT NULL,
     "status" TEXT NOT NULL DEFAULT 'ACTIVE',
 
@@ -9,19 +9,19 @@ CREATE TABLE "Organizations" (
 
 -- CreateTable
 CREATE TABLE "Departments" (
-    "department_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "department_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "parent_department_id" INTEGER,
+    "parent_department_id" TEXT,
 
     CONSTRAINT "Departments_pkey" PRIMARY KEY ("department_id")
 );
 
 -- CreateTable
 CREATE TABLE "Users" (
-    "user_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
-    "department_id" INTEGER,
+    "user_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "department_id" TEXT,
     "username" TEXT NOT NULL,
     "email" TEXT NOT NULL,
 
@@ -30,24 +30,24 @@ CREATE TABLE "Users" (
 
 -- CreateTable
 CREATE TABLE "AssetCategories" (
-    "category_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "category_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "category_name" TEXT NOT NULL,
     "code" TEXT NOT NULL,
-    "parent_category_id" INTEGER,
+    "parent_category_id" TEXT,
 
     CONSTRAINT "AssetCategories_pkey" PRIMARY KEY ("category_id")
 );
 
 -- CreateTable
 CREATE TABLE "Assets" (
-    "asset_id" SERIAL NOT NULL,
+    "asset_id" TEXT NOT NULL,
     "asset_code" TEXT NOT NULL,
-    "organization_id" INTEGER NOT NULL,
-    "category_id" INTEGER NOT NULL,
-    "created_by_user_id" INTEGER NOT NULL,
-    "current_department_id" INTEGER,
-    "current_user_id" INTEGER,
+    "organization_id" TEXT NOT NULL,
+    "category_id" TEXT NOT NULL,
+    "created_by_user_id" TEXT NOT NULL,
+    "current_department_id" TEXT,
+    "current_user_id" TEXT,
     "asset_name" TEXT NOT NULL,
     "model" TEXT,
     "serial_number" TEXT,
@@ -67,24 +67,24 @@ CREATE TABLE "Assets" (
 
 -- CreateTable
 CREATE TABLE "AssetDepreciation" (
-    "depreciation_id" SERIAL NOT NULL,
-    "asset_id" INTEGER NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "depreciation_id" TEXT NOT NULL,
+    "asset_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "depreciation_date" DATE NOT NULL,
     "method" TEXT NOT NULL,
     "depreciation_value" DECIMAL(15,2) NOT NULL,
     "accumulated_depreciation" DECIMAL(15,2) NOT NULL,
     "remaining_value" DECIMAL(15,2) NOT NULL,
-    "accounting_entry_id" INTEGER,
+    "accounting_entry_id" TEXT,
 
     CONSTRAINT "AssetDepreciation_pkey" PRIMARY KEY ("depreciation_id")
 );
 
 -- CreateTable
 CREATE TABLE "MaintenanceSchedules" (
-    "schedule_id" SERIAL NOT NULL,
-    "asset_id" INTEGER NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "schedule_id" TEXT NOT NULL,
+    "asset_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "maintenance_type" TEXT NOT NULL,
     "scheduled_date" DATE NOT NULL,
     "actual_date" DATE,
@@ -92,7 +92,7 @@ CREATE TABLE "MaintenanceSchedules" (
     "description" TEXT,
     "estimated_cost" DECIMAL(15,2),
     "actual_cost" DECIMAL(15,2),
-    "performed_by_user_id" INTEGER,
+    "performed_by_user_id" TEXT,
     "result" TEXT,
 
     CONSTRAINT "MaintenanceSchedules_pkey" PRIMARY KEY ("schedule_id")
@@ -100,15 +100,15 @@ CREATE TABLE "MaintenanceSchedules" (
 
 -- CreateTable
 CREATE TABLE "AssetTransfers" (
-    "transfer_id" SERIAL NOT NULL,
-    "asset_id" INTEGER NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "transfer_id" TEXT NOT NULL,
+    "asset_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "transfer_date" DATE NOT NULL,
-    "from_department_id" INTEGER,
-    "to_department_id" INTEGER,
-    "from_user_id" INTEGER,
-    "to_user_id" INTEGER,
-    "approved_by_user_id" INTEGER,
+    "from_department_id" TEXT,
+    "to_department_id" TEXT,
+    "from_user_id" TEXT,
+    "to_user_id" TEXT,
+    "approved_by_user_id" TEXT,
     "transfer_type" TEXT NOT NULL,
     "reason" TEXT,
     "status" TEXT NOT NULL,
@@ -118,31 +118,31 @@ CREATE TABLE "AssetTransfers" (
 
 -- CreateTable
 CREATE TABLE "AssetDisposals" (
-    "disposal_id" SERIAL NOT NULL,
-    "asset_id" INTEGER NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "disposal_id" TEXT NOT NULL,
+    "asset_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "disposal_date" DATE NOT NULL,
     "disposal_type" TEXT NOT NULL,
     "disposal_value" DECIMAL(15,2) NOT NULL,
     "reason" TEXT,
-    "approved_by_user_id" INTEGER,
+    "approved_by_user_id" TEXT,
     "status" TEXT NOT NULL,
-    "accounting_entry_id" INTEGER,
+    "accounting_entry_id" TEXT,
 
     CONSTRAINT "AssetDisposals_pkey" PRIMARY KEY ("disposal_id")
 );
 
 -- CreateTable
 CREATE TABLE "AssetDocuments" (
-    "document_id" SERIAL NOT NULL,
-    "asset_id" INTEGER NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "document_id" TEXT NOT NULL,
+    "asset_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "document_type" TEXT NOT NULL,
     "document_name" TEXT NOT NULL,
     "file_path" TEXT NOT NULL,
     "file_type" TEXT NOT NULL,
     "upload_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "uploaded_by_user_id" INTEGER NOT NULL,
+    "uploaded_by_user_id" TEXT NOT NULL,
     "description" TEXT,
 
     CONSTRAINT "AssetDocuments_pkey" PRIMARY KEY ("document_id")
@@ -150,23 +150,23 @@ CREATE TABLE "AssetDocuments" (
 
 -- CreateTable
 CREATE TABLE "InventoryChecks" (
-    "inventory_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "inventory_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "inventory_date" DATE NOT NULL,
     "inventory_name" TEXT NOT NULL,
     "status" TEXT NOT NULL,
-    "created_by_user_id" INTEGER NOT NULL,
+    "created_by_user_id" TEXT NOT NULL,
 
     CONSTRAINT "InventoryChecks_pkey" PRIMARY KEY ("inventory_id")
 );
 
 -- CreateTable
 CREATE TABLE "InventoryDetails" (
-    "inventory_detail_id" SERIAL NOT NULL,
-    "inventory_id" INTEGER NOT NULL,
-    "asset_id" INTEGER NOT NULL,
+    "inventory_detail_id" TEXT NOT NULL,
+    "inventory_id" TEXT NOT NULL,
+    "asset_id" TEXT NOT NULL,
     "checked_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "checked_by_user_id" INTEGER NOT NULL,
+    "checked_by_user_id" TEXT NOT NULL,
     "physical_status" TEXT NOT NULL,
     "is_matched" BOOLEAN NOT NULL,
     "notes" TEXT,
@@ -176,12 +176,12 @@ CREATE TABLE "InventoryDetails" (
 
 -- CreateTable
 CREATE TABLE "AuditLogs" (
-    "log_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
-    "user_id" INTEGER NOT NULL,
+    "log_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "user_id" TEXT NOT NULL,
     "action" TEXT NOT NULL,
     "entity_type" TEXT NOT NULL,
-    "entity_id" INTEGER NOT NULL,
+    "entity_id" TEXT NOT NULL,
     "old_value" TEXT,
     "new_value" TEXT,
     "action_time" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -192,25 +192,25 @@ CREATE TABLE "AuditLogs" (
 
 -- CreateTable
 CREATE TABLE "AccountingEntries" (
-    "entry_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "entry_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "entry_type" TEXT NOT NULL,
     "entry_date" DATE NOT NULL,
     "amount" DECIMAL(15,2) NOT NULL,
     "description" TEXT,
-    "asset_id" INTEGER,
-    "reference_id" INTEGER,
+    "asset_id" TEXT,
+    "reference_id" TEXT,
     "reference_type" TEXT,
-    "created_by_user_id" INTEGER NOT NULL,
+    "created_by_user_id" TEXT NOT NULL,
 
     CONSTRAINT "AccountingEntries_pkey" PRIMARY KEY ("entry_id")
 );
 
 -- CreateTable
 CREATE TABLE "BudgetPlans" (
-    "budget_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
-    "department_id" INTEGER NOT NULL,
+    "budget_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "department_id" TEXT NOT NULL,
     "fiscal_year" INTEGER NOT NULL,
     "budget_type" TEXT NOT NULL,
     "allocated_amount" DECIMAL(15,2) NOT NULL,
@@ -222,8 +222,8 @@ CREATE TABLE "BudgetPlans" (
 
 -- CreateTable
 CREATE TABLE "Roles" (
-    "role_id" SERIAL NOT NULL,
-    "organization_id" INTEGER NOT NULL,
+    "role_id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
     "role_name" TEXT NOT NULL,
 
     CONSTRAINT "Roles_pkey" PRIMARY KEY ("role_id")
@@ -231,7 +231,7 @@ CREATE TABLE "Roles" (
 
 -- CreateTable
 CREATE TABLE "Permissions" (
-    "permission_id" SERIAL NOT NULL,
+    "permission_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
 
@@ -240,16 +240,16 @@ CREATE TABLE "Permissions" (
 
 -- CreateTable
 CREATE TABLE "UserRoles" (
-    "user_id" INTEGER NOT NULL,
-    "role_id" INTEGER NOT NULL,
+    "user_id" TEXT NOT NULL,
+    "role_id" TEXT NOT NULL,
 
     CONSTRAINT "UserRoles_pkey" PRIMARY KEY ("user_id","role_id")
 );
 
 -- CreateTable
 CREATE TABLE "RolePermissions" (
-    "role_id" INTEGER NOT NULL,
-    "permission_id" INTEGER NOT NULL,
+    "role_id" TEXT NOT NULL,
+    "permission_id" TEXT NOT NULL,
 
     CONSTRAINT "RolePermissions_pkey" PRIMARY KEY ("role_id","permission_id")
 );

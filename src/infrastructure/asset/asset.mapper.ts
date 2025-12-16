@@ -1,30 +1,37 @@
-// src/infrastructure/asset/asset.mapper.ts
-import { Prisma, Asset as PrismaAsset } from 'generated/prisma/client'; // Import type từ Prisma
-import { Asset } from 'src/domain/asset/asset.entity';
+import { Prisma, Asset as PrismaAsset } from 'generated/prisma/client';
+import { Asset } from 'src/domain/asset';
 
-// Chuyển đổi từ Domain Entity sang Prisma/DB Object
 export class AssetMapper {
   static toDomain(prismaAsset: PrismaAsset): Asset {
-    // ... logic chuyển đổi từ DB sang Domain
     return new Asset(
-      prismaAsset.asset_id,
-      prismaAsset.organization_id,
-      prismaAsset.asset_name || '',
-      prismaAsset.asset_code || '',
-      // ...
+      prismaAsset.id,
+      prismaAsset.organizationId,
+      prismaAsset.assetName,
+      prismaAsset.assetCode,
     );
   }
 
   static toPersistence(asset: Asset): Prisma.AssetCreateInput {
-    // ... logic chuyển đổi từ Domain sang DB
     return {
-      //   organization_id: asset.organization_id,
       organization: {
-        connect: { organization_id: asset.organization_id },
+        connect: { id: asset.orgId },
       },
-      asset_name: asset.asset_name,
-      asset_code: asset.asset_code,
-      // ...
+      assetName: asset.name,
+      assetCode: asset.code,
+      purchasePrice: '',
+      originalCost: '',
+      currentValue: '',
+      status: '',
+      category: {
+        create: undefined,
+        connectOrCreate: undefined,
+        connect: undefined,
+      },
+      creator: {
+        create: undefined,
+        connectOrCreate: undefined,
+        connect: undefined,
+      },
     };
   }
 }

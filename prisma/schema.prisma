@@ -1,12 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
@@ -18,7 +13,7 @@ datasource db {
 // ---------------------------------------------------------
 
 model Organization {
-  id        Int      @id @default(autoincrement()) @map("organization_id")
+  id        String   @id @default(uuid()) @map("organization_id")
   orgName   String   @map("org_name")
   status    String   @default("ACTIVE")
 
@@ -42,10 +37,10 @@ model Organization {
 }
 
 model Department {
-  id             Int      @id @default(autoincrement()) @map("department_id")
-  organizationId Int      @map("organization_id")
+  id             String  @id @default(uuid()) @map("department_id")
+  organizationId String  @map("organization_id")
   name           String
-  parentId       Int?     @map("parent_department_id")
+  parentId       String? @map("parent_department_id")
 
   // Relations
   organization     Organization @relation(fields: [organizationId], references: [id])
@@ -62,11 +57,11 @@ model Department {
 }
 
 model User {
-  id             Int      @id @default(autoincrement()) @map("user_id")
-  organizationId Int      @map("organization_id")
-  departmentId   Int?     @map("department_id")
-  username       String   @unique
-  email          String   @unique
+  id             String  @id @default(uuid()) @map("user_id")
+  organizationId String  @map("organization_id")
+  departmentId   String? @map("department_id")
+  username       String  @unique
+  email          String  @unique
 
   // Relations
   organization     Organization @relation(fields: [organizationId], references: [id])
@@ -103,11 +98,11 @@ model User {
 // ---------------------------------------------------------
 
 model AssetCategory {
-  id             Int      @id @default(autoincrement()) @map("category_id")
-  organizationId Int      @map("organization_id")
-  categoryName   String   @map("category_name")
+  id             String  @id @default(uuid()) @map("category_id")
+  organizationId String  @map("organization_id")
+  categoryName   String  @map("category_name")
   code           String
-  parentId       Int?     @map("parent_category_id")
+  parentId       String? @map("parent_category_id")
 
   // Relations
   organization   Organization    @relation(fields: [organizationId], references: [id])
@@ -119,13 +114,13 @@ model AssetCategory {
 }
 
 model Asset {
-  id                 Int       @id @default(autoincrement()) @map("asset_id")
+  id                 String    @id @default(uuid()) @map("asset_id")
   assetCode          String    @unique @map("asset_code")
-  organizationId     Int       @map("organization_id")
-  categoryId         Int       @map("category_id")
-  createdByUserId    Int       @map("created_by_user_id")
-  currentDepartmentId Int?     @map("current_department_id")
-  currentUserId      Int?      @map("current_user_id")
+  organizationId     String    @map("organization_id")
+  categoryId         String    @map("category_id")
+  createdByUserId    String    @map("created_by_user_id")
+  currentDepartmentId String?  @map("current_department_id")
+  currentUserId      String?   @map("current_user_id")
   
   assetName          String    @map("asset_name")
   model              String?
@@ -135,11 +130,11 @@ model Asset {
   purchasePrice      Decimal   @map("purchase_price") @db.Decimal(15, 2)
   originalCost       Decimal   @map("original_cost") @db.Decimal(15, 2)
   currentValue       Decimal   @map("current_value") @db.Decimal(15, 2)
-  status             String    // Đang sử dụng, Bảo trì, Thanh lý...
+  status             String    // e.g. In Use, Maintenance, Liquidated
   warrantyExpiryDate DateTime? @map("warranty_expiry_date") @db.Date
   location           String?
   specifications     String?   @db.Text
-  condition          String?   // Tốt, Trung bình, Kém
+  condition          String?   // Good, Average, Poor
 
   // Relations
   organization      Organization @relation(fields: [organizationId], references: [id])
@@ -160,15 +155,15 @@ model Asset {
 }
 
 model AssetDepreciation {
-  id                      Int      @id @default(autoincrement()) @map("depreciation_id")
-  assetId                 Int      @map("asset_id")
-  organizationId          Int      @map("organization_id")
+  id                      String   @id @default(uuid()) @map("depreciation_id")
+  assetId                 String   @map("asset_id")
+  organizationId          String   @map("organization_id")
   depreciationDate        DateTime @map("depreciation_date") @db.Date
-  method                  String   // Đường thẳng, Số dư giảm dần
+  method                  String   // Straight line, Declining balance
   depreciationValue       Decimal  @map("depreciation_value") @db.Decimal(15, 2)
   accumulatedDepreciation Decimal  @map("accumulated_depreciation") @db.Decimal(15, 2)
   remainingValue          Decimal  @map("remaining_value") @db.Decimal(15, 2)
-  accountingEntryId       Int?     @map("accounting_entry_id")
+  accountingEntryId       String?  @map("accounting_entry_id")
 
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
@@ -178,9 +173,9 @@ model AssetDepreciation {
 }
 
 model MaintenanceSchedule {
-  id               Int       @id @default(autoincrement()) @map("schedule_id")
-  assetId          Int       @map("asset_id")
-  organizationId   Int       @map("organization_id")
+  id               String    @id @default(uuid()) @map("schedule_id")
+  assetId          String    @map("asset_id")
+  organizationId   String    @map("organization_id")
   maintenanceType  String    @map("maintenance_type")
   scheduledDate    DateTime  @map("scheduled_date") @db.Date
   actualDate       DateTime? @map("actual_date") @db.Date
@@ -188,7 +183,7 @@ model MaintenanceSchedule {
   description      String?
   estimatedCost    Decimal?  @map("estimated_cost") @db.Decimal(15, 2)
   actualCost       Decimal?  @map("actual_cost") @db.Decimal(15, 2)
-  performedByUserId Int?     @map("performed_by_user_id")
+  performedByUserId String?  @map("performed_by_user_id")
   result           String?
 
   // Relations
@@ -200,15 +195,15 @@ model MaintenanceSchedule {
 }
 
 model AssetTransfer {
-  id               Int      @id @default(autoincrement()) @map("transfer_id")
-  assetId          Int      @map("asset_id")
-  organizationId   Int      @map("organization_id")
+  id               String   @id @default(uuid()) @map("transfer_id")
+  assetId          String   @map("asset_id")
+  organizationId   String   @map("organization_id")
   transferDate     DateTime @map("transfer_date") @db.Date
-  fromDepartmentId Int?     @map("from_department_id")
-  toDepartmentId   Int?     @map("to_department_id")
-  fromUserId       Int?     @map("from_user_id")
-  toUserId         Int?     @map("to_user_id")
-  approvedByUserId Int?     @map("approved_by_user_id")
+  fromDepartmentId String?  @map("from_department_id")
+  toDepartmentId   String?  @map("to_department_id")
+  fromUserId       String?  @map("from_user_id")
+  toUserId         String?  @map("to_user_id")
+  approvedByUserId String?  @map("approved_by_user_id")
   transferType     String   @map("transfer_type")
   reason           String?  @db.Text
   status           String
@@ -226,16 +221,16 @@ model AssetTransfer {
 }
 
 model AssetDisposal {
-  id               Int      @id @default(autoincrement()) @map("disposal_id")
-  assetId          Int      @map("asset_id")
-  organizationId   Int      @map("organization_id")
+  id               String   @id @default(uuid()) @map("disposal_id")
+  assetId          String   @map("asset_id")
+  organizationId   String   @map("organization_id")
   disposalDate     DateTime @map("disposal_date") @db.Date
   disposalType     String   @map("disposal_type")
   disposalValue    Decimal  @map("disposal_value") @db.Decimal(15, 2)
   reason           String?  @db.Text
-  approvedByUserId Int?     @map("approved_by_user_id")
+  approvedByUserId String?  @map("approved_by_user_id")
   status           String
-  accountingEntryId Int?    @map("accounting_entry_id")
+  accountingEntryId String? @map("accounting_entry_id")
 
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
@@ -246,15 +241,15 @@ model AssetDisposal {
 }
 
 model AssetDocument {
-  id               Int      @id @default(autoincrement()) @map("document_id")
-  assetId          Int      @map("asset_id")
-  organizationId   Int      @map("organization_id")
+  id               String   @id @default(uuid()) @map("document_id")
+  assetId          String   @map("asset_id")
+  organizationId   String   @map("organization_id")
   documentType     String   @map("document_type")
   documentName     String   @map("document_name")
   filePath         String   @map("file_path")
   fileType         String   @map("file_type")
   uploadDate       DateTime @default(now()) @map("upload_date")
-  uploadedByUserId Int      @map("uploaded_by_user_id")
+  uploadedByUserId String   @map("uploaded_by_user_id")
   description      String?  @db.Text
 
   // Relations
@@ -270,12 +265,12 @@ model AssetDocument {
 // ---------------------------------------------------------
 
 model InventoryCheck {
-  id              Int      @id @default(autoincrement()) @map("inventory_id")
-  organizationId  Int      @map("organization_id")
+  id              String   @id @default(uuid()) @map("inventory_id")
+  organizationId  String   @map("organization_id")
   inventoryDate   DateTime @map("inventory_date") @db.Date
   inventoryName   String   @map("inventory_name")
   status          String
-  createdByUserId Int      @map("created_by_user_id")
+  createdByUserId String   @map("created_by_user_id")
 
   // Relations
   organization Organization      @relation(fields: [organizationId], references: [id])
@@ -286,11 +281,11 @@ model InventoryCheck {
 }
 
 model InventoryDetail {
-  id              Int      @id @default(autoincrement()) @map("inventory_detail_id")
-  inventoryId     Int      @map("inventory_id")
-  assetId         Int      @map("asset_id")
+  id              String   @id @default(uuid()) @map("inventory_detail_id")
+  inventoryId     String   @map("inventory_id")
+  assetId         String   @map("asset_id")
   checkedDate     DateTime @default(now()) @map("checked_date")
-  checkedByUserId Int      @map("checked_by_user_id")
+  checkedByUserId String   @map("checked_by_user_id")
   physicalStatus  String   @map("physical_status")
   isMatched       Boolean  @map("is_matched")
   notes           String?  @db.Text
@@ -304,12 +299,12 @@ model InventoryDetail {
 }
 
 model AuditLog {
-  id             Int      @id @default(autoincrement()) @map("log_id")
-  organizationId Int      @map("organization_id")
-  userId         Int      @map("user_id")
+  id             String   @id @default(uuid()) @map("log_id")
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
   action         String
   entityType     String   @map("entity_type")
-  entityId       Int      @map("entity_id")
+  entityId       String   @map("entity_id") // Changed to String to match other IDs
   oldValue       String?  @map("old_value") @db.Text
   newValue       String?  @map("new_value") @db.Text
   actionTime     DateTime @default(now()) @map("action_time")
@@ -327,19 +322,19 @@ model AuditLog {
 // ---------------------------------------------------------
 
 model AccountingEntry {
-  id             Int      @id @default(autoincrement()) @map("entry_id")
-  organizationId Int      @map("organization_id")
+  id             String   @id @default(uuid()) @map("entry_id")
+  organizationId String   @map("organization_id")
   entryType      String   @map("entry_type")
   entryDate      DateTime @map("entry_date") @db.Date
   amount         Decimal  @db.Decimal(15, 2)
   description    String?
-  assetId        Int?     @map("asset_id")
+  assetId        String?  @map("asset_id")
   
   // Polymorphic References (stored as scalar since Prisma handles polymorphism differently)
-  referenceId    Int?     @map("reference_id")
+  referenceId    String?  @map("reference_id") // Changed to String
   referenceType  String?  @map("reference_type")
   
-  createdByUserId Int     @map("created_by_user_id")
+  createdByUserId String  @map("created_by_user_id")
 
   // Relations
   organization Organization @relation(fields: [organizationId], references: [id])
@@ -350,10 +345,10 @@ model AccountingEntry {
 }
 
 model BudgetPlan {
-  id              Int     @id @default(autoincrement()) @map("budget_id")
-  organizationId  Int     @map("organization_id")
-  departmentId    Int     @map("department_id")
-  fiscalYear      Int     @map("fiscal_year")
+  id              String  @id @default(uuid()) @map("budget_id")
+  organizationId  String  @map("organization_id")
+  departmentId    String  @map("department_id")
+  fiscalYear      Int     @map("fiscal_year") // Keep as Int as it represents a year number (e.g., 2025)
   budgetType      String  @map("budget_type")
   allocatedAmount Decimal @map("allocated_amount") @db.Decimal(15, 2)
   spentAmount     Decimal @default(0) @map("spent_amount") @db.Decimal(15, 2)
@@ -371,8 +366,8 @@ model BudgetPlan {
 // ---------------------------------------------------------
 
 model Role {
-  id             Int    @id @default(autoincrement()) @map("role_id")
-  organizationId Int    @map("organization_id")
+  id             String @id @default(uuid()) @map("role_id")
+  organizationId String @map("organization_id")
   roleName       String @unique @map("role_name")
 
   // Relations
@@ -384,8 +379,8 @@ model Role {
 }
 
 model Permission {
-  id          Int    @id @default(autoincrement()) @map("permission_id")
-  name        String @unique // e.g. "asset:create"
+  id          String  @id @default(uuid()) @map("permission_id")
+  name        String  @unique // e.g. "asset:create"
   description String?
 
   // Relations
@@ -394,10 +389,10 @@ model Permission {
   @@map("Permissions")
 }
 
-// Bảng trung gian User <-> Role (Explicit Many-to-Many)
+// Many-to-Many User <-> Role
 model UserRole {
-  userId Int @map("user_id")
-  roleId Int @map("role_id")
+  userId String @map("user_id")
+  roleId String @map("role_id")
 
   user User @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
@@ -406,10 +401,10 @@ model UserRole {
   @@map("UserRoles")
 }
 
-// Bảng trung gian Role <-> Permission (Explicit Many-to-Many)
+// Many-to-Many Role <-> Permission
 model RolePermission {
-  roleId       Int @map("role_id")
-  permissionId Int @map("permission_id")
+  roleId       String @map("role_id")
+  permissionId String @map("permission_id")
 
   role       Role       @relation(fields: [roleId], references: [id])
   permission Permission @relation(fields: [permissionId], references: [id])

@@ -12,15 +12,12 @@ export class PrismaAssetRepository implements IAssetRepository {
   constructor(private prisma: PrismaService) {}
 
   async findByOrgAndCode(
-    organizationId: number,
+    orgId: string,
     assetCode: string,
   ): Promise<Asset | null> {
-    const prismaAsset = await this.prisma.asset.findUnique({
+    const prismaAsset = await this.prisma.asset.findFirst({
       where: {
-        organization_id_asset_code: {
-          organization_id: organizationId,
-          asset_code: assetCode,
-        },
+        OR: [{ organization: { id: orgId } }, { assetCode }],
       },
     });
 
@@ -30,7 +27,6 @@ export class PrismaAssetRepository implements IAssetRepository {
   async save(asset: Asset): Promise<Asset> {
     const data = AssetMapper.toPersistence(asset);
 
-    // Sử dụng Prisma Client đã được tạo ra
     const prismaAsset = await this.prisma.asset.create({ data });
 
     return AssetMapper.toDomain(prismaAsset);
