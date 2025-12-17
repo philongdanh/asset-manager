@@ -1,20 +1,42 @@
-import {
-  Prisma,
-  AssetCategory as PrismaAssetCategory,
-} from 'generated/prisma/client';
+import { Prisma } from 'generated/prisma/client';
 import { AssetCategory } from 'src/domain/asset-category';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const assetCategoryInclude = {
+  children: true,
+} as const satisfies Prisma.AssetCategoryInclude;
+
+type AssetCategoryWithChildren = Prisma.AssetCategoryGetPayload<{
+  include: typeof assetCategoryInclude;
+}>;
+
 export class AssetCategoryMapper {
-  static toDomain(prismaAssetCategory: PrismaAssetCategory): AssetCategory {
-    return new AssetCategory(
+  static toDomain(
+    prismaAssetCategory: AssetCategoryWithChildren,
+  ): AssetCategory {
+    const domain = new AssetCategory(
       prismaAssetCategory.id,
       prismaAssetCategory.organizationId,
       prismaAssetCategory.categoryName,
       prismaAssetCategory.code,
-      null,
-      new Map<string, any>(),
-      [],
+      prismaAssetCategory.parentId,
     );
+
+    // Using optional chaining and proper typing avoids the 'any' cast
+    prismaAssetCategory.children?.forEach((child) => {
+      const domainChild = AssetCategoryMapper.toDomain(
+        child as AssetCategoryWithChildren,
+      );
+      domain.addChild(
+        domainChild.id,
+        domainChild.orgId,
+        domainChild.name,
+        domainChild.code,
+        domainChild.parentId,
+      );
+    });
+
+    return domain;
   }
 
   static toPersistence(asset: AssetCategory): Prisma.AssetCategoryCreateInput {
@@ -25,11 +47,14 @@ export class AssetCategoryMapper {
       },
       categoryName: asset.name,
       code: asset.code,
-      parent: {
-        connect: {
-          id: asset.parentCategoryId!,
-        },
-      },
+      // Use conditional connection to avoid errors if parentId is null
+      parent: asset.parentId
+        ? {
+            connect: {
+              id: asset.parentId,
+            },
+          }
+        : undefined,
     };
   }
 }

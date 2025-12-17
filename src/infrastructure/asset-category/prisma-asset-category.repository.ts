@@ -21,6 +21,9 @@ export class PrismaAssetCategoryRepository implements IAssetCategoryRepository {
           code: code,
         },
       },
+      include: {
+        children: true,
+      },
     });
     return assetCategory ? AssetCategoryMapper.toDomain(assetCategory) : null;
   }
@@ -30,6 +33,9 @@ export class PrismaAssetCategoryRepository implements IAssetCategoryRepository {
       where: { id: assetCategory.id },
       update: AssetCategoryMapper.toPersistence(assetCategory),
       create: AssetCategoryMapper.toPersistence(assetCategory),
+      include: {
+        children: true,
+      },
     });
 
     if (!persistedAssetCategory) {

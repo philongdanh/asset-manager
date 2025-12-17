@@ -3,28 +3,27 @@ export class AssetCategory {
   private _orgId: string;
   private _name: string;
   private _code: string;
-  private _parentCategoryId: string | null;
-  private _properties: Map<string, any>;
-  private _subCategories: AssetCategory[];
+  private _parentId: string | null;
+  private _children: AssetCategory[];
 
+  // ========== Constructor ===========
   constructor(
     id: string,
     orgId: string,
     name: string,
     code: string,
-    parentCategoryId: string | null,
-    properties: Map<string, any>,
-    subCategories: AssetCategory[] = [],
+    parentId: string | null,
+    children: AssetCategory[] = [],
   ) {
     this._id = id;
     this._orgId = orgId;
     this._name = name;
     this._code = code;
-    this._parentCategoryId = parentCategoryId;
-    this._properties = properties || new Map<string, any>();
-    this._subCategories = subCategories;
+    this._parentId = parentId;
+    this._children = children;
   }
 
+  // ========== Getters ===========
   get id(): string {
     return this._id;
   }
@@ -41,76 +40,56 @@ export class AssetCategory {
     return this._code;
   }
 
-  get parentCategoryId(): string | null {
-    return this._parentCategoryId;
+  get parentId(): string | null {
+    return this._parentId;
   }
 
-  get properties(): Map<string, any> {
-    return this._properties;
+  get children(): AssetCategory[] {
+    return this._children;
   }
 
-  get subCategories(): AssetCategory[] {
-    return this._subCategories;
-  }
-
+  // ========== Methods ===========
   public static create(
     id: string,
     orgId: string,
     name: string,
     code: string,
-    parentCategoryId: string | null,
-    properties: Map<string, any>,
+    parentId: string | null,
   ): AssetCategory {
-    return new AssetCategory(
-      id,
-      orgId,
-      name,
-      code,
-      parentCategoryId || null,
-      properties || new Map<string, any>(),
-    );
+    return new AssetCategory(id, orgId, name, code, parentId || null);
   }
 
   public updateInfo(
     name: string | undefined,
-    properties: Map<string, any> | undefined,
-    parentCategoryId: string | null | undefined,
-    subCategories: AssetCategory[] | undefined,
+    parent: string | null | undefined,
+    children: AssetCategory[] | undefined,
   ): void {
     if (name) {
       this._name = name;
     }
-    if (properties) {
-      this._properties = properties;
+    if (parent !== undefined) {
+      this._parentId = parent;
     }
-    if (parentCategoryId !== undefined) {
-      this._parentCategoryId = parentCategoryId;
-    }
-    if (subCategories) {
-      this._subCategories = subCategories;
+    if (children) {
+      this._children = children;
     }
   }
 
-  public addSubCategory(assetCategory: AssetCategory): AssetCategory {
-    const subCategory = AssetCategory.create(
-      assetCategory.id,
-      assetCategory.orgId,
-      assetCategory.name,
-      assetCategory.code,
-      assetCategory.parentCategoryId || null,
-      assetCategory.properties || new Map<string, any>(),
-    );
-    this.subCategories.push(subCategory);
-    return subCategory;
+  public addChild(
+    ...args: Parameters<typeof AssetCategory.create>
+  ): AssetCategory {
+    const child = AssetCategory.create(...args);
+    this._children.push(child);
+    return child;
   }
 
-  public removeSubCategory(assetCategoryId: string): void {
-    this._subCategories = this._subCategories.filter(
-      (category) => category.id !== assetCategoryId,
+  public removeChild(childId: string): void {
+    this._children = this._children.filter(
+      (category) => category.id !== childId,
     );
   }
 
   public isLeaf(): boolean {
-    return this.subCategories.length === 0;
+    return this.children.length === 0;
   }
 }

@@ -5,6 +5,8 @@ import { AssetModule } from './presentation/asset/asset.module';
 import { ConfigModule } from '@nestjs/config';
 import { OrganizationModule } from './presentation/organization/organization.module';
 import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from './presentation/interfaces/exceptions/filters/global-exception.filter';
 
 @Module({
   imports: [
@@ -15,6 +17,12 @@ import { AssetCategoryModule } from './presentation/asset-category/asset-categor
     AssetModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

@@ -6,6 +6,8 @@ import { AssetCategoryController } from './asset-category.controller';
 import { CreateAssetCategoryUseCase } from 'src/application/asset-category';
 import { PrismaAssetCategoryRepository } from 'src/infrastructure/asset-category/prisma-asset-category.repository';
 import { ASSET_CATEGORY_REPOSITORY } from 'src/domain/asset-category';
+import { ORGANIZATION_REPOSITORY } from 'src/domain/organization';
+import { PrismaOrgRepository } from 'src/infrastructure/organization';
 
 @Module({
   controllers: [AssetCategoryController],
@@ -14,6 +16,10 @@ import { ASSET_CATEGORY_REPOSITORY } from 'src/domain/asset-category';
     {
       provide: ASSET_CATEGORY_REPOSITORY,
       useClass: PrismaAssetCategoryRepository,
+    },
+    {
+      provide: ORGANIZATION_REPOSITORY,
+      useClass: PrismaOrgRepository,
     },
     {
       provide: ID_GENERATOR,

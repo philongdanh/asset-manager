@@ -16,8 +16,5 @@ export class CreateAssetCategoryDto {
 
   @IsOptional()
   @IsUUID()
-  parentCategoryId?: string;
-
-  @IsOptional()
-  properties?: Map<string, any>;
+  parentId?: string;
 }
