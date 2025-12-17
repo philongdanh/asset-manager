@@ -1,10 +1,7 @@
-// src/infrastructure/asset/prisma-asset.repository.ts
-// Lớp ngoài cùng phụ thuộc vào Prisma
-
 import { Injectable } from '@nestjs/common';
 import { IAssetRepository } from 'src/domain/asset/asset.repository.interface';
 import { Asset } from 'src/domain/asset/asset.entity';
-import { AssetMapper } from './asset.mapper'; // Mapper để chuyển đổi
+import { AssetMapper } from './asset.mapper';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 
 @Injectable()
@@ -17,7 +14,8 @@ export class PrismaAssetRepository implements IAssetRepository {
   ): Promise<Asset | null> {
     const prismaAsset = await this.prisma.asset.findFirst({
       where: {
-        OR: [{ organization: { id: orgId } }, { assetCode }],
+        organizationId: orgId,
+        assetCode: assetCode,
       },
     });
 

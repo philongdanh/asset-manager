@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { OrgController } from './organization.controller';
-import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { CreateOrganizationUseCase } from 'src/application/organization';
-import { PrismaOrgRepository } from 'src/infrastructure/organization/prisma-organization.repository';
 import { ORGANIZATION_REPOSITORY } from 'src/domain/organization';
+import { UuidGeneratorService } from 'src/infrastructure/id-generator';
+import { PrismaOrgRepository } from 'src/infrastructure/organization';
+import { PrismaService } from 'src/infrastructure/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
-import { UuidGeneratorService } from 'src/infrastructure/id-generator/uuid-generator.service';
+import { OrganizationController } from './organization.controller';
 
 @Module({
-  controllers: [OrgController],
+  controllers: [OrganizationController],
   providers: [
     CreateOrganizationUseCase,
     {

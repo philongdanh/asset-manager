@@ -1,10 +1,9 @@
-// src/presentation/asset/asset.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
 import { CreateOrgDto } from './dto/create-organization.dto';
 import { CreateOrganizationUseCase } from 'src/application/organization';
 
 @Controller('organizations')
-export class OrgController {
+export class OrganizationController {
   constructor(private readonly createOrgUseCase: CreateOrganizationUseCase) {}
 
   @Post()

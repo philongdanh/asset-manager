@@ -27,7 +27,6 @@ export class CreateAssetUseCase {
       orgId,
       code,
     );
-
     if (existingAsset) {
       throw new Error('Asset code already exists in this organization.');
     }

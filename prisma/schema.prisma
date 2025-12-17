@@ -1,6 +1,6 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider     = "prisma-client"
+  output       = "../generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -13,25 +13,25 @@ datasource db {
 // ---------------------------------------------------------
 
 model Organization {
-  id        String   @id @default(uuid()) @map("organization_id")
-  orgName   String   @map("org_name")
-  status    String   @default("ACTIVE")
+  id      String @id @default(uuid()) @map("organization_id")
+  orgName String @map("org_name")
+  status  String @default("ACTIVE")
 
   // Relations
-  departments       Department[]
-  users             User[]
-  assetCategories   AssetCategory[]
-  assets            Asset[]
-  assetDepreciations AssetDepreciation[]
+  departments          Department[]
+  users                User[]
+  assetCategories      AssetCategory[]
+  assets               Asset[]
+  assetDepreciations   AssetDepreciation[]
   maintenanceSchedules MaintenanceSchedule[]
-  assetTransfers    AssetTransfer[]
-  assetDisposals    AssetDisposal[]
-  assetDocuments    AssetDocument[]
-  inventoryChecks   InventoryCheck[]
-  budgetPlans       BudgetPlan[]
-  auditLogs         AuditLog[]
-  roles             Role[]
-  accountingEntries AccountingEntry[]
+  assetTransfers       AssetTransfer[]
+  assetDisposals       AssetDisposal[]
+  assetDocuments       AssetDocument[]
+  inventoryChecks      InventoryCheck[]
+  budgetPlans          BudgetPlan[]
+  auditLogs            AuditLog[]
+  roles                Role[]
+  accountingEntries    AccountingEntry[]
 
   @@map("Organizations")
 }
@@ -43,16 +43,17 @@ model Department {
   parentId       String? @map("parent_department_id")
 
   // Relations
-  organization     Organization @relation(fields: [organizationId], references: [id])
-  parent           Department?  @relation("DepartmentHierarchy", fields: [parentId], references: [id])
-  children         Department[] @relation("DepartmentHierarchy")
-  
-  users            User[]
-  currentAssets    Asset[]      @relation("AssetCurrentDepartment")
-  fromTransfers    AssetTransfer[] @relation("TransferFromDepartment")
-  toTransfers      AssetTransfer[] @relation("TransferToDepartment")
-  budgetPlans      BudgetPlan[]
+  organization Organization @relation(fields: [organizationId], references: [id])
+  parent       Department?  @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children     Department[] @relation("DepartmentHierarchy")
 
+  users         User[]
+  currentAssets Asset[]         @relation("AssetCurrentDepartment")
+  fromTransfers AssetTransfer[] @relation("TransferFromDepartment")
+  toTransfers   AssetTransfer[] @relation("TransferToDepartment")
+  budgetPlans   BudgetPlan[]
+
+  @@unique([organizationId, name])
   @@map("Departments")
 }
 
@@ -60,36 +61,37 @@ model User {
   id             String  @id @default(uuid()) @map("user_id")
   organizationId String  @map("organization_id")
   departmentId   String? @map("department_id")
-  username       String  @unique
+  username       String
   email          String  @unique
 
   // Relations
-  organization     Organization @relation(fields: [organizationId], references: [id])
-  department       Department?  @relation(fields: [departmentId], references: [id])
-  
+  organization Organization @relation(fields: [organizationId], references: [id])
+  department   Department?  @relation(fields: [departmentId], references: [id])
+
   // Auth & Roles
-  userRoles        UserRole[]
+  userRoles UserRole[]
 
   // Asset Lifecycle Actions
-  createdAssets           Asset[]                @relation("AssetCreator")
-  currentAssets           Asset[]                @relation("AssetHolder")
-  
-  performedMaintenances   MaintenanceSchedule[]  @relation("MaintenancePerformer")
-  
-  transfersFrom           AssetTransfer[]        @relation("TransferFromUser")
-  transfersTo             AssetTransfer[]        @relation("TransferToUser")
-  approvedTransfers       AssetTransfer[]        @relation("TransferApprover")
-  
-  approvedDisposals       AssetDisposal[]        @relation("DisposalApprover")
-  
-  uploadedDocuments       AssetDocument[]        @relation("DocumentUploader")
-  
-  createdInventoryChecks  InventoryCheck[]       @relation("InventoryCreator")
-  checkedInventoryDetails InventoryDetail[]      @relation("InventoryChecker")
-  
-  auditLogs               AuditLog[]
-  createdEntries          AccountingEntry[]      @relation("EntryCreator")
+  createdAssets Asset[] @relation("AssetCreator")
+  currentAssets Asset[] @relation("AssetHolder")
 
+  performedMaintenances MaintenanceSchedule[] @relation("MaintenancePerformer")
+
+  transfersFrom     AssetTransfer[] @relation("TransferFromUser")
+  transfersTo       AssetTransfer[] @relation("TransferToUser")
+  approvedTransfers AssetTransfer[] @relation("TransferApprover")
+
+  approvedDisposals AssetDisposal[] @relation("DisposalApprover")
+
+  uploadedDocuments AssetDocument[] @relation("DocumentUploader")
+
+  createdInventoryChecks  InventoryCheck[]  @relation("InventoryCreator")
+  checkedInventoryDetails InventoryDetail[] @relation("InventoryChecker")
+
+  auditLogs      AuditLog[]
+  createdEntries AccountingEntry[] @relation("EntryCreator")
+
+  @@unique([organizationId, username])
   @@map("Users")
 }
 
@@ -105,23 +107,24 @@ model AssetCategory {
   parentId       String? @map("parent_category_id")
 
   // Relations
-  organization   Organization    @relation(fields: [organizationId], references: [id])
-  parent         AssetCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children       AssetCategory[] @relation("CategoryHierarchy")
-  assets         Asset[]
+  organization Organization    @relation(fields: [organizationId], references: [id])
+  parent       AssetCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children     AssetCategory[] @relation("CategoryHierarchy")
+  assets       Asset[]
 
+  @@unique([organizationId, code])
   @@map("AssetCategories")
 }
 
 model Asset {
-  id                 String    @id @default(uuid()) @map("asset_id")
-  assetCode          String    @unique @map("asset_code")
-  organizationId     String    @map("organization_id")
-  categoryId         String    @map("category_id")
-  createdByUserId    String    @map("created_by_user_id")
-  currentDepartmentId String?  @map("current_department_id")
-  currentUserId      String?   @map("current_user_id")
-  
+  id                  String  @id @default(uuid()) @map("asset_id")
+  assetCode           String  @map("asset_code")
+  organizationId      String  @map("organization_id")
+  categoryId          String  @map("category_id")
+  createdByUserId     String  @map("created_by_user_id")
+  currentDepartmentId String? @map("current_department_id")
+  currentUserId       String? @map("current_user_id")
+
   assetName          String    @map("asset_name")
   model              String?
   serialNumber       String?   @map("serial_number")
@@ -130,14 +133,14 @@ model Asset {
   purchasePrice      Decimal   @map("purchase_price") @db.Decimal(15, 2)
   originalCost       Decimal   @map("original_cost") @db.Decimal(15, 2)
   currentValue       Decimal   @map("current_value") @db.Decimal(15, 2)
-  status             String    // e.g. In Use, Maintenance, Liquidated
+  status             String // e.g. In Use, Maintenance, Liquidated
   warrantyExpiryDate DateTime? @map("warranty_expiry_date") @db.Date
   location           String?
   specifications     String?   @db.Text
-  condition          String?   // Good, Average, Poor
+  condition          String? // Good, Average, Poor
 
   // Relations
-  organization      Organization @relation(fields: [organizationId], references: [id])
+  organization      Organization  @relation(fields: [organizationId], references: [id])
   category          AssetCategory @relation(fields: [categoryId], references: [id])
   creator           User          @relation("AssetCreator", fields: [createdByUserId], references: [id])
   currentDepartment Department?   @relation("AssetCurrentDepartment", fields: [currentDepartmentId], references: [id])
@@ -151,6 +154,8 @@ model Asset {
   inventoryDetails  InventoryDetail[]
   accountingEntries AccountingEntry[]
 
+  @@unique([organizationId, assetCode]) // Asset code unique within Org
+  @@index([organizationId]) // Optimize queries by organization
   @@map("Assets")
 }
 
@@ -159,7 +164,7 @@ model AssetDepreciation {
   assetId                 String   @map("asset_id")
   organizationId          String   @map("organization_id")
   depreciationDate        DateTime @map("depreciation_date") @db.Date
-  method                  String   // Straight line, Declining balance
+  method                  String // Straight line, Declining balance
   depreciationValue       Decimal  @map("depreciation_value") @db.Decimal(15, 2)
   accumulatedDepreciation Decimal  @map("accumulated_depreciation") @db.Decimal(15, 2)
   remainingValue          Decimal  @map("remaining_value") @db.Decimal(15, 2)
@@ -173,18 +178,18 @@ model AssetDepreciation {
 }
 
 model MaintenanceSchedule {
-  id               String    @id @default(uuid()) @map("schedule_id")
-  assetId          String    @map("asset_id")
-  organizationId   String    @map("organization_id")
-  maintenanceType  String    @map("maintenance_type")
-  scheduledDate    DateTime  @map("scheduled_date") @db.Date
-  actualDate       DateTime? @map("actual_date") @db.Date
-  status           String
-  description      String?
-  estimatedCost    Decimal?  @map("estimated_cost") @db.Decimal(15, 2)
-  actualCost       Decimal?  @map("actual_cost") @db.Decimal(15, 2)
-  performedByUserId String?  @map("performed_by_user_id")
-  result           String?
+  id                String    @id @default(uuid()) @map("schedule_id")
+  assetId           String    @map("asset_id")
+  organizationId    String    @map("organization_id")
+  maintenanceType   String    @map("maintenance_type")
+  scheduledDate     DateTime  @map("scheduled_date") @db.Date
+  actualDate        DateTime? @map("actual_date") @db.Date
+  status            String
+  description       String?
+  estimatedCost     Decimal?  @map("estimated_cost") @db.Decimal(15, 2)
+  actualCost        Decimal?  @map("actual_cost") @db.Decimal(15, 2)
+  performedByUserId String?   @map("performed_by_user_id")
+  result            String?
 
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
@@ -221,16 +226,16 @@ model AssetTransfer {
 }
 
 model AssetDisposal {
-  id               String   @id @default(uuid()) @map("disposal_id")
-  assetId          String   @map("asset_id")
-  organizationId   String   @map("organization_id")
-  disposalDate     DateTime @map("disposal_date") @db.Date
-  disposalType     String   @map("disposal_type")
-  disposalValue    Decimal  @map("disposal_value") @db.Decimal(15, 2)
-  reason           String?  @db.Text
-  approvedByUserId String?  @map("approved_by_user_id")
-  status           String
-  accountingEntryId String? @map("accounting_entry_id")
+  id                String   @id @default(uuid()) @map("disposal_id")
+  assetId           String   @map("asset_id")
+  organizationId    String   @map("organization_id")
+  disposalDate      DateTime @map("disposal_date") @db.Date
+  disposalType      String   @map("disposal_type")
+  disposalValue     Decimal  @map("disposal_value") @db.Decimal(15, 2)
+  reason            String?  @db.Text
+  approvedByUserId  String?  @map("approved_by_user_id")
+  status            String
+  accountingEntryId String?  @map("accounting_entry_id")
 
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
@@ -329,12 +334,12 @@ model AccountingEntry {
   amount         Decimal  @db.Decimal(15, 2)
   description    String?
   assetId        String?  @map("asset_id")
-  
+
   // Polymorphic References (stored as scalar since Prisma handles polymorphism differently)
-  referenceId    String?  @map("reference_id") // Changed to String
-  referenceType  String?  @map("reference_type")
-  
-  createdByUserId String  @map("created_by_user_id")
+  referenceId   String? @map("reference_id") // Changed to String
+  referenceType String? @map("reference_type")
+
+  createdByUserId String @map("created_by_user_id")
 
   // Relations
   organization Organization @relation(fields: [organizationId], references: [id])
@@ -368,13 +373,14 @@ model BudgetPlan {
 model Role {
   id             String @id @default(uuid()) @map("role_id")
   organizationId String @map("organization_id")
-  roleName       String @unique @map("role_name")
+  roleName       String @map("role_name")
 
   // Relations
   organization    Organization     @relation(fields: [organizationId], references: [id])
   userRoles       UserRole[]
   rolePermissions RolePermission[]
 
+  @@unique([organizationId, roleName])
   @@map("Roles")
 }
 
