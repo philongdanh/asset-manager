@@ -8,14 +8,20 @@ export class PrismaOrgRepository implements IOrgRepository {
   constructor(private prisma: PrismaService) {}
 
   async find(): Promise<Organization[]> {
-    const orgs = await this.prisma.organization.findMany();
-    const mappedOrgs = orgs.map((org) => OrganizationMapper.toDomain(org));
-    return mappedOrgs;
+    const organizations = await this.prisma.organization.findMany({
+      include: {
+        assets: true,
+      },
+    });
+    return organizations.map((org) => OrganizationMapper.toDomain(org));
   }
 
   async findById(id: string): Promise<Organization | null> {
     const org = await this.prisma.organization.findUnique({
       where: { id },
+      include: {
+        assets: true,
+      },
     });
 
     if (!org) {
@@ -30,6 +36,9 @@ export class PrismaOrgRepository implements IOrgRepository {
       where: { id: org.id },
       update: OrganizationMapper.toPersistence(org),
       create: OrganizationMapper.toPersistence(org),
+      include: {
+        assets: true,
+      },
     });
 
     if (!persistedOrg) {
