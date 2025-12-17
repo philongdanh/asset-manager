@@ -34,11 +34,13 @@ export class CreateAssetCategoryUseCase {
   async execute(command: CreateAssetCategoryCommand): Promise<AssetCategory> {
     const { orgId, code, name, parentId } = command;
 
+    // Validate organization existence
     const organization = await this.orgRepository.findById(orgId);
     if (!organization) {
       throw new EntityNotFoundException('Organization', orgId);
     }
 
+    // Validate uniqueness of asset category code within the organization
     const existingAssetCategory = await this.assetCategoryRepo.findByOrgAndCode(
       orgId,
       code,
@@ -47,6 +49,7 @@ export class CreateAssetCategoryUseCase {
       throw new EntityAlreadyExistsException('AssetCategory', 'code', code);
     }
 
+    // Create and persist the new asset category
     const id = this.idGenerator.generate();
     const newAssetCategory = AssetCategory.create(
       id,
