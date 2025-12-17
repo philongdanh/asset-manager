@@ -9,7 +9,7 @@ import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 export interface CreateOrgCommand {
   name: string;
-  status: OrganizationStatus;
+  status: OrganizationStatus | null;
 }
 
 @Injectable()
@@ -17,8 +17,7 @@ export class CreateOrganizationUseCase {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepository: IOrgRepository,
-    @Inject(ID_GENERATOR)
-    private readonly idGenerator: IIdGenerator,
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
   async execute(command: CreateOrgCommand): Promise<Organization> {

@@ -24,8 +24,11 @@ export class Organization {
   public static createNew(
     id: string,
     name: string,
-    status: OrganizationStatus,
+    status: OrganizationStatus | null,
   ): Organization {
+    if (status === null) {
+      status = OrganizationStatus.ACTIVE;
+    }
     return new Organization(id, name, status);
   }
 

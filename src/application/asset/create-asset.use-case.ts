@@ -17,8 +17,7 @@ export class CreateAssetUseCase {
   constructor(
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepository: IAssetRepository,
-    @Inject(ID_GENERATOR)
-    private readonly idGenerator: IIdGenerator,
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
   async execute(command: CreateAssetCommand): Promise<Asset> {
