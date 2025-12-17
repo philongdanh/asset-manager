@@ -1,4 +1,4 @@
-export { Organization } from './organization.entity';
+export { Organization, OrganizationStatus } from './organization.entity';
 export {
   type IOrgRepository,
   ORGANIZATION_REPOSITORY,

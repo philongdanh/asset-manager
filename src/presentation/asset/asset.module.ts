@@ -6,14 +6,11 @@ import { PrismaAssetRepository } from 'src/infrastructure/asset/prisma-asset.rep
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { UuidGeneratorService } from 'src/infrastructure/id-generator/uuid-generator.service';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces/id-generator.interface';
-// Import PrismaService ở đây hoặc Global Module
 
 @Module({
   controllers: [AssetController],
   providers: [
-    // 1. Đăng ký Use Case
     CreateAssetUseCase,
-    // 2. Đăng ký Custom Provider: Liên kết Interface với Implementation
     {
       provide: ASSET_REPOSITORY,
       useClass: PrismaAssetRepository,
@@ -22,7 +19,6 @@ import { ID_GENERATOR } from 'src/shared/domain/interfaces/id-generator.interfac
       provide: ID_GENERATOR,
       useClass: UuidGeneratorService,
     },
-    // ... các Use Case và Repository khác cho Asset
     PrismaService,
   ],
 })

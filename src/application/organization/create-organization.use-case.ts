@@ -4,11 +4,12 @@ import {
   Organization,
   type IOrgRepository,
 } from 'src/domain/organization';
+import { OrganizationStatus } from 'src/domain/organization/organization.entity';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 export interface CreateOrgCommand {
   name: string;
-  status: 'ACTIVE' | 'INACTIVE';
+  status: OrganizationStatus;
 }
 
 @Injectable()
