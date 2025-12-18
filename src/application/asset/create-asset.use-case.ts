@@ -3,7 +3,7 @@ import {
   ASSET_REPOSITORY,
   Asset,
   type IAssetRepository,
-} from 'src/domain/asset';
+} from 'src/domain/modules/asset';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 export interface CreateAssetCommand {

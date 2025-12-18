@@ -1,16 +1,16 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Asset } from 'src/domain/asset';
+import { Asset } from 'src/domain/modules/asset';
 import {
   ASSET_CATEGORY_REPOSITORY,
   AssetCategory,
   type IAssetCategoryRepository,
-} from 'src/domain/asset-category';
-import { EntityAlreadyExistsException } from 'src/domain/exceptions/entity-already-exists.exception';
-import { EntityNotFoundException } from 'src/domain/exceptions/entity-not-found.exception';
+} from 'src/domain/modules/asset-category';
+import { EntityAlreadyExistsException } from 'src/domain/core/exceptions/entity-already-exists.exception';
+import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';
 import {
-  type IOrgRepository,
+  type IOrganizationRepository,
   ORGANIZATION_REPOSITORY,
-} from 'src/domain/organization';
+} from 'src/domain/modules/organization';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 export interface CreateAssetCategoryCommand {
@@ -27,7 +27,7 @@ export class CreateAssetCategoryUseCase {
     @Inject(ASSET_CATEGORY_REPOSITORY)
     private readonly assetCategoryRepo: IAssetCategoryRepository,
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly orgRepository: IOrgRepository,
+    private readonly orgRepository: IOrganizationRepository,
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 

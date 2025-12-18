@@ -8,9 +8,9 @@ import {
   GetAssetCategoryListUseCase,
 } from 'src/application/asset-category';
 import { PrismaAssetCategoryRepository } from 'src/infrastructure/asset-category/prisma-asset-category.repository';
-import { ASSET_CATEGORY_REPOSITORY } from 'src/domain/asset-category';
-import { ORGANIZATION_REPOSITORY } from 'src/domain/organization';
-import { PrismaOrgRepository } from 'src/infrastructure/organization';
+import { ASSET_CATEGORY_REPOSITORY } from 'src/domain/modules/asset-category';
+import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';
+import { PrismaOrganizationRepository } from 'src/infrastructure/organization';
 
 @Module({
   controllers: [AssetCategoryController],
@@ -23,7 +23,7 @@ import { PrismaOrgRepository } from 'src/infrastructure/organization';
     },
     {
       provide: ORGANIZATION_REPOSITORY,
-      useClass: PrismaOrgRepository,
+      useClass: PrismaOrganizationRepository,
     },
     {
       provide: ID_GENERATOR,

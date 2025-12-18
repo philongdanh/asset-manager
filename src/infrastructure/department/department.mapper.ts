@@ -2,7 +2,7 @@ import {
   Prisma,
   Department as PrismaDepartment,
 } from 'generated/prisma/client';
-import { Department } from 'src/domain/departmenet';
+import { Department } from 'src/domain/modules/department';
 
 export class DepartmentMapper {
   static toDomain(prismaDepartment: PrismaDepartment): Department {

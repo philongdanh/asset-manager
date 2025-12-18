@@ -1,2 +1,2 @@
-export { OrganizationMapper } from './organization.mapper';
-export { PrismaOrgRepository } from './prisma-organization.repository';
+export * from './organization.mapper';
+export * from './prisma-organization.repository';

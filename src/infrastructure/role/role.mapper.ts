@@ -3,7 +3,7 @@ import {
   RolePermission as PrismaRolePermission,
   Permission as PrismaPermission,
 } from 'generated/prisma/client';
-import { Role } from 'src/domain/role';
+import { Role } from 'src/domain/identity/role';
 import { PermissionMapper } from '../permission/permission.mapper';
 
 type PrismaRoleWithPermissions = PrismaRole & {

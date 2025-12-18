@@ -2,9 +2,9 @@ import { Injectable, Inject } from '@nestjs/common';
 import {
   ORGANIZATION_REPOSITORY,
   Organization,
-  type IOrgRepository,
-} from 'src/domain/organization';
-import { OrganizationStatus } from 'src/domain/organization/organization.entity';
+  type IOrganizationRepository,
+} from 'src/domain/modules/organization';
+import { OrganizationStatus } from 'src/domain/modules/organization/organization.entity';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 export interface CreateOrgCommand {
@@ -16,7 +16,7 @@ export interface CreateOrgCommand {
 export class CreateOrganizationUseCase {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly orgRepository: IOrgRepository,
+    private readonly orgRepository: IOrganizationRepository,
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
@@ -31,7 +31,7 @@ export class CreateOrganizationUseCase {
     }
 
     const id = this.idGenerator.generate();
-    const newOrg = Organization.createNew(id, name, status);
+    const newOrg = Organization.create(id, name, status);
 
     return this.orgRepository.save(newOrg);
   }

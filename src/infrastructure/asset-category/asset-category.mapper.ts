@@ -1,5 +1,5 @@
 import { Prisma } from 'generated/prisma/client';
-import { AssetCategory } from 'src/domain/asset-category';
+import { AssetCategory } from 'src/domain/modules/asset-category';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const assetCategoryInclude = {

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CreateAssetUseCase } from 'src/application/asset';
-import { ASSET_REPOSITORY } from 'src/domain/asset';
+import { ASSET_REPOSITORY } from 'src/domain/modules/asset';
 import { PrismaAssetRepository } from 'src/infrastructure/asset/prisma-asset.repository';
 import { UuidGeneratorService } from 'src/infrastructure/id-generator';
 import { PrismaService } from 'src/infrastructure/prisma';

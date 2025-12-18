@@ -1,33 +1,31 @@
-import { Prisma } from 'generated/prisma/client';
-import { Organization, OrganizationStatus } from 'src/domain/organization';
-import { AssetMapper } from 'src/infrastructure/asset/asset.mapper';
-
-const organizationInclude = {
-  include: {
-    assets: true,
-  },
-} satisfies Prisma.OrganizationDefaultArgs;
+import {
+  Prisma,
+  Organization as PrismaOrganization,
+} from 'generated/prisma/client';
+import {
+  Organization,
+  OrganizationStatus,
+} from 'src/domain/modules/organization';
 
 export class OrganizationMapper {
-  static toDomain(
-    org: Prisma.OrganizationGetPayload<typeof organizationInclude>,
-  ): Organization {
-    const assets = org.assets
-      ? org.assets.map((asset) => AssetMapper.toDomain(asset))
-      : [];
-    const organization = new Organization(
-      org.id,
-      org.orgName,
-      org.status as OrganizationStatus,
-      assets,
+  static toDomain(prismaOrganization: PrismaOrganization): Organization {
+    return new Organization(
+      prismaOrganization.id,
+      prismaOrganization.orgName,
+      prismaOrganization.status as OrganizationStatus,
     );
-    return organization;
   }
 
-  static toPersistence(org: Organization): Prisma.OrganizationCreateInput {
+  static toPersistence(
+    organization: Organization,
+  ): Prisma.OrganizationCreateArgs {
     return {
-      orgName: org.name,
-      status: org.status,
+      data: {
+        id: organization.id,
+        orgName: organization.name,
+        status: organization.status,
+      },
+      include: {},
     };
   }
 }

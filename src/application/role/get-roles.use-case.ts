@@ -1,5 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ROLE_REPOSITORY, Role, type IRoleRepository } from 'src/domain/role';
+import {
+  ROLE_REPOSITORY,
+  Role,
+  type IRoleRepository,
+} from 'src/domain/identity/role';
 
 @Injectable()
 export class GetRolesUseCase {

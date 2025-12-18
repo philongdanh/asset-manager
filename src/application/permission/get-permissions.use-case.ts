@@ -3,7 +3,7 @@ import {
   PERMISSION_REPOSITORY,
   Permission,
   type IPermissionRepository,
-} from 'src/domain/permission';
+} from 'src/domain/identity/permission';
 
 @Injectable()
 export class GetPermissionsUseCase {

@@ -1,21 +1,20 @@
 import { Injectable, Inject } from '@nestjs/common';
 import {
-  ORGANIZATION_REPOSITORY,
   Organization,
-  type IOrgRepository,
-} from 'src/domain/organization';
-
-export interface GetOrgsCommand {}
+  ORGANIZATION_REPOSITORY,
+  type IOrganizationRepository,
+} from 'src/domain/modules/organization';
 
 @Injectable()
 export class GetOrganizationsUseCase {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly orgRepository: IOrgRepository,
+    private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
-  async execute(command: GetOrgsCommand): Promise<Organization[]> {
-    const {} = command;
-    return this.orgRepository.find();
+  async execute(organizationId: string): Promise<Organization[]> {
+    const organizations =
+      await this.organizationRepository.find(organizationId);
+    return organizations;
   }
 }

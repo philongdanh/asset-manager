@@ -3,9 +3,9 @@ import {
   CreateOrganizationUseCase,
   GetOrganizationsUseCase,
 } from 'src/application/organization';
-import { ORGANIZATION_REPOSITORY } from 'src/domain/organization';
+import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';
 import { UuidGeneratorService } from 'src/infrastructure/id-generator';
-import { PrismaOrgRepository } from 'src/infrastructure/organization';
+import { PrismaOrganizationRepository } from 'src/infrastructure/organization';
 import { PrismaService } from 'src/infrastructure/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { OrganizationController } from './organization.controller';
@@ -17,7 +17,7 @@ import { OrganizationController } from './organization.controller';
     GetOrganizationsUseCase,
     {
       provide: ORGANIZATION_REPOSITORY,
-      useClass: PrismaOrgRepository,
+      useClass: PrismaOrganizationRepository,
     },
     {
       provide: ID_GENERATOR,

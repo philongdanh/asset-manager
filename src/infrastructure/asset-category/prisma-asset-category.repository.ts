@@ -2,13 +2,17 @@ import { Injectable } from '@nestjs/common';
 import {
   AssetCategory,
   IAssetCategoryRepository,
-} from 'src/domain/asset-category';
+} from 'src/domain/modules/asset-category';
 import { PrismaService } from '../prisma';
 import { AssetCategoryMapper } from './asset-category.mapper';
 
 @Injectable()
 export class PrismaAssetCategoryRepository implements IAssetCategoryRepository {
   constructor(private prisma: PrismaService) {}
+
+  update(category: AssetCategory): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 
   async find(): Promise<AssetCategory[]> {
     const assetCategories = await this.prisma.assetCategory.findMany({

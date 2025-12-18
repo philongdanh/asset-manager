@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { IPermissionRepository, Permission } from 'src/domain/permission';
+import {
+  IPermissionRepository,
+  Permission,
+} from 'src/domain/identity/permission';
 import { PrismaService } from '../prisma';
 import { PermissionMapper } from './permission.mapper';
 

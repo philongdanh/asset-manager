@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CreateRoleUseCase, GetRolesUseCase } from 'src/application/role';
-import { ROLE_REPOSITORY } from 'src/domain/role';
-import { PERMISSION_REPOSITORY } from 'src/domain/permission';
+import { ROLE_REPOSITORY } from 'src/domain/identity/role';
+import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
 import { PrismaRoleRepository } from 'src/infrastructure/role';
 import { PrismaPermissionRepository } from 'src/infrastructure/permission';
 import { PrismaService } from 'src/infrastructure/prisma';

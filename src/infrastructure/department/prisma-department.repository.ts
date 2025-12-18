@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import { DepartmentMapper } from './department.mapper';
-import { Department, IDepartmentRepository } from 'src/domain/departmenet';
+import {
+  Department,
+  IDepartmentRepository,
+} from 'src/domain/modules/department';
 
 @Injectable()
 export class PrismaDepartmentRepository implements IDepartmentRepository {
   constructor(private prisma: PrismaService) {}
+
+  update(name?: string, parentId?: string | null): Promise<void> {
+    console.log(name, parentId);
+    throw new Error('Method not implemented.');
+  }
 
   async find(): Promise<Department[]> {
     const departments = await this.prisma.department.findMany();

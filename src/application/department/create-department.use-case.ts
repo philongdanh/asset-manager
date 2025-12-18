@@ -3,21 +3,21 @@ import {
   Department,
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
-} from 'src/domain/departmenet';
+} from 'src/domain/modules/department';
 import {
-  type IOrgRepository,
+  type IOrganizationRepository,
   Organization,
   ORGANIZATION_REPOSITORY,
-} from 'src/domain/organization';
+} from 'src/domain/modules/organization';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CommandValidationException } from '../exceptions/command-validation.exception';
-import { EntityNotFoundException } from 'src/domain/exceptions/entity-not-found.exception';
+import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';
 
 @Injectable()
 export class CreateDepartmentUseCase {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly organizationRepository: IOrgRepository,
+    private readonly organizationRepository: IOrganizationRepository,
     @Inject(DEPARTMENT_REPOSITORY)
     private readonly departmentRepository: IDepartmentRepository,
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,

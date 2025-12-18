@@ -3,11 +3,10 @@ import {
   PERMISSION_REPOSITORY,
   Permission,
   type IPermissionRepository,
-} from 'src/domain/permission';
+} from 'src/domain/identity/permission';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CommandValidationException } from '../exceptions/command-validation.exception';
-import { BusinessRuleViolationException } from 'src/domain/exceptions/business-rule-violation.exception';
-import { EntityAlreadyExistsException } from 'src/domain/exceptions/entity-already-exists.exception';
+import { EntityAlreadyExistsException } from 'src/domain/core/exceptions/entity-already-exists.exception';
 
 export interface CreatePermissionCommand {
   name: string;

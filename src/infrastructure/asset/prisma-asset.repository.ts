@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { IAssetRepository } from 'src/domain/asset/asset.repository.interface';
-import { Asset } from 'src/domain/asset/asset.entity';
+import { IAssetRepository } from 'src/domain/modules/asset/asset.repository.interface';
+import { Asset } from 'src/domain/modules/asset/asset.entity';
 import { AssetMapper } from './asset.mapper';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 

@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { OrganizationStatus } from 'src/domain/organization';
+import { OrganizationStatus } from 'src/domain/modules/organization';
 
-export class CreateOrgDto {
+export class CreateOrganizationDto {
   @IsNotEmpty()
   @IsString()
   name: string;

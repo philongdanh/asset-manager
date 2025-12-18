@@ -4,10 +4,10 @@ import { PrismaService } from 'src/infrastructure/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { DepartmentController } from './department.controller';
 import { CreateDepartmentUseCase } from 'src/application/department';
-import { DEPARTMENT_REPOSITORY } from 'src/domain/departmenet';
+import { DEPARTMENT_REPOSITORY } from 'src/domain/modules/department';
 import { PrismaDepartmentRepository } from 'src/infrastructure/department';
-import { ORGANIZATION_REPOSITORY } from 'src/domain/organization';
-import { PrismaOrgRepository } from 'src/infrastructure/organization';
+import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';
+import { PrismaOrganizationRepository } from 'src/infrastructure/organization';
 
 @Module({
   controllers: [DepartmentController],
@@ -23,7 +23,7 @@ import { PrismaOrgRepository } from 'src/infrastructure/organization';
     },
     {
       provide: ORGANIZATION_REPOSITORY,
-      useClass: PrismaOrgRepository,
+      useClass: PrismaOrganizationRepository,
     },
     CreateDepartmentUseCase,
   ],

@@ -1,5 +1,5 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
-import { CreateOrgDto } from './dto/create-organization.dto';
+import { CreateOrganizationDto } from './dto/create-organization.dto';
 import {
   CreateOrganizationUseCase,
   GetOrganizationsUseCase,
@@ -8,14 +8,13 @@ import {
 @Controller('organizations')
 export class OrganizationController {
   constructor(
-    private readonly createOrgUseCase: CreateOrganizationUseCase,
-    private readonly getOrgUseCase: GetOrganizationsUseCase,
+    private readonly createOrganizationUseCase: CreateOrganizationUseCase,
+    private readonly getOrganizationsUseCase: GetOrganizationsUseCase,
   ) {}
 
   @Get()
   async find() {
-    const organizations = await this.getOrgUseCase.execute({});
-    return organizations;
+    const organizations = await this.getOrganizationsUseCase.execute('dsajk');
     return organizations.map((org) => ({
       id: org.id,
       name: org.name,
@@ -24,16 +23,16 @@ export class OrganizationController {
   }
 
   @Post()
-  async create(@Body() dto: CreateOrgDto) {
-    const result = await this.createOrgUseCase.execute({
-      name: dto.name,
-      status: dto.status,
+  async create(@Body() createOrganizationDto: CreateOrganizationDto) {
+    const organization = await this.createOrganizationUseCase.execute({
+      name: createOrganizationDto.name,
+      status: createOrganizationDto.status,
     });
 
     return {
-      id: result.id,
-      name: result.name,
-      status: result.status,
+      id: organization.id,
+      name: organization.name,
+      status: organization.status,
     };
   }
 }

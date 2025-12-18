@@ -1,10 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ROLE_REPOSITORY, Role, type IRoleRepository } from 'src/domain/role';
+import {
+  ROLE_REPOSITORY,
+  Role,
+  type IRoleRepository,
+} from 'src/domain/identity/role';
 import {
   Permission,
   PERMISSION_REPOSITORY,
   type IPermissionRepository,
-} from 'src/domain/permission';
+} from 'src/domain/identity/permission';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 export interface CreateRoleCommand {

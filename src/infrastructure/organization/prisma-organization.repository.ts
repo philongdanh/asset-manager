@@ -1,11 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
-import { IOrgRepository, Organization } from 'src/domain/organization';
+import {
+  IOrganizationRepository,
+  Organization,
+} from 'src/domain/modules/organization';
 import { OrganizationMapper } from './organization.mapper';
 
 @Injectable()
-export class PrismaOrgRepository implements IOrgRepository {
+export class PrismaOrganizationRepository implements IOrganizationRepository {
   constructor(private prisma: PrismaService) {}
+
+  async updateInfo(organizationId: string, newName: string): Promise<void> {
+    await this.prisma.organization.update({
+      where: {
+        id: organizationId,
+      },
+      data: {
+        orgName: newName,
+      },
+    });
+  }
+
+  async setStatus(organizationId: string, status: boolean): Promise<void> {
+    await this.prisma.organization.update({
+      where: {
+        id: organizationId,
+      },
+      data: {
+        status: status ? 'ACTIVE' : 'INACTIVE',
+      },
+    });
+  }
 
   async find(): Promise<Organization[]> {
     const organizations = await this.prisma.organization.findMany({
@@ -34,8 +59,8 @@ export class PrismaOrgRepository implements IOrgRepository {
   async save(org: Organization): Promise<Organization> {
     const persistedOrg = await this.prisma.organization.upsert({
       where: { id: org.id },
-      update: OrganizationMapper.toPersistence(org),
-      create: OrganizationMapper.toPersistence(org),
+      update: OrganizationMapper.toPersistence(org).data,
+      create: OrganizationMapper.toPersistence(org).data,
       include: {
         assets: true,
       },

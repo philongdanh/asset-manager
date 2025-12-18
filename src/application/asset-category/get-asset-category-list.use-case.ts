@@ -3,12 +3,12 @@ import {
   ASSET_CATEGORY_REPOSITORY,
   AssetCategory,
   type IAssetCategoryRepository,
-} from 'src/domain/asset-category';
-import { EntityNotFoundException } from 'src/domain/exceptions/entity-not-found.exception';
+} from 'src/domain/modules/asset-category';
+import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';
 import {
-  type IOrgRepository,
+  type IOrganizationRepository,
   ORGANIZATION_REPOSITORY,
-} from 'src/domain/organization';
+} from 'src/domain/modules/organization';
 
 export type GetAssetCategoryCommand = {
   orgId: string;
@@ -20,7 +20,7 @@ export class GetAssetCategoryListUseCase {
     @Inject(ASSET_CATEGORY_REPOSITORY)
     private readonly assetCategoryRepo: IAssetCategoryRepository,
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly orgRepository: IOrgRepository,
+    private readonly orgRepository: IOrganizationRepository,
   ) {}
 
   async execute(command: GetAssetCategoryCommand): Promise<AssetCategory[]> {
