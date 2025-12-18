@@ -9,12 +9,14 @@ import { PermissionModule } from './presentation/permission/permission.module';
 import { RoleModule } from './presentation/role/role.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './presentation/interfaces/exceptions/filters/global-exception.filter';
+import { DepartmentModule } from './presentation/department/department.module';
 
 @Module({
   imports: [
     //
     ConfigModule.forRoot(),
     OrganizationModule,
+    DepartmentModule,
     AssetCategoryModule,
     AssetModule,
     PermissionModule,
