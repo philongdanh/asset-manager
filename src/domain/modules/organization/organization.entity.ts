@@ -32,61 +32,42 @@ export class Organization extends BaseEntity {
     name: string,
     status: OrganizationStatus = OrganizationStatus.ACTIVE,
   ): Organization {
-    if (!name || name.trim().length < 2) {
-      throw new BusinessRuleViolationException(
-        'ORG_NAME_TOO_SHORT',
-        'Organization name must be at least 2 characters long.',
-      );
-    }
-
-    if (!id) {
+    if (!id)
       throw new BusinessRuleViolationException(
         'ORG_ID_REQUIRED',
-        'Organization ID is mandatory.',
+        'ID is mandatory.',
+      );
+    if (!name || !name.trim()) {
+      throw new BusinessRuleViolationException(
+        'ORG_NAME_REQUIRED',
+        'Organization name cannot be empty.',
       );
     }
-
     return new Organization(id, name, status);
   }
 
-  public updateInfo(newName: string): void {
+  public updateInfo(name: string): void {
     this.ensureIsActive();
-
-    if (!newName || newName.trim().length < 2) {
-      throw new BusinessRuleViolationException(
-        'ORG_NAME_INVALID',
-        'New organization name is invalid.',
-      );
+    if (name && name.trim()) {
+      this._name = name;
     }
-
-    this._name = newName;
   }
 
-  public activate(): void {
-    if (this._status === OrganizationStatus.ACTIVE) {
+  public updateStatus(status: OrganizationStatus): void {
+    if (this._status === status) {
       throw new BusinessRuleViolationException(
-        'ORG_ALREADY_ACTIVE',
-        'Organization is already active.',
+        'STATUS_ALREADY_SET',
+        `Organization is already ${status}.`,
       );
     }
-    this._status = OrganizationStatus.ACTIVE;
-  }
-
-  public deactivate(): void {
-    if (this._status === OrganizationStatus.INACTIVE) {
-      throw new BusinessRuleViolationException(
-        'ORG_ALREADY_INACTIVE',
-        'Organization is already inactive.',
-      );
-    }
+    this._status = status;
   }
 
   private ensureIsActive(): void {
     if (this._status !== OrganizationStatus.ACTIVE) {
       throw new BusinessRuleViolationException(
-        'ORGANIZATION_INACTIVE',
-        'Action cannot be performed because the organization is inactive.',
-        { currentStatus: this._status },
+        'ORG_INACTIVE',
+        'Organization is inactive.',
       );
     }
   }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import {
   CreateOrganizationUseCase,
-  GetOrganizationsUseCase,
+  UpdateOrganizationUseCase,
 } from 'src/application/organization';
 import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';
 import { UuidGeneratorService } from 'src/infrastructure/id-generator';
@@ -13,17 +13,17 @@ import { OrganizationController } from './organization.controller';
 @Module({
   controllers: [OrganizationController],
   providers: [
-    CreateOrganizationUseCase,
-    GetOrganizationsUseCase,
-    {
-      provide: ORGANIZATION_REPOSITORY,
-      useClass: PrismaOrganizationRepository,
-    },
+    PrismaService,
     {
       provide: ID_GENERATOR,
       useClass: UuidGeneratorService,
     },
-    PrismaService,
+    {
+      provide: ORGANIZATION_REPOSITORY,
+      useClass: PrismaOrganizationRepository,
+    },
+    CreateOrganizationUseCase,
+    UpdateOrganizationUseCase,
   ],
 })
 export class OrganizationModule {}

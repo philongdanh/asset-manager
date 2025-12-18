@@ -5,17 +5,12 @@ import {
   type IRoleRepository,
 } from 'src/domain/identity/role';
 import {
-  Permission,
   PERMISSION_REPOSITORY,
   type IPermissionRepository,
 } from 'src/domain/identity/permission';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
-
-export interface CreateRoleCommand {
-  organizationId: string;
-  name: string;
-  permissionIds: string[];
-}
+import { CommandValidationException } from '../exceptions/command-validation.exception';
+import { EntityAlreadyExistsException } from 'src/domain/core';
 
 @Injectable()
 export class CreateRoleUseCase {
@@ -27,14 +22,28 @@ export class CreateRoleUseCase {
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
-  async execute(command: CreateRoleCommand): Promise<Role> {
-    const { organizationId, name, permissionIds } = command;
-
+  async execute(organizationId: string, name: string): Promise<Role> {
     if (!organizationId) {
-      throw new Error('Organization ID is required.');
+      throw new CommandValidationException(
+        [
+          {
+            field: 'organization',
+            message: 'Organization is required.',
+          },
+        ],
+        CreateRoleUseCase.name,
+      );
     }
     if (!name) {
-      throw new Error('Role name is required.');
+      throw new CommandValidationException(
+        [
+          {
+            field: 'name',
+            message: 'Name is required.',
+          },
+        ],
+        CreateRoleUseCase.name,
+      );
     }
 
     const existingRole = await this.roleRepository.findByName(
@@ -42,25 +51,11 @@ export class CreateRoleUseCase {
       name,
     );
     if (existingRole) {
-      throw new Error(
-        `Role with name "${name}" already exists in this organization.`,
-      );
-    }
-
-    const permissions: Permission[] = [];
-    if (permissionIds && permissionIds.length > 0) {
-      for (const permId of permissionIds) {
-        const permission = await this.permissionRepository.findById(permId);
-        if (!permission) {
-          throw new Error(`Permission with ID "${permId}" not found.`);
-        }
-        permissions.push(permission);
-      }
+      throw new EntityAlreadyExistsException(Role.name, 'name', name);
     }
 
     const id = this.idGenerator.generate();
-    const newRole = Role.createNew(id, organizationId, name, permissions);
-
-    return this.roleRepository.save(newRole);
+    const role = Role.create(id, organizationId, name);
+    return this.roleRepository.save(role);
   }
 }

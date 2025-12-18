@@ -8,22 +8,15 @@ import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CommandValidationException } from '../exceptions/command-validation.exception';
 import { EntityAlreadyExistsException } from 'src/domain/core/exceptions/entity-already-exists.exception';
 
-export interface CreatePermissionCommand {
-  name: string;
-  description: string;
-}
-
 @Injectable()
 export class CreatePermissionUseCase {
   constructor(
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permissionRepository: IPermissionRepository,
-    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
-  async execute(command: CreatePermissionCommand): Promise<Permission> {
-    const { name, description } = command;
-
+  async execute(name: string, description: string | null): Promise<Permission> {
     if (!name) {
       throw new CommandValidationException([
         {
@@ -39,8 +32,7 @@ export class CreatePermissionUseCase {
     }
 
     const id = this.idGenerator.generate();
-    const newPermission = Permission.createNew(id, name, description);
-
-    return this.permissionRepository.save(newPermission);
+    const permission = Permission.create(id, name, description);
+    return this.permissionRepository.save(permission);
   }
 }

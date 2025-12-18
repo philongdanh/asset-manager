@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import {
   CreateOrganizationUseCase,
-  GetOrganizationsUseCase,
+  UpdateOrganizationUseCase,
 } from 'src/application/organization';
 import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';
 import { UuidGeneratorService } from 'src/infrastructure/id-generator';

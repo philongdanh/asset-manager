@@ -16,6 +16,6 @@ export class GetRolesUseCase {
     if (!organizationId) {
       throw new Error('Organization ID is required.');
     }
-    return this.roleRepository.findAll(organizationId);
+    return this.roleRepository.find(organizationId);
   }
 }

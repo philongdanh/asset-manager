@@ -13,6 +13,6 @@ export class GetPermissionsUseCase {
   ) {}
 
   async execute(): Promise<Permission[]> {
-    return this.permissionRepository.findAll();
+    return this.permissionRepository.find();
   }
 }

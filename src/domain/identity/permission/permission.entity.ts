@@ -1,50 +1,54 @@
-import { Role } from '../role/role.entity';
+import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
-export class Permission {
-  private _id: string;
+export class Permission extends BaseEntity {
   private _name: string;
-  private _description: string;
-  private _roles: Role[];
+  private _description: string | null;
 
-  constructor(
-    id: string,
-    name: string,
-    description: string,
-    roles: Role[] = [],
-  ) {
-    this._id = id;
+  constructor(id: string, name: string, description: string | null = null) {
+    super(id);
     this._name = name;
     this._description = description;
-    this._roles = roles;
-  }
-
-  get id(): string {
-    return this._id;
   }
 
   get name(): string {
     return this._name;
   }
 
-  get description(): string {
+  get description(): string | null {
     return this._description;
   }
 
-  get roles(): Role[] {
-    return this._roles;
-  }
-
-  public static createNew(
+  public static create(
     id: string,
     name: string,
-    description: string,
-    roles: Role[] = [],
+    description: string | null = null,
   ): Permission {
-    return new Permission(id, name, description, roles);
+    if (!id)
+      throw new BusinessRuleViolationException(
+        'PERMISSION_ID_REQUIRED',
+        'ID is mandatory.',
+      );
+    if (!name || !name.trim()) {
+      throw new BusinessRuleViolationException(
+        'PERMISSION_NAME_INVALID',
+        'Permission name cannot be empty',
+      );
+    }
+    return new Permission(id, name, description);
   }
 
-  public updateInfo(name: string, description: string): void {
-    this._name = name;
-    this._description = description;
+  public updateInfo(name?: string, description?: string | null): void {
+    if (name !== undefined) {
+      if (!name.trim()) {
+        throw new BusinessRuleViolationException(
+          'NAME_REQUIRED',
+          'Name cannot be empty.',
+        );
+      }
+      this._name = name;
+    }
+    if (description !== undefined) {
+      this._description = description;
+    }
   }
 }

@@ -10,10 +10,6 @@ import {
   ORGANIZATION_REPOSITORY,
 } from 'src/domain/modules/organization';
 
-export type GetAssetCategoryCommand = {
-  orgId: string;
-};
-
 @Injectable()
 export class GetAssetCategoryListUseCase {
   constructor(
@@ -23,17 +19,13 @@ export class GetAssetCategoryListUseCase {
     private readonly orgRepository: IOrganizationRepository,
   ) {}
 
-  async execute(command: GetAssetCategoryCommand): Promise<AssetCategory[]> {
-    const { orgId } = command;
-
-    // Validate organization existence
-    const organization = await this.orgRepository.findById(orgId);
+  async execute(organizaionId: string): Promise<AssetCategory[]> {
+    const organization = await this.orgRepository.findById(organizaionId);
     if (!organization) {
-      throw new EntityNotFoundException('Organization', orgId);
+      throw new EntityNotFoundException('Organization', organizaionId);
     }
 
     const assetCategories = await this.assetCategoryRepo.find();
-
     return assetCategories;
   }
 }

@@ -1,4 +1,1 @@
-export {
-  type CreateAssetCommand,
-  CreateAssetUseCase,
-} from './create-asset.use-case';
+export * from './create-asset.use-case';

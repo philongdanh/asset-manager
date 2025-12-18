@@ -12,9 +12,8 @@ export class GetOrganizationsUseCase {
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
-  async execute(organizationId: string): Promise<Organization[]> {
-    const organizations =
-      await this.organizationRepository.find(organizationId);
+  async execute(): Promise<Organization[]> {
+    const organizations = await this.organizationRepository.find();
     return organizations;
   }
 }

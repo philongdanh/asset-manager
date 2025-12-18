@@ -1,25 +1,13 @@
-import { Permission } from '../permission';
+import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
-export class Role {
-  private _id: string;
+export class Role extends BaseEntity {
   private _organizationId: string;
   private _name: string;
-  private _permissions: Permission[];
 
-  constructor(
-    id: string,
-    organizationId: string,
-    name: string,
-    permissions: Permission[] = [],
-  ) {
-    this._id = id;
+  constructor(id: string, organizationId: string, name: string) {
+    super(id);
     this._organizationId = organizationId;
     this._name = name;
-    this._permissions = permissions;
-  }
-
-  get id(): string {
-    return this._id;
   }
 
   get organizationId(): string {
@@ -30,34 +18,33 @@ export class Role {
     return this._name;
   }
 
-  get permissions(): Permission[] {
-    return this._permissions;
-  }
-
-  public static createNew(
-    id: string,
-    organizationId: string,
-    name: string,
-    permissions: Permission[] = [],
-  ): Role {
-    return new Role(id, organizationId, name, permissions);
+  public static create(id: string, organizationId: string, name: string): Role {
+    if (!id)
+      throw new BusinessRuleViolationException(
+        'ROLE_ID_REQUIRED',
+        'Role ID is mandatory.',
+      );
+    if (!organizationId)
+      throw new BusinessRuleViolationException(
+        'ORG_ID_REQUIRED',
+        'Organization ID is mandatory.',
+      );
+    if (!name || !name.trim()) {
+      throw new BusinessRuleViolationException(
+        'ROLE_NAME_REQUIRED',
+        'Role name cannot be empty.',
+      );
+    }
+    return new Role(id, organizationId, name);
   }
 
   public updateInfo(name: string): void {
-    this._name = name;
-  }
-
-  public assignPermission(permission: Permission): void {
-    if (!this.hasPermission(permission.id)) {
-      this._permissions.push(permission);
+    if (!name || !name.trim()) {
+      throw new BusinessRuleViolationException(
+        'ROLE_NAME_REQUIRED',
+        'New role name cannot be empty.',
+      );
     }
-  }
-
-  public removePermission(permissionId: string): void {
-    this._permissions = this._permissions.filter((p) => p.id !== permissionId);
-  }
-
-  public hasPermission(permissionId: string): boolean {
-    return this._permissions.some((p) => p.id === permissionId);
+    this._name = name;
   }
 }
