@@ -40,7 +40,6 @@ export class AssetCategoryController {
       code: dto.code,
       parentId: dto.parentId,
     });
-
     return {
       id: result.id,
       name: result.name,

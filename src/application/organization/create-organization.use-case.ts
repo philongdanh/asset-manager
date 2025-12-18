@@ -18,7 +18,7 @@ export class CreateOrganizationUseCase {
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepository: IOrgRepository,
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
-  ) { }
+  ) {}
 
   async execute(command: CreateOrgCommand): Promise<Organization> {
     const { name: name, status } = command;

@@ -8,13 +8,13 @@ import {
 @Controller('organizations')
 export class OrganizationController {
   constructor(
-    private readonly createOrgUC: CreateOrganizationUseCase,
-    private readonly getOrgUC: GetOrganizationsUseCase,
+    private readonly createOrgUseCase: CreateOrganizationUseCase,
+    private readonly getOrgUseCase: GetOrganizationsUseCase,
   ) {}
 
   @Get()
   async find() {
-    const organizations = await this.getOrgUC.execute({});
+    const organizations = await this.getOrgUseCase.execute({});
     return organizations;
     return organizations.map((org) => ({
       id: org.id,
@@ -25,7 +25,7 @@ export class OrganizationController {
 
   @Post()
   async create(@Body() dto: CreateOrgDto) {
-    const result = await this.createOrgUC.execute({
+    const result = await this.createOrgUseCase.execute({
       name: dto.name,
       status: dto.status,
     });
