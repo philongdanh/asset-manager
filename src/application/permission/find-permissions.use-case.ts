@@ -6,7 +6,7 @@ import {
 } from 'src/domain/identity/permission';
 
 @Injectable()
-export class GetPermissionsUseCase {
+export class FindPermissionsUseCase {
   constructor(
     @Inject(PERMISSION_REPOSITORY)
     private readonly permissionRepository: IPermissionRepository,

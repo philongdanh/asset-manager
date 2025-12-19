@@ -6,7 +6,7 @@ import {
 } from 'src/domain/identity/role';
 
 @Injectable()
-export class GetRolesUseCase {
+export class FindRolesUseCase {
   constructor(
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepository: IRoleRepository,

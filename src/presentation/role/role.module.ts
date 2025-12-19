@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CreateRoleUseCase, GetRolesUseCase } from 'src/application/role';
+import { CreateRoleUseCase, FindRolesUseCase } from 'src/application/role';
 import { ROLE_REPOSITORY } from 'src/domain/identity/role';
 import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
 import { PrismaRoleRepository } from 'src/infrastructure/role';
@@ -12,7 +12,7 @@ import { RoleController } from './role.controller';
   controllers: [RoleController],
   providers: [
     CreateRoleUseCase,
-    GetRolesUseCase,
+    FindRolesUseCase,
     {
       provide: ROLE_REPOSITORY,
       useClass: PrismaRoleRepository,

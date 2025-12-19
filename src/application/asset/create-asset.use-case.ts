@@ -10,9 +10,9 @@ import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 @Injectable()
 export class CreateAssetUseCase {
   constructor(
-    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepository: IAssetRepository,
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
   async execute(
@@ -29,7 +29,7 @@ export class CreateAssetUseCase {
     }
 
     const id = this.idGenerator.generate();
-    const newAsset = Asset.create(id, organizationId, name, code);
-    return this.assetRepository.save(newAsset);
+    const asset = Asset.create(id, organizationId, name, code);
+    return this.assetRepository.save(asset);
   }
 }

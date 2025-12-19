@@ -11,21 +11,22 @@ import {
 } from 'src/domain/modules/organization';
 
 @Injectable()
-export class GetAssetCategoryListUseCase {
+export class FindAssetCategoryListUseCase {
   constructor(
-    @Inject(ASSET_CATEGORY_REPOSITORY)
-    private readonly assetCategoryRepo: IAssetCategoryRepository,
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly orgRepository: IOrganizationRepository,
+    private readonly organizationRepository: IOrganizationRepository,
+    @Inject(ASSET_CATEGORY_REPOSITORY)
+    private readonly assetCategoryRepository: IAssetCategoryRepository,
   ) {}
 
   async execute(organizaionId: string): Promise<AssetCategory[]> {
-    const organization = await this.orgRepository.findById(organizaionId);
+    const organization =
+      await this.organizationRepository.findById(organizaionId);
     if (!organization) {
       throw new EntityNotFoundException('Organization', organizaionId);
     }
 
-    const assetCategories = await this.assetCategoryRepo.find();
+    const assetCategories = await this.assetCategoryRepository.find();
     return assetCategories;
   }
 }

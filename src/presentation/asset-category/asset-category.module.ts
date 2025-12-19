@@ -5,7 +5,7 @@ import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { AssetCategoryController } from './asset-category.controller';
 import {
   CreateAssetCategoryUseCase,
-  GetAssetCategoryListUseCase,
+  FindAssetCategoryListUseCase,
 } from 'src/application/asset-category';
 import { PrismaAssetCategoryRepository } from 'src/infrastructure/asset-category/prisma-asset-category.repository';
 import { ASSET_CATEGORY_REPOSITORY } from 'src/domain/modules/asset-category';
@@ -16,7 +16,7 @@ import { PrismaOrganizationRepository } from 'src/infrastructure/organization';
   controllers: [AssetCategoryController],
   providers: [
     CreateAssetCategoryUseCase,
-    GetAssetCategoryListUseCase,
+    FindAssetCategoryListUseCase,
     {
       provide: ASSET_CATEGORY_REPOSITORY,
       useClass: PrismaAssetCategoryRepository,

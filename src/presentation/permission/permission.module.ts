@@ -3,7 +3,7 @@ import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { PermissionController } from './permission.controller';
 import {
   CreatePermissionUseCase,
-  GetPermissionsUseCase,
+  FindPermissionsUseCase,
 } from 'src/application/permission';
 import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
 import { PrismaPermissionRepository } from 'src/infrastructure/permission';
@@ -14,7 +14,7 @@ import { PrismaService } from 'src/infrastructure/prisma';
   controllers: [PermissionController],
   providers: [
     CreatePermissionUseCase,
-    GetPermissionsUseCase,
+    FindPermissionsUseCase,
     {
       provide: PERMISSION_REPOSITORY,
       useClass: PrismaPermissionRepository,

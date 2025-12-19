@@ -2,13 +2,13 @@ import { Controller, Post, Body, Get } from '@nestjs/common';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import {
   CreatePermissionUseCase,
-  GetPermissionsUseCase,
+  FindPermissionsUseCase,
 } from 'src/application/permission';
 
 @Controller('permissions')
 export class PermissionController {
   constructor(
-    private readonly getPermissionsUseCase: GetPermissionsUseCase,
+    private readonly getPermissionsUseCase: FindPermissionsUseCase,
     private readonly createPermissionUseCase: CreatePermissionUseCase,
   ) {}
 

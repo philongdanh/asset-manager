@@ -6,7 +6,7 @@ import {
 } from 'src/domain/modules/organization';
 
 @Injectable()
-export class GetOrganizationsUseCase {
+export class FindOrganizationsUseCase {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly organizationRepository: IOrganizationRepository,

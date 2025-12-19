@@ -2,7 +2,7 @@ import { Controller, Post, Body, Get } from '@nestjs/common';
 import { CreateAssetCategoryDto } from './dto/create-asset-category.dto';
 import {
   CreateAssetCategoryUseCase,
-  GetAssetCategoryListUseCase,
+  FindAssetCategoryListUseCase,
 } from 'src/application/asset-category';
 import { AssetCategory } from 'src/domain/modules/asset-category';
 
@@ -10,7 +10,7 @@ import { AssetCategory } from 'src/domain/modules/asset-category';
 export class AssetCategoryController {
   constructor(
     private readonly createAssetCategoryUseCase: CreateAssetCategoryUseCase,
-    private readonly getAssetCategoryListUseCase: GetAssetCategoryListUseCase,
+    private readonly getAssetCategoryListUseCase: FindAssetCategoryListUseCase,
   ) {}
 
   private recursiveChildren(assetCategories: AssetCategory[]): any[] {

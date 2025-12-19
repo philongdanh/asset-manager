@@ -55,7 +55,7 @@ export class CreateDepartmentUseCase {
     }
 
     const id = this.idGenerator.generate();
-    const newDepartment = Department.create(id, organizationId, name, parentId);
-    return this.departmentRepository.save(newDepartment);
+    const department = Department.create(id, organizationId, name, parentId);
+    return this.departmentRepository.save(department);
   }
 }
