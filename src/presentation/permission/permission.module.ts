@@ -1,12 +1,4 @@
 import { Module } from '@nestjs/common';
-import {
-  CreateOrganizationUseCase,
-  UpdateOrganizationUseCase,
-} from 'src/application/organization';
-import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';
-import { UuidGeneratorService } from 'src/infrastructure/id-generator';
-import { PrismaOrganizationRepository } from 'src/infrastructure/organization';
-import { PrismaService } from 'src/infrastructure/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { PermissionController } from './permission.controller';
 import {
@@ -15,6 +7,8 @@ import {
 } from 'src/application/permission';
 import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
 import { PrismaPermissionRepository } from 'src/infrastructure/permission';
+import { UuidGeneratorService } from 'src/infrastructure/id-generator';
+import { PrismaService } from 'src/infrastructure/prisma';
 
 @Module({
   controllers: [PermissionController],

@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Patch } from '@nestjs/common';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import {
   CreateOrganizationUseCase,
+  GetOrganizationsUseCase,
   UpdateOrganizationUseCase,
 } from 'src/application/organization';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
@@ -10,7 +11,8 @@ import { UpdateOrganizationDto } from './dto/update-organization.dto';
 export class OrganizationController {
   constructor(
     private readonly createOrganizationUseCase: CreateOrganizationUseCase,
-    private readonly getOrganizationsUseCase: UpdateOrganizationUseCase,
+    private readonly getOrganizationsUseCase: GetOrganizationsUseCase,
+    private readonly updateOrganizationUseCase: UpdateOrganizationUseCase,
   ) {}
 
   @Get()
@@ -35,6 +37,8 @@ export class OrganizationController {
 
   @Patch()
   async update(@Body() updateOrganizationDto: UpdateOrganizationDto) {
-    await this.
+    const { name, status } = updateOrganizationDto;
+    const organizationId = 'hello-world';
+    await this.updateOrganizationUseCase.execute(organizationId, name, status);
   }
 }

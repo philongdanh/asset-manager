@@ -10,10 +10,6 @@ import { AssetCategoryMapper } from './asset-category.mapper';
 export class PrismaAssetCategoryRepository implements IAssetCategoryRepository {
   constructor(private prisma: PrismaService) {}
 
-  update(category: AssetCategory): Promise<void> {
-    throw new Error('Method not implemented.');
-  }
-
   async find(): Promise<AssetCategory[]> {
     const assetCategories = await this.prisma.assetCategory.findMany({
       include: {

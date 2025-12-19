@@ -20,7 +20,9 @@ export class PrismaPermissionRepository implements IPermissionRepository {
         },
       },
     });
-    return permissions.map(PermissionMapper.toDomain);
+    return permissions.map((permission) =>
+      PermissionMapper.toDomain(permission),
+    );
   }
 
   async findById(id: string): Promise<Permission | null> {

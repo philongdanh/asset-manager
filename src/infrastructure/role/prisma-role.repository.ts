@@ -51,7 +51,7 @@ export class PrismaRoleRepository implements IRoleRepository {
     const data = RoleMapper.toPersistence(role);
 
     const savedRole = await this.prisma.$transaction(async (tx) => {
-      const updatedRole = await tx.role.upsert({
+      await tx.role.upsert({
         where: { id: role.id },
         update: data,
         create: data,
