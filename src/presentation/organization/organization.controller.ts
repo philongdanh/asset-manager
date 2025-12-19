@@ -4,7 +4,7 @@ import {
   CreateOrganizationUseCase,
   FindOrganizationsUseCase,
   UpdateOrganizationUseCase,
-} from 'src/application/organization';
+} from 'src/application/organization-management/organization';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
 
 @Controller('organizations')

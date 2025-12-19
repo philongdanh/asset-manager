@@ -6,7 +6,7 @@ import { AssetCategoryController } from './asset-category.controller';
 import {
   CreateAssetCategoryUseCase,
   FindAssetCategoryListUseCase,
-} from 'src/application/asset-category';
+} from 'src/application/asset-management/asset-category';
 import { PrismaAssetCategoryRepository } from 'src/infrastructure/asset-category/prisma-asset-category.repository';
 import { ASSET_CATEGORY_REPOSITORY } from 'src/domain/modules/asset-category';
 import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';

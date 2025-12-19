@@ -3,7 +3,7 @@ import { UuidGeneratorService } from 'src/infrastructure/id-generator';
 import { PrismaService } from 'src/infrastructure/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { DepartmentController } from './department.controller';
-import { CreateDepartmentUseCase } from 'src/application/department';
+import { CreateDepartmentUseCase } from 'src/application/organization-management/department';
 import { DEPARTMENT_REPOSITORY } from 'src/domain/modules/department';
 import { PrismaDepartmentRepository } from 'src/infrastructure/department';
 import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';

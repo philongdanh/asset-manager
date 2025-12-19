@@ -3,13 +3,20 @@ import { BusinessRuleViolationException } from '../../core/exceptions';
 
 export class Asset extends BaseEntity {
   private _orgId: string;
-  private _departmentId: string;
+  private _departmentId: string | null;
   private _name: string;
   private _code: string;
 
-  constructor(id: string, orgId: string, name: string, code: string) {
+  constructor(
+    id: string,
+    orgId: string,
+    departmentId: string | null,
+    name: string,
+    code: string,
+  ) {
     super(id);
     this._orgId = orgId;
+    this._departmentId = departmentId;
     this._name = name;
     this._code = code;
   }
@@ -18,7 +25,7 @@ export class Asset extends BaseEntity {
     return this._orgId;
   }
 
-  get departmentId(): string {
+  get departmentId(): string | null {
     return this._departmentId;
   }
 
@@ -33,6 +40,7 @@ export class Asset extends BaseEntity {
   public static create(
     id: string,
     orgId: string,
+    departmentId: string | null,
     name: string,
     code: string,
   ): Asset {
@@ -58,7 +66,7 @@ export class Asset extends BaseEntity {
       );
     }
 
-    return new Asset(id, orgId, name, code);
+    return new Asset(id, orgId, departmentId, name, code);
   }
 
   public rename(newName: string): void {

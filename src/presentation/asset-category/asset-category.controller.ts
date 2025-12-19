@@ -3,7 +3,7 @@ import { CreateAssetCategoryDto } from './dto/create-asset-category.dto';
 import {
   CreateAssetCategoryUseCase,
   FindAssetCategoryListUseCase,
-} from 'src/application/asset-category';
+} from 'src/application/asset-management/asset-category';
 import { AssetCategory } from 'src/domain/modules/asset-category';
 
 @Controller('asset-categories')

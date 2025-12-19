@@ -10,7 +10,7 @@ import {
   ORGANIZATION_REPOSITORY,
 } from 'src/domain/modules/organization';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
-import { CommandValidationException } from '../exceptions/command-validation.exception';
+import { CommandValidationException } from '../../exceptions/command-validation.exception';
 import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';
 
 @Injectable()

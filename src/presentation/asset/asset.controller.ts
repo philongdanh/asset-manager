@@ -1,7 +1,7 @@
 // src/presentation/asset/asset.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
 import { CreateAssetDto } from './dto/create-asset.dto';
-import { CreateAssetUseCase } from 'src/application/asset';
+import { CreateAssetUseCase } from 'src/application/asset-management/asset';
 
 @Controller('assets')
 export class AssetController {

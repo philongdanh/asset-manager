@@ -1,6 +1,6 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
-import { CreateDepartmentUseCase } from 'src/application/department';
+import { CreateDepartmentUseCase } from 'src/application/organization-management/department';
 
 @Controller('departments')
 export class DepartmentController {
