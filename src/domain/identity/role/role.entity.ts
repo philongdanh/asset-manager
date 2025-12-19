@@ -3,11 +3,18 @@ import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 export class Role extends BaseEntity {
   private _organizationId: string;
   private _name: string;
+  private _permissionIds: string[];
 
-  constructor(id: string, organizationId: string, name: string) {
+  constructor(
+    id: string,
+    organizationId: string,
+    name: string,
+    permissionIds: string[] = [],
+  ) {
     super(id);
     this._organizationId = organizationId;
     this._name = name;
+    this._permissionIds = permissionIds;
   }
 
   get organizationId(): string {
@@ -18,7 +25,16 @@ export class Role extends BaseEntity {
     return this._name;
   }
 
-  public static create(id: string, organizationId: string, name: string): Role {
+  get permissionIds(): string[] {
+    return [...this._permissionIds];
+  }
+
+  public static create(
+    id: string,
+    organizationId: string,
+    name: string,
+    permissionIds: string[] = [],
+  ): Role {
     if (!id)
       throw new BusinessRuleViolationException(
         'ROLE_ID_REQUIRED',
@@ -35,7 +51,10 @@ export class Role extends BaseEntity {
         'Role name cannot be empty.',
       );
     }
-    return new Role(id, organizationId, name);
+
+    const uniquePermissionIds = [...new Set(permissionIds)];
+
+    return new Role(id, organizationId, name, uniquePermissionIds);
   }
 
   public updateInfo(name: string): void {
@@ -46,5 +65,33 @@ export class Role extends BaseEntity {
       );
     }
     this._name = name;
+  }
+
+  public assignPermission(permissionId: string) {
+    if (!permissionId) {
+      throw new BusinessRuleViolationException(
+        'PERMISSION_ID_REQUIRED',
+        'Permission ID cannot be empty.',
+      );
+    }
+
+    if (this._permissionIds.includes(permissionId)) {
+      return;
+    }
+
+    this._permissionIds.push(permissionId);
+  }
+
+  public revokePermission(permissionId: string) {
+    if (!this._permissionIds.includes(permissionId)) {
+      throw new BusinessRuleViolationException(
+        'PERMISSION_NOT_FOUND_IN_ROLE',
+        'This role does not have the specified permission.',
+      );
+    }
+
+    this._permissionIds = this._permissionIds.filter(
+      (id) => id !== permissionId,
+    );
   }
 }

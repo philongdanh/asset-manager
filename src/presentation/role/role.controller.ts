@@ -1,6 +1,9 @@
 import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { CreateRoleUseCase, FindRolesUseCase } from 'src/application/role';
+import {
+  CreateRoleUseCase,
+  FindRolesUseCase,
+} from 'src/application/identity/role';
 
 @Controller('roles')
 export class RoleController {

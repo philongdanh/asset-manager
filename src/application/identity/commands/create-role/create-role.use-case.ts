@@ -9,8 +9,9 @@ import {
   type IPermissionRepository,
 } from 'src/domain/identity/permission';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
-import { CommandValidationException } from '../exceptions/command-validation.exception';
+import { CommandValidationException } from '../../../exceptions/command-validation.exception';
 import { EntityAlreadyExistsException } from 'src/domain/core';
+import { CreateRoleCommand } from './create-role.command';
 
 @Injectable()
 export class CreateRoleUseCase {
@@ -22,8 +23,8 @@ export class CreateRoleUseCase {
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
-  async execute(organizationId: string, name: string): Promise<Role> {
-    if (!organizationId) {
+  async execute(command: CreateRoleCommand): Promise<Role> {
+    if (!command.organizationId) {
       throw new CommandValidationException(
         [
           {
@@ -34,7 +35,7 @@ export class CreateRoleUseCase {
         CreateRoleUseCase.name,
       );
     }
-    if (!name) {
+    if (!command.name) {
       throw new CommandValidationException(
         [
           {
@@ -47,15 +48,34 @@ export class CreateRoleUseCase {
     }
 
     const existingRole = await this.roleRepository.findByName(
-      organizationId,
-      name,
+      command.organizationId,
+      command.name,
     );
     if (existingRole) {
-      throw new EntityAlreadyExistsException(Role.name, 'name', name);
+      throw new EntityAlreadyExistsException(Role.name, 'name', command.name);
+    }
+
+    if (command.permissionIds && command.permissionIds.length > 0) {
+      const validPermissions = await this.permissionRepository.findByIds(
+        command.permissionIds,
+      );
+      if (validPermissions.length !== command.permissionIds.length) {
+        throw new CommandValidationException([
+          {
+            field: 'permissionIds',
+            message: 'One or more permission IDs are invalid.',
+          },
+        ]);
+      }
     }
 
     const id = this.idGenerator.generate();
-    const role = Role.create(id, organizationId, name);
+    const role = Role.create(
+      id,
+      command.organizationId,
+      command.name,
+      command.permissionIds || [],
+    );
     return this.roleRepository.save(role);
   }
 }

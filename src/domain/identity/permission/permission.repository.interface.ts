@@ -5,6 +5,7 @@ export const PERMISSION_REPOSITORY = Symbol('PERMISSION_REPOSITORY');
 export interface IPermissionRepository {
   find(): Promise<Permission[]>;
   findById(id: string): Promise<Permission | null>;
+  findByIds(ids: string[]): Promise<Permission[]>;
   findByName(name: string): Promise<Permission | null>;
   save(permission: Permission): Promise<Permission>;
 }
