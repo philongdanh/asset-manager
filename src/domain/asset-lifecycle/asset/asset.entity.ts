@@ -14,8 +14,6 @@ export class Asset extends BaseEntity {
   private _serialNumber: string | null;
   private _manufacturer: string | null;
   private _purchaseDate: Date | null;
-  private _originalCost: number;
-  private _currentValue: number;
   private _warrantyExpiryDate: Date | null;
   private _location: string | null;
   private _specifications: string | null;
@@ -36,27 +34,10 @@ export class Asset extends BaseEntity {
     this._serialNumber = builder.serialNumber;
     this._manufacturer = builder.manufacturer;
     this._purchaseDate = builder.purchaseDate;
-    this._originalCost = builder.originalCost ?? builder.purchasePrice;
-    this._currentValue = builder.currentValue ?? builder.purchasePrice;
     this._warrantyExpiryDate = builder.warrantyExpiryDate;
     this._location = builder.location;
     this._specifications = builder.specifications;
     this._condition = builder.condition;
-  }
-
-  // --- Static Builder Access ---
-  public static builder(
-    id: string,
-    organizationId: string,
-    assetCode: string,
-    assetName: string,
-  ): AssetBuilder {
-    return new AssetBuilder(id, organizationId, assetCode, assetName);
-  }
-
-  // Static factory method
-  public static createFromBuilder(builder: AssetBuilder): Asset {
-    return new Asset(builder);
   }
 
   // --- Getters ---
@@ -112,14 +93,6 @@ export class Asset extends BaseEntity {
     return this._purchaseDate;
   }
 
-  public get originalCost(): number {
-    return this._originalCost;
-  }
-
-  public get currentValue(): number {
-    return this._currentValue;
-  }
-
   public get warrantyExpiryDate(): Date | null {
     return this._warrantyExpiryDate;
   }
@@ -136,7 +109,90 @@ export class Asset extends BaseEntity {
     return this._condition;
   }
 
-  // --- Business Methods ---
+  // --- Business Methods for Updating ---
+
+  public updateBasicInfo(name: string, categoryId: string): void {
+    if (!name || name.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'NAME_REQUIRED',
+        'Asset name cannot be empty.',
+      );
+    }
+    this._assetName = name;
+    this._categoryId = categoryId;
+  }
+
+  public updateTechnicalDetails(
+    model: string | null,
+    serialNumber: string | null,
+    manufacturer: string | null,
+  ): void {
+    this._model = model;
+    this._serialNumber = serialNumber;
+    this._manufacturer = manufacturer;
+  }
+
+  public updateFinancials(
+    price: number,
+    purchaseDate: Date | null,
+    warrantyDate: Date | null,
+  ): void {
+    if (price < 0)
+      throw new BusinessRuleViolationException(
+        'INVALID_PRICE',
+        'Price cannot be negative.',
+      );
+    if (purchaseDate && purchaseDate > new Date()) {
+      throw new BusinessRuleViolationException(
+        'INVALID_PURCHASE_DATE',
+        'Purchase date cannot be in the future.',
+      );
+    }
+    if (purchaseDate && warrantyDate && warrantyDate <= purchaseDate) {
+      throw new BusinessRuleViolationException(
+        'INVALID_WARRANTY_DATE',
+        'Warranty must be after purchase date.',
+      );
+    }
+    this._purchasePrice = price;
+    this._purchaseDate = purchaseDate;
+    this._warrantyExpiryDate = warrantyDate;
+  }
+
+  public updatePhysicalCondition(
+    condition: string | null,
+    location: string | null,
+    specifications: string | null,
+  ): void {
+    const validConditions = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'BROKEN'];
+    if (condition && !validConditions.includes(condition)) {
+      throw new BusinessRuleViolationException(
+        'INVALID_CONDITION',
+        `Condition must be one of: ${validConditions.join(', ')}`,
+      );
+    }
+    this._condition = condition;
+    this._location = location;
+    this._specifications = specifications;
+  }
+
+  public changeStatus(newStatus: string): void {
+    const validStatuses = [
+      'AVAILABLE',
+      'IN_USE',
+      'MAINTENANCE',
+      'DISPOSED',
+      'LOST',
+    ];
+    if (!validStatuses.includes(newStatus)) {
+      throw new BusinessRuleViolationException(
+        'INVALID_STATUS',
+        'Invalid asset status.',
+      );
+    }
+    this._status = newStatus;
+  }
+
   public assignToUser(userId: string, departmentId: string): void {
     this._currentUserId = userId;
     this._currentDepartmentId = departmentId;
@@ -149,61 +205,44 @@ export class Asset extends BaseEntity {
     this._status = 'AVAILABLE';
   }
 
-  public updateDepreciation(currentValue: number): void {
-    if (currentValue < 0) {
-      throw new BusinessRuleViolationException(
-        'INVALID_CURRENT_VALUE',
-        'Current value cannot be negative.',
-      );
-    }
-    this._currentValue = currentValue;
+  // --- Static Factory ---
+  public static builder(
+    id: string,
+    orgId: string,
+    code: string,
+    name: string,
+  ): AssetBuilder {
+    return new AssetBuilder(id, orgId, code, name);
   }
 
-  public updateCondition(condition: string): void {
-    const validConditions = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'DAMAGED'];
-    if (!validConditions.includes(condition)) {
-      throw new BusinessRuleViolationException(
-        'INVALID_CONDITION',
-        `Condition must be one of: ${validConditions.join(', ')}`,
-      );
-    }
-    this._condition = condition;
+  public static createFromBuilder(builder: AssetBuilder): Asset {
+    return new Asset(builder);
   }
 }
 
+// --- Builder Class ---
 export class AssetBuilder {
-  public readonly id: string;
-  public readonly organizationId: string;
-  public readonly assetCode: string;
-  public readonly assetName: string;
-  public categoryId: string = '';
-  public createdByUserId: string = '';
+  public categoryId: string;
+  public createdByUserId: string;
   public purchasePrice: number = 0;
-  public status: string = 'ACTIVE';
+  public status: string = 'AVAILABLE';
   public currentDepartmentId: string | null = null;
   public currentUserId: string | null = null;
   public model: string | null = null;
   public serialNumber: string | null = null;
   public manufacturer: string | null = null;
   public purchaseDate: Date | null = null;
-  public originalCost: number | null = null;
-  public currentValue: number | null = null;
   public warrantyExpiryDate: Date | null = null;
   public location: string | null = null;
   public specifications: string | null = null;
-  public condition: string | null = null;
+  public condition: string | null = 'GOOD';
 
   constructor(
-    id: string,
-    organizationId: string,
-    assetCode: string,
-    assetName: string,
-  ) {
-    this.id = id;
-    this.organizationId = organizationId;
-    this.assetCode = assetCode;
-    this.assetName = assetName;
-  }
+    public readonly id: string,
+    public readonly organizationId: string,
+    public readonly assetCode: string,
+    public readonly assetName: string,
+  ) {}
 
   public withCategory(categoryId: string): this {
     this.categoryId = categoryId;
@@ -216,32 +255,12 @@ export class AssetBuilder {
   }
 
   public withPrice(price: number): this {
-    if (price < 0) {
-      throw new BusinessRuleViolationException(
-        'INVALID_PRICE',
-        'Purchase price cannot be negative.',
-      );
-    }
     this.purchasePrice = price;
     return this;
   }
 
-  public withStatus(status: string): this {
-    const validStatuses = [
-      'ACTIVE',
-      'INACTIVE',
-      'IN_USE',
-      'AVAILABLE',
-      'UNDER_MAINTENANCE',
-      'DISPOSED',
-    ];
-    if (!validStatuses.includes(status)) {
-      throw new BusinessRuleViolationException(
-        'INVALID_STATUS',
-        `Status must be one of: ${validStatuses.join(', ')}`,
-      );
-    }
-    this.status = status;
+  public withPurchaseDate(date: Date | null): this {
+    this.purchaseDate = date;
     return this;
   }
 
@@ -252,54 +271,12 @@ export class AssetBuilder {
 
   public assignedTo(userId: string | null): this {
     this.currentUserId = userId;
+    if (userId) this.status = 'IN_USE';
     return this;
   }
 
-  public withTechnicalDetails(model: string | null, sn: string | null): this {
-    this.model = model;
-    this.serialNumber = sn;
-    return this;
-  }
-
-  public withManufacturer(manufacturer: string | null): this {
-    this.manufacturer = manufacturer;
-    return this;
-  }
-
-  public withPurchaseDate(date: Date | null): this {
-    this.purchaseDate = date;
-    return this;
-  }
-
-  public withOriginalCost(cost: number | null): this {
-    if (cost !== null && cost < 0) {
-      throw new BusinessRuleViolationException(
-        'INVALID_COST',
-        'Original cost cannot be negative.',
-      );
-    }
-    this.originalCost = cost;
-    return this;
-  }
-
-  public withCurrentValue(value: number | null): this {
-    if (value !== null && value < 0) {
-      throw new BusinessRuleViolationException(
-        'INVALID_VALUE',
-        'Current value cannot be negative.',
-      );
-    }
-    this.currentValue = value;
-    return this;
-  }
-
-  public withWarrantyExpiry(date: Date | null): this {
-    this.warrantyExpiryDate = date;
-    return this;
-  }
-
-  public withLocation(location: string | null): this {
-    this.location = location;
+  public withLocation(loc: string | null): this {
+    this.location = loc;
     return this;
   }
 
@@ -308,61 +285,18 @@ export class AssetBuilder {
     return this;
   }
 
-  public withCondition(condition: string | null): this {
-    if (condition !== null) {
-      const validConditions = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'DAMAGED'];
-      if (!validConditions.includes(condition)) {
-        throw new BusinessRuleViolationException(
-          'INVALID_CONDITION',
-          `Condition must be one of: ${validConditions.join(', ')}`,
-        );
-      }
-    }
-    this.condition = condition;
-    return this;
-  }
-
   public build(): Asset {
-    this.validate();
-    return Asset.createFromBuilder(this);
-  }
-
-  private validate(): void {
-    if (!this.categoryId) {
+    if (!this.categoryId)
       throw new BusinessRuleViolationException(
         'CATEGORY_REQUIRED',
-        'Asset must belong to a category.',
+        'Asset must have a category.',
       );
-    }
-    if (!this.createdByUserId) {
+    if (!this.createdByUserId)
       throw new BusinessRuleViolationException(
         'CREATOR_REQUIRED',
         'Asset creator is required.',
       );
-    }
-    if (this.purchasePrice < 0) {
-      throw new BusinessRuleViolationException(
-        'INVALID_PRICE',
-        'Purchase price cannot be negative.',
-      );
-    }
-    // Validate purchase date is not in the future
-    if (this.purchaseDate && this.purchaseDate > new Date()) {
-      throw new BusinessRuleViolationException(
-        'INVALID_PURCHASE_DATE',
-        'Purchase date cannot be in the future.',
-      );
-    }
-    // Validate warranty expiry date is after purchase date
-    if (
-      this.purchaseDate &&
-      this.warrantyExpiryDate &&
-      this.warrantyExpiryDate <= this.purchaseDate
-    ) {
-      throw new BusinessRuleViolationException(
-        'INVALID_WARRANTY_DATE',
-        'Warranty expiry date must be after purchase date.',
-      );
-    }
+
+    return Asset.createFromBuilder(this);
   }
 }
