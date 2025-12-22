@@ -6,31 +6,21 @@ export class AssetMapper {
     return new Asset(
       prismaAsset.id,
       prismaAsset.organizationId,
+      prismaAsset.currentDepartmentId,
       prismaAsset.assetName,
       prismaAsset.assetCode,
     );
   }
 
-  static toPersistence(asset: Asset): Prisma.AssetCreateInput {
+  static toPersistence(asset: Asset): Prisma.AssetCreateArgs {
     return {
-      organization: {
-        connect: { id: asset.organizationId },
-      },
-      assetName: asset.name,
-      assetCode: asset.code,
-      purchasePrice: '',
-      originalCost: '',
-      currentValue: '',
-      status: '',
-      category: {
-        create: undefined,
-        connectOrCreate: undefined,
-        connect: undefined,
-      },
-      creator: {
-        create: undefined,
-        connectOrCreate: undefined,
-        connect: undefined,
+      data: {
+        purchasePrice: 0,
+        purchaseDate: '',
+        organizationId: asset.organizationId,
+        currentDepartmentId: asset.departmentId,
+        assetName: asset.name,
+        assetCode: asset.code,
       },
     };
   }

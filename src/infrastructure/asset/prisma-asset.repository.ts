@@ -8,25 +8,56 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 export class PrismaAssetRepository implements IAssetRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByOrganizationAndCode(
-    orgId: string,
-    assetCode: string,
+  async findByOrganization(organizationId: string): Promise<Asset[]> {
+    const assets = await this.prisma.asset.findMany({
+      where: { organizationId },
+    });
+    return assets.map((asset) => AssetMapper.toDomain(asset));
+  }
+
+  async findByDepartment(departmentId: string): Promise<Asset[]> {
+    const assets = await this.prisma.asset.findMany({
+      where: { currentDepartmentId: departmentId },
+    });
+    return assets.map((asset) => AssetMapper.toDomain(asset));
+  }
+
+  async findByDepartmentAndCode(
+    departmentId: string,
+    code: string,
   ): Promise<Asset | null> {
-    const prismaAsset = await this.prisma.asset.findFirst({
+    const asset = await this.prisma.asset.findFirst({
       where: {
-        organizationId: orgId,
-        assetCode: assetCode,
+        currentDepartmentId: departmentId,
+        assetCode: code,
       },
     });
+    return asset ? AssetMapper.toDomain(asset) : null;
+  }
 
-    return prismaAsset ? AssetMapper.toDomain(prismaAsset) : null;
+  async findById(assetId: string): Promise<Asset | null> {
+    const asset = await this.prisma.asset.findUnique({
+      where: { id: assetId },
+    });
+    return asset ? AssetMapper.toDomain(asset) : null;
+  }
+
+  async findByOrganizationAndCode(
+    organizationId: string,
+    code: string,
+  ): Promise<Asset | null> {
+    const asset = await this.prisma.asset.findFirst({
+      where: {
+        organizationId: organizationId,
+        assetCode: code,
+      },
+    });
+    return asset ? AssetMapper.toDomain(asset) : null;
   }
 
   async save(asset: Asset): Promise<Asset> {
     const data = AssetMapper.toPersistence(asset);
-
-    const prismaAsset = await this.prisma.asset.create({ data });
-
-    return AssetMapper.toDomain(prismaAsset);
+    const savedAsset = await this.prisma.asset.create({ data });
+    return AssetMapper.toDomain(savedAsset);
   }
 }

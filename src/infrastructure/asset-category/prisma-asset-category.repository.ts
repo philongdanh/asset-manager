@@ -10,6 +10,15 @@ import { AssetCategoryMapper } from './asset-category.mapper';
 export class PrismaAssetCategoryRepository implements IAssetCategoryRepository {
   constructor(private prisma: PrismaService) {}
 
+  async findByOrganization(organizationId: string): Promise<AssetCategory[]> {
+    const assetCategories = await this.prisma.assetCategory.findMany({
+      where: { organizationId },
+    });
+    return assetCategories.map((assetCategory) =>
+      AssetCategoryMapper.toDomain(assetCategory),
+    );
+  }
+
   async find(): Promise<AssetCategory[]> {
     const assetCategories = await this.prisma.assetCategory.findMany({
       include: {
@@ -43,8 +52,8 @@ export class PrismaAssetCategoryRepository implements IAssetCategoryRepository {
   async save(assetCategory: AssetCategory): Promise<AssetCategory> {
     const persistedAssetCategory = await this.prisma.assetCategory.upsert({
       where: { id: assetCategory.id },
-      update: AssetCategoryMapper.toPersistence(assetCategory),
-      create: AssetCategoryMapper.toPersistence(assetCategory),
+      update: AssetCategoryMapper.toPersistence(assetCategory).data,
+      create: AssetCategoryMapper.toPersistence(assetCategory).data,
       include: {
         children: true,
       },

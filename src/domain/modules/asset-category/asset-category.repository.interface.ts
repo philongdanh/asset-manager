@@ -5,14 +5,9 @@ export const ASSET_CATEGORY_REPOSITORY = Symbol('ASSET_CATEGORY_REPOSITORY');
 export interface IAssetCategoryRepository {
   findByOrganization(organizationId: string): Promise<AssetCategory[]>;
 
-  findByOrganizationAndId(
-    organizationId: string,
-    id: string,
-  ): Promise<AssetCategory | null>;
-
   findByOrganizationAndCode(
     organizationId: string,
-    code: string,
+    assetCategoryCode: string,
   ): Promise<AssetCategory | null>;
 
   save(assetCategory: AssetCategory): Promise<AssetCategory>;
