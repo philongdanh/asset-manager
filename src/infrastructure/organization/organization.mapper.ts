@@ -5,7 +5,7 @@ import {
 import {
   Organization,
   OrganizationStatus,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 
 export class OrganizationMapper {
   static toDomain(prismaOrganization: PrismaOrganization): Organization {

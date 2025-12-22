@@ -4,7 +4,7 @@ import {
   CreateAssetCategoryUseCase,
   FindAssetCategoryListUseCase,
 } from 'src/application/asset-management/asset-category';
-import { AssetCategory } from 'src/domain/modules/asset-category';
+import { AssetCategory } from 'src/domain/asset-lifecycle/asset-category';
 
 @Controller('asset-categories')
 export class AssetCategoryController {

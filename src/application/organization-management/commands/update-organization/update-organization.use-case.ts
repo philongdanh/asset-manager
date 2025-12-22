@@ -4,7 +4,7 @@ import {
   Organization,
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 import { UpdateOrganizationCommand } from './update-organization.command';
 
 @Injectable()

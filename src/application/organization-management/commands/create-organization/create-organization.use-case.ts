@@ -3,7 +3,7 @@ import {
   ORGANIZATION_REPOSITORY,
   Organization,
   type IOrganizationRepository,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CreateOrganizationCommand } from './create-organization.command';
 

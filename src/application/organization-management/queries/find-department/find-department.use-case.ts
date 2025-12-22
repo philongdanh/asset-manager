@@ -3,7 +3,7 @@ import {
   Department,
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
-} from 'src/domain/modules/department';
+} from 'src/domain/identity/department';
 import { FindDepartmentQuery } from './find-department.query';
 
 @Injectable()

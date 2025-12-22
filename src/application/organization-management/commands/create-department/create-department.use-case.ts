@@ -3,12 +3,12 @@ import {
   Department,
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
-} from 'src/domain/modules/department';
+} from 'src/domain/identity/department';
 import {
   type IOrganizationRepository,
   Organization,
   ORGANIZATION_REPOSITORY,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CommandValidationException } from '../../../exceptions/command-validation.exception';
 import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';

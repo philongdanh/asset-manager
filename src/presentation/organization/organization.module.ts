@@ -3,7 +3,7 @@ import {
   CreateOrganizationUseCase,
   UpdateOrganizationUseCase,
 } from 'src/application/organization-management/organization';
-import { ORGANIZATION_REPOSITORY } from 'src/domain/modules/organization';
+import { ORGANIZATION_REPOSITORY } from 'src/domain/identity/organization';
 import { UuidGeneratorService } from 'src/infrastructure/id-generator';
 import { PrismaOrganizationRepository } from 'src/infrastructure/organization';
 import { PrismaService } from 'src/infrastructure/prisma';

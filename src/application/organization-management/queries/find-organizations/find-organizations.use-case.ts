@@ -3,7 +3,7 @@ import {
   Organization,
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 
 @Injectable()
 export class FindOrganizationsUseCase {

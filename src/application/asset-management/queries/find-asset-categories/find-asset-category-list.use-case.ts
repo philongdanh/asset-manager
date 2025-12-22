@@ -3,12 +3,12 @@ import {
   ASSET_CATEGORY_REPOSITORY,
   AssetCategory,
   type IAssetCategoryRepository,
-} from 'src/domain/modules/asset-category';
+} from 'src/domain/asset-lifecycle/asset-category';
 import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';
 import {
   type IOrganizationRepository,
   ORGANIZATION_REPOSITORY,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 
 @Injectable()
 export class FindAssetCategoryListUseCase {

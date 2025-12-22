@@ -3,7 +3,7 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 import {
   IOrganizationRepository,
   Organization,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 import { OrganizationMapper } from './organization.mapper';
 
 @Injectable()

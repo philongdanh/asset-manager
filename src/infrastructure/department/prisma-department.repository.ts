@@ -4,7 +4,7 @@ import { DepartmentMapper } from './department.mapper';
 import {
   Department,
   IDepartmentRepository,
-} from 'src/domain/modules/department';
+} from 'src/domain/identity/department';
 
 @Injectable()
 export class PrismaDepartmentRepository implements IDepartmentRepository {

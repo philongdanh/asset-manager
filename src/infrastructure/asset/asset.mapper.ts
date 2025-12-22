@@ -1,5 +1,5 @@
 import { Prisma, Asset as PrismaAsset } from 'generated/prisma/client';
-import { Asset } from 'src/domain/modules/asset';
+import { Asset } from 'src/domain/asset-lifecycle/asset';
 
 export class AssetMapper {
   static toDomain(prismaAsset: PrismaAsset): Asset {

@@ -3,12 +3,12 @@ import {
   Department,
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
-} from 'src/domain/modules/department';
+} from 'src/domain/identity/department';
 import {
   Organization,
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 import { FindDepartmentsByOrganizationQuery } from './find-departments-by-organization.query';
 import { EntityNotFoundException } from 'src/domain/core';
 

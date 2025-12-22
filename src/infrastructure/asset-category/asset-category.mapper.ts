@@ -2,7 +2,7 @@ import {
   Prisma,
   AssetCategory as PrismaAssetCategory,
 } from 'generated/prisma/client';
-import { AssetCategory } from 'src/domain/modules/asset-category';
+import { AssetCategory } from 'src/domain/asset-lifecycle/asset-category';
 
 export class AssetCategoryMapper {
   static toDomain(prismaCategory: PrismaAssetCategory): AssetCategory {

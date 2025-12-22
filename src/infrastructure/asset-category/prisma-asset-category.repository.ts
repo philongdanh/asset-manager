@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   AssetCategory,
   IAssetCategoryRepository,
-} from 'src/domain/modules/asset-category';
+} from 'src/domain/asset-lifecycle/asset-category';
 import { PrismaService } from '../prisma';
 import { AssetCategoryMapper } from './asset-category.mapper';
 

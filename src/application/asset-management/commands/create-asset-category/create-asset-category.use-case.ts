@@ -3,13 +3,13 @@ import {
   ASSET_CATEGORY_REPOSITORY,
   AssetCategory,
   type IAssetCategoryRepository,
-} from 'src/domain/modules/asset-category';
+} from 'src/domain/asset-lifecycle/asset-category';
 import { EntityAlreadyExistsException } from 'src/domain/core/exceptions/entity-already-exists.exception';
 import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';
 import {
   type IOrganizationRepository,
   ORGANIZATION_REPOSITORY,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CreateAssetCategoryCommand } from './create-asset-category.command';
 

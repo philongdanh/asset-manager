@@ -4,17 +4,17 @@ import {
   ASSET_REPOSITORY,
   Asset,
   type IAssetRepository,
-} from 'src/domain/modules/asset';
+} from 'src/domain/asset-lifecycle/asset';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CreateAssetCommand } from './create-asset.command';
 import {
   type IOrganizationRepository,
   ORGANIZATION_REPOSITORY,
-} from 'src/domain/modules/organization';
+} from 'src/domain/identity/organization';
 import {
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
-} from 'src/domain/modules/department';
+} from 'src/domain/identity/department';
 
 @Injectable()
 export class CreateAssetUseCase {
