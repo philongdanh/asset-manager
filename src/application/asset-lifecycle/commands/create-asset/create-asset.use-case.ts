@@ -62,7 +62,7 @@ export class CreateAssetUseCase {
       const dept = await this.departmentRepository.findById(
         command.departmentId,
       );
-      if (!dept) {
+      if (!dept || dept.organizationId !== command.organizationId) {
         throw new EntityNotFoundException('Department', command.departmentId);
       }
     }
@@ -76,17 +76,48 @@ export class CreateAssetUseCase {
       command.name,
     )
       .withCategory(command.categoryId)
-      .createdBy(command.createdByUserId) // IMPORTANT
-      .withPrice(command.purchasePrice)
-      .withPurchaseDate(command.purchaseDate)
-      .inDepartment(command.departmentId || null)
-      .assignedTo(command.currentUserId || null)
-      .withLocation(command.location || null)
-      .withSpecifications(command.description || null)
-      .withTechnicalDetails(
-        command.model || null,
-        command.serialNumber || null,
-      );
+      .createdBy(command.createdByUserId)
+      .withPrice(command.purchasePrice);
+
+    if (command.purchaseDate !== undefined) {
+      builder.withPurchaseDate(command.purchaseDate);
+    }
+
+    if (command.departmentId !== undefined) {
+      builder.inDepartment(command.departmentId);
+    }
+
+    if (command.currentUserId !== undefined) {
+      builder.assignedTo(command.currentUserId);
+    }
+
+    if (command.location !== undefined) {
+      builder.withLocation(command.location);
+    }
+
+    if (command.specifications !== undefined) {
+      builder.withSpecifications(command.specifications);
+    }
+
+    if (command.model !== undefined) {
+      builder.withModel(command.model);
+    }
+
+    if (command.serialNumber !== undefined) {
+      builder.withSerialNumber(command.serialNumber);
+    }
+
+    if (command.manufacturer !== undefined) {
+      builder.withManufacturer(command.manufacturer);
+    }
+
+    if (command.warrantyExpiryDate !== undefined) {
+      builder.withWarrantyExpiryDate(command.warrantyExpiryDate);
+    }
+
+    if (command.condition !== undefined) {
+      builder.withCondition(command.condition);
+    }
 
     const newAsset = builder.build();
     return await this.assetRepository.save(newAsset);

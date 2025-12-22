@@ -264,6 +264,11 @@ export class AssetBuilder {
     return this;
   }
 
+  public withWarrantyExpiryDate(date: Date | null): this {
+    this.warrantyExpiryDate = date;
+    return this;
+  }
+
   public inDepartment(deptId: string | null): this {
     this.currentDepartmentId = deptId;
     return this;
@@ -285,6 +290,26 @@ export class AssetBuilder {
     return this;
   }
 
+  public withModel(model: string | null): this {
+    this.model = model;
+    return this;
+  }
+
+  public withSerialNumber(serialNumber: string | null): this {
+    this.serialNumber = serialNumber;
+    return this;
+  }
+
+  public withManufacturer(manufacturer: string | null): this {
+    this.manufacturer = manufacturer;
+    return this;
+  }
+
+  public withCondition(condition: string | null): this {
+    this.condition = condition;
+    return this;
+  }
+
   public build(): Asset {
     if (!this.categoryId)
       throw new BusinessRuleViolationException(
@@ -296,6 +321,44 @@ export class AssetBuilder {
         'CREATOR_REQUIRED',
         'Asset creator is required.',
       );
+    if (!this.assetName || this.assetName.trim().length === 0)
+      throw new BusinessRuleViolationException(
+        'NAME_REQUIRED',
+        'Asset name cannot be empty.',
+      );
+    if (!this.assetCode || this.assetCode.trim().length === 0)
+      throw new BusinessRuleViolationException(
+        'CODE_REQUIRED',
+        'Asset code cannot be empty.',
+      );
+    if (this.purchasePrice < 0)
+      throw new BusinessRuleViolationException(
+        'INVALID_PRICE',
+        'Price cannot be negative.',
+      );
+    if (this.purchaseDate && this.purchaseDate > new Date())
+      throw new BusinessRuleViolationException(
+        'INVALID_PURCHASE_DATE',
+        'Purchase date cannot be in the future.',
+      );
+    if (
+      this.purchaseDate &&
+      this.warrantyExpiryDate &&
+      this.warrantyExpiryDate <= this.purchaseDate
+    )
+      throw new BusinessRuleViolationException(
+        'INVALID_WARRANTY_DATE',
+        'Warranty must be after purchase date.',
+      );
+    if (this.condition) {
+      const validConditions = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'BROKEN'];
+      if (!validConditions.includes(this.condition)) {
+        throw new BusinessRuleViolationException(
+          'INVALID_CONDITION',
+          `Condition must be one of: ${validConditions.join(', ')}`,
+        );
+      }
+    }
 
     return Asset.createFromBuilder(this);
   }
