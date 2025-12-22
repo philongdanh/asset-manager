@@ -4,7 +4,7 @@ import {
   USER_REPOSITORY,
 } from 'src/domain/identity/user';
 import { CreateUserCommand } from './create-user.command';
-import { UseCaseException } from 'src/application/exceptions/use-case.exception';
+import { UseCaseException } from 'src/application/core/exceptions/use-case.exception';
 import { Inject, Injectable } from '@nestjs/common';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 

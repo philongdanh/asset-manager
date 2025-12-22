@@ -5,7 +5,7 @@ import {
   type IRoleRepository,
 } from 'src/domain/identity/role';
 import { FindRolesQuery } from './find-roles.query';
-import { UseCaseException } from 'src/application/exceptions/use-case.exception';
+import { UseCaseException } from 'src/application/core/exceptions/use-case.exception';
 
 @Injectable()
 export class FindRolesUseCase {

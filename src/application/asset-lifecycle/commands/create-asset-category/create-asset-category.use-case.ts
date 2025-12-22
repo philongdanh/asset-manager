@@ -31,12 +31,11 @@ export class CreateAssetCategoryUseCase {
       throw new EntityNotFoundException('Organization', command.organizationId);
     }
 
-    const existingAssetCategory =
-      await this.assetCategoryRepository.findByOrganizationAndCode(
-        command.organizationId,
-        command.code,
-      );
-    if (existingAssetCategory) {
+    const isCodeTaken = await this.assetCategoryRepository.existsByCode(
+      command.organizationId,
+      command.code,
+    );
+    if (isCodeTaken) {
       throw new EntityAlreadyExistsException(
         'AssetCategory',
         'code',
@@ -45,28 +44,26 @@ export class CreateAssetCategoryUseCase {
     }
 
     if (command.parentId) {
-      const existingAssetCategory =
-        await this.assetCategoryRepository.findByOrganizationAndId(
-          command.organizationId,
-          command.parentId,
-        );
-      if (existingAssetCategory) {
-        throw new EntityAlreadyExistsException(
-          'AssetCategory',
-          'parentId',
+      const parentCategory = await this.assetCategoryRepository.findById(
+        command.parentId,
+      );
+      if (!parentCategory) {
+        throw new EntityNotFoundException(
+          'Parent AssetCategory',
           command.parentId,
         );
       }
     }
 
     const id = this.idGenerator.generate();
-    const newAssetCategory = AssetCategory.create(
+    const newAssetCategory = AssetCategory.builder(
       id,
       command.organizationId,
-      command.name,
       command.code,
-      command.parentId,
-    );
-    return this.assetCategoryRepository.save(newAssetCategory);
+      command.name,
+    )
+      .withParent(command.parentId)
+      .build();
+    return await this.assetCategoryRepository.save(newAssetCategory);
   }
 }

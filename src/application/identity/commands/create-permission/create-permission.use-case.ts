@@ -6,7 +6,7 @@ import {
 } from 'src/domain/identity/permission';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { EntityAlreadyExistsException } from 'src/domain/core/exceptions/entity-already-exists.exception';
-import { CommandValidationException } from 'src/application/exceptions/command-validation.exception';
+import { CommandValidationException } from 'src/application/core/exceptions/command-validation.exception';
 import { CreatePermissionCommand } from './create-permission.command';
 
 @Injectable()

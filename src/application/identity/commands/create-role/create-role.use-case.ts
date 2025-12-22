@@ -9,7 +9,7 @@ import {
   type IPermissionRepository,
 } from 'src/domain/identity/permission';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
-import { CommandValidationException } from '../../../exceptions/command-validation.exception';
+import { CommandValidationException } from '../../../core/exceptions/command-validation.exception';
 import { EntityAlreadyExistsException } from 'src/domain/core';
 import { CreateRoleCommand } from './create-role.command';
 
