@@ -76,6 +76,7 @@ export class CreateRoleUseCase {
       command.name,
       command.permissionIds || [],
     );
-    return this.roleRepository.save(role);
+    await this.roleRepository.save(role);
+    return role;
   }
 }

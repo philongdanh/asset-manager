@@ -2,27 +2,27 @@ import { BaseEntity } from '../../core/base/base.entity';
 import { BusinessRuleViolationException } from '../../core/exceptions';
 
 export class Asset extends BaseEntity {
-  private _orgId: string;
+  private _organizationId: string;
   private _departmentId: string | null;
   private _name: string;
   private _code: string;
 
   constructor(
     id: string,
-    orgId: string,
+    organizationId: string,
     departmentId: string | null,
     name: string,
     code: string,
   ) {
     super(id);
-    this._orgId = orgId;
+    this._organizationId = organizationId;
     this._departmentId = departmentId;
     this._name = name;
     this._code = code;
   }
 
-  get orgId(): string {
-    return this._orgId;
+  get organizationId(): string {
+    return this._organizationId;
   }
 
   get departmentId(): string | null {
@@ -39,12 +39,12 @@ export class Asset extends BaseEntity {
 
   public static create(
     id: string,
-    orgId: string,
+    organizationId: string,
     departmentId: string | null,
     name: string,
     code: string,
   ): Asset {
-    if (!id || !orgId) {
+    if (!id || !organizationId) {
       throw new BusinessRuleViolationException(
         'ASSET_IDENTITY_REQUIRED',
         'Asset ID and Organization ID are required for creation.',
@@ -58,15 +58,14 @@ export class Asset extends BaseEntity {
       );
     }
 
-    if (!code || code.length < 3) {
+    if (!code || code.trim().length === 0) {
       throw new BusinessRuleViolationException(
-        'Asset_Code_Invalid',
-        'Asset code must be at least 3 characters long.',
-        { currentCode: code },
+        'Asset_Code_Required',
+        'Asset code cannot be empty',
       );
     }
 
-    return new Asset(id, orgId, departmentId, name, code);
+    return new Asset(id, organizationId, departmentId, name, code);
   }
 
   public rename(newName: string): void {
@@ -74,9 +73,13 @@ export class Asset extends BaseEntity {
       throw new BusinessRuleViolationException(
         'ASSET_NAME_REQUIRED',
         'Asset new name is required',
-        { newName },
+        { newName: newName },
       );
     }
     this._name = newName;
+  }
+
+  public transferToDepartment(newDepartmentId: string | null) {
+    this._departmentId = newDepartmentId;
   }
 }

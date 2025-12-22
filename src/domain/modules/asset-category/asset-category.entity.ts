@@ -1,31 +1,28 @@
-import { BaseEntity } from '../../core';
-import { BusinessRuleViolationException } from '../../core/exceptions';
+import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
 export class AssetCategory extends BaseEntity {
-  private _orgId: string;
+  private readonly _organizationId: string;
+  private readonly _code: string;
+
   private _name: string;
-  private _code: string;
   private _parentId: string | null;
-  private _children: AssetCategory[];
 
   constructor(
     id: string,
-    orgId: string,
+    organizationId: string,
     name: string,
     code: string,
-    parentId: string | null,
-    children: AssetCategory[] = [],
+    parentId: string | null = null,
   ) {
     super(id);
-    this._orgId = orgId;
+    this._organizationId = organizationId;
     this._name = name;
     this._code = code;
     this._parentId = parentId;
-    this._children = children;
   }
 
-  get orgId(): string {
-    return this._orgId;
+  get organizationId(): string {
+    return this._organizationId;
   }
 
   get name(): string {
@@ -40,25 +37,35 @@ export class AssetCategory extends BaseEntity {
     return this._parentId;
   }
 
-  get children(): AssetCategory[] {
-    return [...this._children]; // Return a copy to protect internal state
-  }
-
   public static create(
     id: string,
-    orgId: string,
+    organizationId: string,
     name: string,
     code: string,
-    parentId: string | null,
+    parentId: string | null = null,
   ): AssetCategory {
-    if (!name || name.trim().length === 0) {
+    if (!id) {
+      throw new BusinessRuleViolationException(
+        'ID_REQUIRED',
+        'ID is mandatory.',
+      );
+    }
+
+    if (!organizationId) {
+      throw new BusinessRuleViolationException(
+        'ORGANIZATION_ID_REQUIRED',
+        'Organization ID is mandatory.',
+      );
+    }
+
+    if (!name || !name.trim()) {
       throw new BusinessRuleViolationException(
         'CATEGORY_NAME_REQUIRED',
         'Category name cannot be empty.',
       );
     }
 
-    if (!code || code.trim().length === 0) {
+    if (!code || !code.trim()) {
       throw new BusinessRuleViolationException(
         'CATEGORY_CODE_REQUIRED',
         'Category code is required for identification.',
@@ -73,69 +80,20 @@ export class AssetCategory extends BaseEntity {
       );
     }
 
-    return new AssetCategory(id, orgId, name, code, parentId || null);
+    return new AssetCategory(id, organizationId, name, code, parentId);
   }
 
-  public updateInfo(name?: string, parentId?: string): void {
-    if (name !== undefined) {
-      if (name.trim().length === 0) {
-        throw new BusinessRuleViolationException(
-          'CATEGORY_NAME_REQUIRED',
-          'Name cannot be empty.',
-        );
-      }
-      this._name = name;
-    }
-
-    if (parentId !== undefined) {
-      if (parentId === this._id) {
-        throw new BusinessRuleViolationException(
-          'INVALID_PARENT',
-          'Cannot move a category to be a child of itself.',
-        );
-      }
-      this._parentId = parentId;
-    }
-  }
-
-  public addChild(child: AssetCategory): void {
-    if (child.orgId !== this.orgId) {
+  public rename(newName: string) {
+    if (!newName || !newName.trim().length) {
       throw new BusinessRuleViolationException(
-        'ORGANIZATION_MISMATCH',
-        'Child category must belong to the same organization.',
-        { parentOrg: this.orgId, childOrg: child.orgId },
+        'CATEGORY_NAME_REQUIRED',
+        'Name cannot be empty.',
       );
     }
-
-    const isDuplicate = this._children.some(
-      (c) => c.id === child.id || c.code === child.code,
-    );
-    if (isDuplicate) {
-      throw new BusinessRuleViolationException(
-        'DUPLICATE_CHILD',
-        'A child category with this ID or Code already exists in this branch.',
-        { childCode: child.code },
-      );
-    }
-
-    this._children.push(child);
+    this._name = newName;
   }
 
-  public removeChild(childId: string): void {
-    const exists = this._children.some((c) => c.id === childId);
-    if (!exists) {
-      throw new BusinessRuleViolationException(
-        'CHILD_NOT_FOUND',
-        'The category to remove is not a child of this category.',
-        { childId },
-      );
-    }
-    this._children = this._children.filter(
-      (category) => category.id !== childId,
-    );
-  }
-
-  public isLeaf(): boolean {
-    return this._children.length === 0;
+  public transferToParent(newParentId: string | null) {
+    this._parentId = newParentId;
   }
 }

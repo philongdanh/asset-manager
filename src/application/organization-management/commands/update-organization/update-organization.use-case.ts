@@ -3,9 +3,9 @@ import { EntityNotFoundException } from 'src/domain/core';
 import {
   Organization,
   ORGANIZATION_REPOSITORY,
-  OrganizationStatus,
   type IOrganizationRepository,
 } from 'src/domain/modules/organization';
+import { UpdateOrganizationCommand } from './update-organization.command';
 
 @Injectable()
 export class UpdateOrganizationUseCase {
@@ -14,24 +14,23 @@ export class UpdateOrganizationUseCase {
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
-  async execute(
-    organizationId: string,
-    name?: string,
-    status?: OrganizationStatus,
-  ): Promise<Organization> {
-    const organization =
-      await this.organizationRepository.findById(organizationId);
+  async execute(command: UpdateOrganizationCommand): Promise<Organization> {
+    const organization = await this.organizationRepository.findById(
+      command.organizationId,
+    );
     if (!organization) {
-      throw new EntityNotFoundException(Organization.name, organizationId);
+      throw new EntityNotFoundException(
+        Organization.name,
+        command.organizationId,
+      );
     }
 
-    if (name) {
-      organization.updateInfo(name);
+    if (command.organizationId) {
+      organization.updateInfo(command.organizationId);
     }
-    if (status) {
-      organization.updateStatus(status);
+    if (command.status) {
+      organization.updateStatus(command.status);
     }
-
     await this.organizationRepository.save(organization);
     return organization;
   }

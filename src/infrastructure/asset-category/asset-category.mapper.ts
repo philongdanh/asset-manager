@@ -29,7 +29,7 @@ export class AssetCategoryMapper {
       );
       domain.addChild(
         domainChild.id,
-        domainChild.orgId,
+        domainChild.organizationId,
         domainChild.name,
         domainChild.code,
         domainChild.parentId,
@@ -43,7 +43,7 @@ export class AssetCategoryMapper {
     return {
       id: asset.id,
       organization: {
-        connect: { id: asset.orgId },
+        connect: { id: asset.organizationId },
       },
       categoryName: asset.name,
       code: asset.code,

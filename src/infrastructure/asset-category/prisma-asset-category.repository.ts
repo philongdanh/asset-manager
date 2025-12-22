@@ -22,7 +22,7 @@ export class PrismaAssetCategoryRepository implements IAssetCategoryRepository {
     return mappedAssetCategories;
   }
 
-  async findByOrgAndCode(
+  async findByOrganizationAndCode(
     orgId: string,
     code: string,
   ): Promise<AssetCategory | null> {

@@ -34,12 +34,12 @@ export class Organization extends BaseEntity {
   ): Organization {
     if (!id)
       throw new BusinessRuleViolationException(
-        'ORG_ID_REQUIRED',
+        'ORGANIZATION_ID_REQUIRED',
         'ID is mandatory.',
       );
     if (!name || !name.trim()) {
       throw new BusinessRuleViolationException(
-        'ORG_NAME_REQUIRED',
+        'ORGANIZATION_NAME_REQUIRED',
         'Organization name cannot be empty.',
       );
     }
@@ -66,7 +66,7 @@ export class Organization extends BaseEntity {
   private ensureIsActive(): void {
     if (this._status !== OrganizationStatus.ACTIVE) {
       throw new BusinessRuleViolationException(
-        'ORG_INACTIVE',
+        'ORGANIZATION_INACTIVE',
         'Organization is inactive.',
       );
     }

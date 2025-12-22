@@ -14,7 +14,7 @@ export class AssetMapper {
   static toPersistence(asset: Asset): Prisma.AssetCreateInput {
     return {
       organization: {
-        connect: { id: asset.orgId },
+        connect: { id: asset.organizationId },
       },
       assetName: asset.name,
       assetCode: asset.code,

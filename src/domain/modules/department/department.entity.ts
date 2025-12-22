@@ -1,21 +1,29 @@
 import { BaseEntity } from '../../core/base/base.entity';
 import { BusinessRuleViolationException } from '../../core/exceptions';
 
+export enum DepartmentStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
 export class Department extends BaseEntity {
   private _organizationId: string;
   private _name: string;
   private _parentId: string | null;
+  private _isActive: DepartmentStatus;
 
   constructor(
     id: string,
     organizationId: string,
     name: string,
     parentId: string | null,
+    isActive: DepartmentStatus = DepartmentStatus.ACTIVE,
   ) {
     super(id);
     this._organizationId = organizationId;
     this._name = name;
     this._parentId = parentId;
+    this._isActive = isActive;
   }
 
   get organizationId(): string {
@@ -28,6 +36,10 @@ export class Department extends BaseEntity {
 
   get parentId(): string | null {
     return this._parentId;
+  }
+
+  get isActive(): DepartmentStatus {
+    return this._isActive;
   }
 
   public static create(

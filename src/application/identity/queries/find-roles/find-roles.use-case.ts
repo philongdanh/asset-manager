@@ -21,6 +21,6 @@ export class FindRolesUseCase {
         FindRolesUseCase.name,
       );
     }
-    return this.roleRepository.find(query.organizationId);
+    return this.roleRepository.findByOrganization(query.organizationId);
   }
 }

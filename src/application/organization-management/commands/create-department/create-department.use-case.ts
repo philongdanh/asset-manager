@@ -10,8 +10,9 @@ import {
   ORGANIZATION_REPOSITORY,
 } from 'src/domain/modules/organization';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
-import { CommandValidationException } from '../../exceptions/command-validation.exception';
+import { CommandValidationException } from '../../../exceptions/command-validation.exception';
 import { EntityNotFoundException } from 'src/domain/core/exceptions/entity-not-found.exception';
+import { CreateDepartmentCommand } from './create-department.command';
 
 @Injectable()
 export class CreateDepartmentUseCase {
@@ -23,39 +24,46 @@ export class CreateDepartmentUseCase {
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
   ) {}
 
-  async execute(
-    organizationId: string,
-    name: string,
-    parentId: string | null,
-  ): Promise<Department> {
-    if (!name) {
+  async execute(command: CreateDepartmentCommand): Promise<Department> {
+    if (!command.name) {
       throw new CommandValidationException(
         [
           {
             field: 'name',
             message: 'Name is required.',
-            rejectedValue: null,
+            rejectedValue: command.name,
           },
         ],
-        'Create department',
+        CreateDepartmentCommand.name,
       );
     }
 
-    const existingOrganization =
-      await this.organizationRepository.findById(organizationId);
+    const existingOrganization = await this.organizationRepository.findById(
+      command.organizationId,
+    );
     if (!existingOrganization) {
-      throw new EntityNotFoundException(Organization.name, organizationId);
+      throw new EntityNotFoundException(
+        Organization.name,
+        command.organizationId,
+      );
     }
 
-    if (parentId) {
-      const existingParent = await this.departmentRepository.findById(parentId);
+    if (command.parentId) {
+      const existingParent = await this.departmentRepository.findById(
+        command.parentId,
+      );
       if (existingParent) {
-        throw new EntityNotFoundException(Department.name, parentId);
+        throw new EntityNotFoundException(Department.name, command.parentId);
       }
     }
 
     const id = this.idGenerator.generate();
-    const department = Department.create(id, organizationId, name, parentId);
-    return this.departmentRepository.save(department);
+    const newDepartment = Department.create(
+      id,
+      command.organizationId,
+      command.name,
+      command.parentId,
+    );
+    return await this.departmentRepository.save(newDepartment);
   }
 }

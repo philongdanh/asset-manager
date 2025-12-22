@@ -26,7 +26,8 @@ export class FindAssetCategoryListUseCase {
       throw new EntityNotFoundException('Organization', organizaionId);
     }
 
-    const assetCategories = await this.assetCategoryRepository.find();
+    const assetCategories =
+      await this.assetCategoryRepository.findByOrganization(organizaionId);
     return assetCategories;
   }
 }

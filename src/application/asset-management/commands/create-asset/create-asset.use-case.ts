@@ -39,7 +39,7 @@ export class CreateAssetUseCase {
         command.organizationId,
       );
     }
-    const existingAsset = await this.assetRepository.findByOrgAndCode(
+    const existingAsset = await this.assetRepository.findByOrganizationAndCode(
       command.organizationId,
       command.code,
     );

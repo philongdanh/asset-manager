@@ -8,7 +8,7 @@ import { PrismaService } from 'src/infrastructure/prisma/prisma.service';
 export class PrismaAssetRepository implements IAssetRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findByOrgAndCode(
+  async findByOrganizationAndCode(
     orgId: string,
     assetCode: string,
   ): Promise<Asset | null> {

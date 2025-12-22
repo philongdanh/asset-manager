@@ -10,12 +10,12 @@ import {
 export class PrismaDepartmentRepository implements IDepartmentRepository {
   constructor(private prisma: PrismaService) {}
 
-  update(name?: string, parentId?: string | null): Promise<void> {
+  updateInfo(name?: string, parentId?: string | null): Promise<void> {
     console.log(name, parentId);
     throw new Error('Method not implemented.');
   }
 
-  async find(): Promise<Department[]> {
+  async findByOrganization(): Promise<Department[]> {
     const departments = await this.prisma.department.findMany();
     const mappedDepartments = departments.map((department) =>
       DepartmentMapper.toDomain(department),
