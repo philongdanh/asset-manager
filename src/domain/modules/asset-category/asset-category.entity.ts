@@ -1,99 +1,141 @@
 import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
 export class AssetCategory extends BaseEntity {
-  private readonly _organizationId: string;
-  private readonly _code: string;
-
-  private _name: string;
+  private _organizationId: string;
+  private _categoryName: string;
+  private _code: string;
   private _parentId: string | null;
 
-  constructor(
-    id: string,
-    organizationId: string,
-    name: string,
-    code: string,
-    parentId: string | null = null,
-  ) {
-    super(id);
-    this._organizationId = organizationId;
-    this._name = name;
-    this._code = code;
-    this._parentId = parentId;
+  protected constructor(builder: AssetCategoryBuilder) {
+    super(builder.id);
+    this._organizationId = builder.organizationId;
+    this._categoryName = builder.categoryName;
+    this._code = builder.code;
+    this._parentId = builder.parentId;
   }
 
-  get organizationId(): string {
+  // --- Getters ---
+  public get organizationId(): string {
     return this._organizationId;
   }
 
-  get name(): string {
-    return this._name;
+  public get categoryName(): string {
+    return this._categoryName;
   }
 
-  get code(): string {
+  public get code(): string {
     return this._code;
   }
 
-  get parentId(): string | null {
+  public get parentId(): string | null {
     return this._parentId;
   }
 
-  public static create(
-    id: string,
-    organizationId: string,
-    name: string,
-    code: string,
-    parentId: string | null = null,
-  ): AssetCategory {
-    if (!id) {
-      throw new BusinessRuleViolationException(
-        'ID_REQUIRED',
-        'ID is mandatory.',
-      );
-    }
-
-    if (!organizationId) {
-      throw new BusinessRuleViolationException(
-        'ORGANIZATION_ID_REQUIRED',
-        'Organization ID is mandatory.',
-      );
-    }
-
-    if (!name || !name.trim()) {
+  // --- Business Methods ---
+  public updateInfo(name: string, code: string): void {
+    if (!name || name.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'CATEGORY_NAME_REQUIRED',
         'Category name cannot be empty.',
       );
     }
-
-    if (!code || !code.trim()) {
+    if (!code || code.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'CATEGORY_CODE_REQUIRED',
-        'Category code is required for identification.',
+        'Category code cannot be empty.',
       );
     }
+    this._categoryName = name;
+    this._code = code;
+  }
 
-    if (parentId && id === parentId) {
+  public changeParent(newParentId: string | null): void {
+    if (newParentId === this.id) {
       throw new BusinessRuleViolationException(
-        'SELF_REFERENCING_NOT_ALLOWED',
+        'INVALID_PARENT_CATEGORY',
         'A category cannot be its own parent.',
-        { id, parentId },
       );
     }
-
-    return new AssetCategory(id, organizationId, name, code, parentId);
-  }
-
-  public rename(newName: string) {
-    if (!newName || !newName.trim().length) {
-      throw new BusinessRuleViolationException(
-        'CATEGORY_NAME_REQUIRED',
-        'Name cannot be empty.',
-      );
-    }
-    this._name = newName;
-  }
-
-  public transferToParent(newParentId: string | null) {
     this._parentId = newParentId;
+  }
+
+  // --- Static Builder Access ---
+  public static builder(
+    id: string,
+    organizationId: string,
+    code: string,
+    categoryName: string,
+  ): AssetCategoryBuilder {
+    return new AssetCategoryBuilder(id, organizationId, code, categoryName);
+  }
+
+  // Static factory method
+  public static createFromBuilder(
+    builder: AssetCategoryBuilder,
+  ): AssetCategory {
+    return new AssetCategory(builder);
+  }
+}
+
+export class AssetCategoryBuilder {
+  public readonly id: string;
+  public readonly organizationId: string;
+  public readonly code: string;
+  public categoryName: string;
+  public parentId: string | null = null;
+
+  constructor(
+    id: string,
+    organizationId: string,
+    code: string,
+    categoryName: string,
+  ) {
+    this.id = id;
+    this.organizationId = organizationId;
+    this.code = code;
+    this.categoryName = categoryName;
+  }
+
+  public withParent(parentId: string | null): this {
+    this.parentId = parentId;
+    return this;
+  }
+
+  public build(): AssetCategory {
+    this.validate();
+    return AssetCategory.createFromBuilder(this);
+  }
+
+  private validate(): void {
+    if (!this.id) {
+      throw new BusinessRuleViolationException(
+        'CATEGORY_ID_REQUIRED',
+        'Category ID is mandatory.',
+      );
+    }
+    if (!this.organizationId) {
+      throw new BusinessRuleViolationException(
+        'ORGANIZATION_ID_REQUIRED',
+        'Organization ID is mandatory for asset category.',
+      );
+    }
+    if (!this.code || this.code.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'CATEGORY_CODE_INVALID',
+        'Category code cannot be empty.',
+      );
+    }
+    if (!this.categoryName || this.categoryName.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'CATEGORY_NAME_INVALID',
+        'Category name cannot be empty.',
+      );
+    }
+    if (this.parentId === this.id) {
+      throw new BusinessRuleViolationException(
+        'SELF_PARENT_NOT_ALLOWED',
+        'Category cannot be its own parent.',
+      );
+    }
   }
 }

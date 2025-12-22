@@ -10,7 +10,7 @@ export class Permission extends BaseEntity {
     this._description = builder.description;
   }
 
-  // --- Getters (Java Style) ---
+  // --- Getters ---
   public get name(): string {
     return this._name;
   }

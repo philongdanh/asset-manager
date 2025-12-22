@@ -2,96 +2,82 @@ import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
 export class Role extends BaseEntity {
   private _organizationId: string;
-  private _name: string;
-  private _permissionIds: string[];
+  private _roleName: string;
 
-  constructor(
-    id: string,
-    organizationId: string,
-    name: string,
-    permissionIds: string[] = [],
-  ) {
-    super(id);
-    this._organizationId = organizationId;
-    this._name = name;
-    this._permissionIds = permissionIds;
+  protected constructor(builder: RoleBuilder) {
+    super(builder.id);
+    this._organizationId = builder.organizationId;
+    this._roleName = builder.roleName;
   }
 
-  get organizationId(): string {
+  // --- Getters ---
+  public get organizationId(): string {
     return this._organizationId;
   }
-
-  get name(): string {
-    return this._name;
+  public get roleName(): string {
+    return this._roleName;
   }
 
-  get permissionIds(): string[] {
-    return [...this._permissionIds];
-  }
-
-  public static create(
-    id: string,
-    organizationId: string,
-    name: string,
-    permissionIds: string[] = [],
-  ): Role {
-    if (!id)
-      throw new BusinessRuleViolationException(
-        'ROLE_ID_REQUIRED',
-        'Role ID is mandatory.',
-      );
-    if (!organizationId)
-      throw new BusinessRuleViolationException(
-        'ORG_ID_REQUIRED',
-        'Organization ID is mandatory.',
-      );
-    if (!name || !name.trim()) {
+  // --- Business Methods ---
+  public rename(newName: string): void {
+    if (!newName || newName.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'ROLE_NAME_REQUIRED',
         'Role name cannot be empty.',
       );
     }
-
-    const uniquePermissionIds = [...new Set(permissionIds)];
-
-    return new Role(id, organizationId, name, uniquePermissionIds);
+    this._roleName = newName;
   }
 
-  public updateInfo(name: string): void {
-    if (!name || !name.trim()) {
-      throw new BusinessRuleViolationException(
-        'ROLE_NAME_REQUIRED',
-        'New role name cannot be empty.',
-      );
-    }
-    this._name = name;
+  // --- Static Builder Access ---
+  public static builder(
+    id: string,
+    organizationId: string,
+    roleName: string,
+  ): RoleBuilder {
+    return new RoleBuilder(id, organizationId, roleName);
   }
 
-  public assignPermission(permissionId: string) {
-    if (!permissionId) {
-      throw new BusinessRuleViolationException(
-        'PERMISSION_ID_REQUIRED',
-        'Permission ID cannot be empty.',
-      );
-    }
+  // Static factory method
+  public static createFromBuilder(builder: RoleBuilder): Role {
+    return new Role(builder);
+  }
+}
 
-    if (this._permissionIds.includes(permissionId)) {
-      return;
-    }
+export class RoleBuilder {
+  public readonly id: string;
+  public readonly organizationId: string;
+  public roleName: string;
 
-    this._permissionIds.push(permissionId);
+  constructor(id: string, organizationId: string, roleName: string) {
+    this.id = id;
+    this.organizationId = organizationId;
+    this.roleName = roleName;
   }
 
-  public revokePermission(permissionId: string) {
-    if (!this._permissionIds.includes(permissionId)) {
+  public build(): Role {
+    this.validate();
+    return Role.createFromBuilder(this);
+  }
+
+  private validate(): void {
+    if (!this.id) {
       throw new BusinessRuleViolationException(
-        'PERMISSION_NOT_FOUND_IN_ROLE',
-        'This role does not have the specified permission.',
+        'ROLE_ID_REQUIRED',
+        'ID is mandatory for role.',
       );
     }
-
-    this._permissionIds = this._permissionIds.filter(
-      (id) => id !== permissionId,
-    );
+    if (!this.organizationId) {
+      throw new BusinessRuleViolationException(
+        'ORGANIZATION_ID_REQUIRED',
+        'Organization ID is mandatory for role.',
+      );
+    }
+    if (!this.roleName || this.roleName.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'ROLE_NAME_INVALID',
+        'Role name cannot be empty.',
+      );
+    }
   }
 }

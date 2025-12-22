@@ -1,73 +1,92 @@
 import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
-export enum OrganizationStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
-
 export class Organization extends BaseEntity {
-  private _name: string;
-  private _status: OrganizationStatus;
+  private _orgName: string;
+  private _status: string;
 
-  constructor(
-    id: string,
-    name: string,
-    status: OrganizationStatus = OrganizationStatus.ACTIVE,
-  ) {
-    super(id);
-    this._name = name;
-    this._status = status;
+  protected constructor(builder: OrganizationBuilder) {
+    super(builder.id);
+    this._orgName = builder.orgName;
+    this._status = builder.status;
   }
 
-  get name(): string {
-    return this._name;
+  // --- Getters ---
+  public get orgName(): string {
+    return this._orgName;
   }
 
-  get status(): OrganizationStatus {
+  public get status(): string {
     return this._status;
   }
 
-  public static create(
-    id: string,
-    name: string,
-    status: OrganizationStatus = OrganizationStatus.ACTIVE,
-  ): Organization {
-    if (!id)
-      throw new BusinessRuleViolationException(
-        'ORGANIZATION_ID_REQUIRED',
-        'ID is mandatory.',
-      );
-    if (!name || !name.trim()) {
+  // --- Business Methods ---
+  public updateName(newName: string): void {
+    if (!newName || newName.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'ORGANIZATION_NAME_REQUIRED',
         'Organization name cannot be empty.',
       );
     }
-    return new Organization(id, name, status);
+    this._orgName = newName;
   }
 
-  public updateInfo(name: string): void {
-    this.ensureIsActive();
-    if (name && name.trim()) {
-      this._name = name;
-    }
+  public activate(): void {
+    this._status = 'ACTIVE';
   }
 
-  public updateStatus(status: OrganizationStatus): void {
-    if (this._status === status) {
+  public deactivate(): void {
+    this._status = 'INACTIVE';
+  }
+
+  // --- Static Builder Access ---
+  public static builder(id: string, orgName: string): OrganizationBuilder {
+    return new OrganizationBuilder(id, orgName);
+  }
+
+  // Static factory method
+  public static createFromBuilder(builder: OrganizationBuilder): Organization {
+    return new Organization(builder);
+  }
+}
+
+export class OrganizationBuilder {
+  public readonly id: string;
+  public orgName: string;
+  public status: string = 'ACTIVE';
+
+  constructor(id: string, orgName: string) {
+    this.id = id;
+    this.orgName = orgName;
+  }
+
+  public withStatus(status: string): this {
+    const validStatuses = ['ACTIVE', 'INACTIVE', 'PENDING'];
+    if (!validStatuses.includes(status)) {
       throw new BusinessRuleViolationException(
-        'STATUS_ALREADY_SET',
-        `Organization is already ${status}.`,
+        'INVALID_ORGANIZATION_STATUS',
+        `Status must be one of: ${validStatuses.join(', ')}`,
       );
     }
-    this._status = status;
+    this.status = status;
+    return this;
   }
 
-  private ensureIsActive(): void {
-    if (this._status !== OrganizationStatus.ACTIVE) {
+  public build(): Organization {
+    this.validate();
+    return Organization.createFromBuilder(this);
+  }
+
+  private validate(): void {
+    if (!this.id) {
       throw new BusinessRuleViolationException(
-        'ORGANIZATION_INACTIVE',
-        'Organization is inactive.',
+        'ORGANIZATION_ID_REQUIRED',
+        'ID is mandatory for organization.',
+      );
+    }
+    if (!this.orgName || this.orgName.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'ORGANIZATION_NAME_INVALID',
+        'Organization name cannot be empty.',
       );
     }
   }

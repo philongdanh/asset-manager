@@ -6,88 +6,115 @@ export class User extends BaseEntity {
   private _username: string;
   private _email: string;
 
+  protected constructor(builder: UserBuilder) {
+    super(builder.id);
+    this._organizationId = builder.organizationId;
+    this._departmentId = builder.departmentId;
+    this._username = builder.username;
+    this._email = builder.email;
+  }
+
+  // --- Getters ---
+  public get organizationId(): string {
+    return this._organizationId;
+  }
+
+  public get departmentId(): string | null {
+    return this._departmentId;
+  }
+
+  public get username(): string {
+    return this._username;
+  }
+
+  public get email(): string {
+    return this._email;
+  }
+
+  // --- Business Methods ---
+  public changeDepartment(departmentId: string | null): void {
+    this._departmentId = departmentId;
+  }
+
+  public updateEmail(newEmail: string): void {
+    if (!newEmail || !newEmail.includes('@')) {
+      throw new BusinessRuleViolationException(
+        'INVALID_EMAIL_FORMAT',
+        'The provided email address is invalid.',
+      );
+    }
+    this._email = newEmail;
+  }
+
+  // --- Static Builder Access ---
+  public static builder(
+    id: string,
+    organizationId: string,
+    username: string,
+    email: string,
+  ): UserBuilder {
+    return new UserBuilder(id, organizationId, username, email);
+  }
+
+  // Static factory method
+  public static createFromBuilder(builder: UserBuilder): User {
+    return new User(builder);
+  }
+}
+
+export class UserBuilder {
+  public readonly id: string;
+  public readonly organizationId: string;
+  public readonly username: string;
+  public email: string;
+  public departmentId: string | null = null;
+
   constructor(
     id: string,
     organizationId: string,
     username: string,
     email: string,
-    departmentId: string | null = null,
   ) {
-    super(id);
-    this._organizationId = organizationId;
-    this._username = username;
-    this._email = email;
-    this._departmentId = departmentId;
+    this.id = id;
+    this.organizationId = organizationId;
+    this.username = username;
+    this.email = email;
   }
 
-  get organizationId(): string {
-    return this._organizationId;
+  public inDepartment(departmentId: string | null): this {
+    this.departmentId = departmentId;
+    return this;
   }
 
-  get departmentId(): string | null {
-    return this._departmentId;
+  public build(): User {
+    this.validate();
+    return User.createFromBuilder(this);
   }
 
-  get username(): string {
-    return this._username;
-  }
-
-  get email(): string {
-    return this._email;
-  }
-
-  public static create(
-    id: string,
-    organizationId: string,
-    username: string,
-    email: string,
-    departmentId: string | null = null,
-  ): User {
-    if (!id)
+  private validate(): void {
+    if (!this.id) {
       throw new BusinessRuleViolationException(
         'USER_ID_REQUIRED',
         'User ID is mandatory.',
       );
-    if (!organizationId)
+    }
+    if (!this.organizationId) {
       throw new BusinessRuleViolationException(
-        'ORG_ID_REQUIRED',
-        'Organization ID is mandatory.',
+        'ORGANIZATION_ID_REQUIRED',
+        'Organization ID is mandatory for user.',
       );
-
-    if (!username || !username.trim()) {
+    }
+    if (!this.username || this.username.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'USERNAME_REQUIRED',
         'Username cannot be empty.',
       );
     }
-
-    if (!email || !email.includes('@')) {
+    if (!this.email || !this.email.includes('@')) {
       throw new BusinessRuleViolationException(
         'INVALID_EMAIL',
-        'Email is invalid.',
+        'A valid email is required.',
       );
     }
-
-    return new User(id, organizationId, username, email, departmentId);
-  }
-
-  public updateInfo(username?: string, departmentId?: string | null): void {
-    if (username !== undefined) {
-      if (!username.trim()) {
-        throw new BusinessRuleViolationException(
-          'USERNAME_REQUIRED',
-          'Username cannot be empty.',
-        );
-      }
-      this._username = username;
-    }
-
-    if (departmentId !== undefined) {
-      this._departmentId = departmentId;
-    }
-  }
-
-  public changeDepartment(newDepartmentId: string | null): void {
-    this._departmentId = newDepartmentId;
   }
 }

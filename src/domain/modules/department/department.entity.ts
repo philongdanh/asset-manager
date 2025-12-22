@@ -1,97 +1,112 @@
-import { BaseEntity } from '../../core/base/base.entity';
-import { BusinessRuleViolationException } from '../../core/exceptions';
-
-export enum DepartmentStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
+import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
 export class Department extends BaseEntity {
   private _organizationId: string;
   private _name: string;
   private _parentId: string | null;
-  private _isActive: DepartmentStatus;
 
-  constructor(
-    id: string,
-    organizationId: string,
-    name: string,
-    parentId: string | null,
-    isActive: DepartmentStatus = DepartmentStatus.ACTIVE,
-  ) {
-    super(id);
-    this._organizationId = organizationId;
-    this._name = name;
-    this._parentId = parentId;
-    this._isActive = isActive;
+  protected constructor(builder: DepartmentBuilder) {
+    super(builder.id);
+    this._organizationId = builder.organizationId;
+    this._name = builder.name;
+    this._parentId = builder.parentId;
   }
 
-  get organizationId(): string {
+  // --- Getters ---
+  public get organizationId(): string {
     return this._organizationId;
   }
 
-  get name(): string {
+  public get name(): string {
     return this._name;
   }
 
-  get parentId(): string | null {
+  public get parentId(): string | null {
     return this._parentId;
   }
 
-  get isActive(): DepartmentStatus {
-    return this._isActive;
-  }
-
-  public static create(
-    id: string,
-    organizationId: string,
-    name: string,
-    parentId: string | null,
-  ): Department {
-    if (!name || name.trim().length === 0) {
+  // --- Business Methods ---
+  public rename(newName: string): void {
+    if (!newName || newName.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'DEPARTMENT_NAME_REQUIRED',
         'Department name cannot be empty.',
       );
     }
-
-    if (!organizationId) {
-      throw new BusinessRuleViolationException(
-        'ORGANIZATION_ID_REQUIRED',
-        'Department must belong to an organization.',
-      );
-    }
-
-    if (parentId && id === parentId) {
-      throw new BusinessRuleViolationException(
-        'INVALID_HIERARCHY',
-        'A department cannot be its own parent.',
-        { id, parentId },
-      );
-    }
-
-    return new Department(id, organizationId, name, parentId);
+    this._name = newName;
   }
 
-  public updateInfo(name?: string, parentId?: string | null): void {
-    if (name !== undefined) {
-      if (name.trim().length === 0) {
-        throw new BusinessRuleViolationException(
-          'DEPARTMENT_NAME_REQUIRED',
-          'Updated department name cannot be empty.',
-        );
-      }
-      this._name = name;
+  public moveToParent(newParentId: string | null): void {
+    if (newParentId === this.id) {
+      throw new BusinessRuleViolationException(
+        'INVALID_PARENT_DEPARTMENT',
+        'A department cannot be its own parent.',
+      );
     }
+    this._parentId = newParentId;
+  }
 
-    if (parentId !== undefined) {
-      if (parentId === this._id) {
-        throw new BusinessRuleViolationException(
-          'INVALID_PARENT',
-          'A department cannot be moved to be a child of itself.',
-        );
-      }
-      this._parentId = parentId;
+  // --- Static Builder Access ---
+  public static builder(
+    id: string,
+    organizationId: string,
+    name: string,
+  ): DepartmentBuilder {
+    return new DepartmentBuilder(id, organizationId, name);
+  }
+
+  // Static factory method
+  public static createFromBuilder(builder: DepartmentBuilder): Department {
+    return new Department(builder);
+  }
+}
+
+export class DepartmentBuilder {
+  public readonly id: string;
+  public readonly organizationId: string;
+  public name: string;
+  public parentId: string | null = null;
+
+  constructor(id: string, organizationId: string, name: string) {
+    this.id = id;
+    this.organizationId = organizationId;
+    this.name = name;
+  }
+
+  public withParent(parentId: string | null): this {
+    this.parentId = parentId;
+    return this;
+  }
+
+  public build(): Department {
+    this.validate();
+    return Department.createFromBuilder(this);
+  }
+
+  private validate(): void {
+    if (!this.id) {
+      throw new BusinessRuleViolationException(
+        'DEPARTMENT_ID_REQUIRED',
+        'Department ID is mandatory.',
+      );
+    }
+    if (!this.organizationId) {
+      throw new BusinessRuleViolationException(
+        'ORGANIZATION_ID_REQUIRED',
+        'Organization ID is mandatory for department.',
+      );
+    }
+    if (!this.name || this.name.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'DEPARTMENT_NAME_INVALID',
+        'Department name cannot be empty.',
+      );
+    }
+    if (this.parentId === this.id) {
+      throw new BusinessRuleViolationException(
+        'SELF_PARENT_NOT_ALLOWED',
+        'Department cannot be its own parent.',
+      );
     }
   }
 }
