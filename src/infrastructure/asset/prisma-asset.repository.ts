@@ -11,7 +11,10 @@ export class PrismaAssetRepository implements IAssetRepository {
 
   async findById(assetId: string): Promise<Asset | null> {
     const raw = await this.prisma.asset.findUnique({
-      where: { id: assetId },
+      where: {
+        id: assetId,
+        deletedAt: null,
+      },
     });
     return raw ? AssetMapper.toDomain(raw) : null;
   }
@@ -24,6 +27,7 @@ export class PrismaAssetRepository implements IAssetRepository {
       where: {
         organizationId,
         assetCode,
+        deletedAt: null,
       },
     });
     return raw ? AssetMapper.toDomain(raw) : null;
@@ -39,19 +43,22 @@ export class PrismaAssetRepository implements IAssetRepository {
       limit?: number;
       offset?: number;
       search?: string;
+      includeDeleted?: boolean;
     },
   ): Promise<{ data: Asset[]; total: number }> {
     const where: Prisma.AssetWhereInput = {
       organizationId,
     };
 
-    // Apply filters
+    if (!options?.includeDeleted) {
+      where.deletedAt = null;
+    }
+
     if (options?.status) where.status = options.status;
     if (options?.categoryId) where.categoryId = options.categoryId;
     if (options?.departmentId) where.currentDepartmentId = options.departmentId;
     if (options?.userId) where.currentUserId = options.userId;
 
-    // Search functionality
     if (options?.search) {
       where.OR = [
         { assetName: { contains: options.search, mode: 'insensitive' } },
@@ -66,6 +73,9 @@ export class PrismaAssetRepository implements IAssetRepository {
         where,
         take: options?.limit,
         skip: options?.offset,
+        orderBy: {
+          updatedAt: 'desc',
+        },
       }),
       this.prisma.asset.count({ where }),
     ]);
@@ -78,28 +88,40 @@ export class PrismaAssetRepository implements IAssetRepository {
 
   async findByDepartment(departmentId: string): Promise<Asset[]> {
     const raws = await this.prisma.asset.findMany({
-      where: { currentDepartmentId: departmentId },
+      where: {
+        currentDepartmentId: departmentId,
+        deletedAt: null,
+      },
     });
     return raws.map((raw) => AssetMapper.toDomain(raw));
   }
 
   async findByUser(userId: string): Promise<Asset[]> {
     const raws = await this.prisma.asset.findMany({
-      where: { currentUserId: userId },
+      where: {
+        currentUserId: userId,
+        deletedAt: null,
+      },
     });
     return raws.map((raw) => AssetMapper.toDomain(raw));
   }
 
   async findByCategory(categoryId: string): Promise<Asset[]> {
     const raws = await this.prisma.asset.findMany({
-      where: { categoryId },
+      where: {
+        categoryId,
+        deletedAt: null,
+      },
     });
     return raws.map((raw) => AssetMapper.toDomain(raw));
   }
 
   async findByOrganization(organizationId: string): Promise<Asset[]> {
     const raws = await this.prisma.asset.findMany({
-      where: { organizationId },
+      where: {
+        organizationId,
+        deletedAt: null,
+      },
     });
     return raws.map((raw) => AssetMapper.toDomain(raw));
   }
@@ -112,6 +134,7 @@ export class PrismaAssetRepository implements IAssetRepository {
       where: {
         organizationId,
         assetCode,
+        deletedAt: null,
       },
     });
     return count > 0;
@@ -119,13 +142,16 @@ export class PrismaAssetRepository implements IAssetRepository {
 
   async existsById(assetId: string): Promise<boolean> {
     const count = await this.prisma.asset.count({
-      where: { id: assetId },
+      where: {
+        id: assetId,
+        deletedAt: null,
+      },
     });
     return count > 0;
   }
 
   async save(asset: Asset): Promise<Asset> {
-    const data = AssetMapper.toPersistence(asset).data;
+    const { data } = AssetMapper.toPersistence(asset);
     const raw = await this.prisma.asset.create({
       data,
     });
@@ -133,7 +159,7 @@ export class PrismaAssetRepository implements IAssetRepository {
   }
 
   async update(asset: Asset): Promise<Asset> {
-    const data = AssetMapper.toPersistence(asset).data;
+    const { data } = AssetMapper.toPersistence(asset);
     const raw = await this.prisma.asset.update({
       where: { id: asset.id },
       data,
@@ -152,14 +178,68 @@ export class PrismaAssetRepository implements IAssetRepository {
   }
 
   async delete(assetId: string): Promise<void> {
+    await this.prisma.asset.update({
+      where: { id: assetId },
+      data: {
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+        status: 'DISPOSED',
+      },
+    });
+  }
+
+  async deleteMany(assetIds: string[]): Promise<void> {
+    await this.prisma.asset.updateMany({
+      where: { id: { in: assetIds } },
+      data: {
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+        status: 'DISPOSED',
+      },
+    });
+  }
+
+  async hardDelete(assetId: string): Promise<void> {
     await this.prisma.asset.delete({
       where: { id: assetId },
     });
   }
 
-  async deleteMany(assetIds: string[]): Promise<void> {
+  async hardDeleteMany(assetIds: string[]): Promise<void> {
     await this.prisma.asset.deleteMany({
       where: { id: { in: assetIds } },
     });
+  }
+
+  async restore(assetId: string): Promise<void> {
+    await this.prisma.asset.update({
+      where: { id: assetId },
+      data: {
+        deletedAt: null,
+        updatedAt: new Date(),
+        status: 'AVAILABLE',
+      },
+    });
+  }
+
+  async restoreMany(assetIds: string[]): Promise<void> {
+    await this.prisma.asset.updateMany({
+      where: { id: { in: assetIds } },
+      data: {
+        deletedAt: null,
+        updatedAt: new Date(),
+        status: 'AVAILABLE',
+      },
+    });
+  }
+
+  async findDeletedById(assetId: string): Promise<Asset | null> {
+    const raw = await this.prisma.asset.findFirst({
+      where: {
+        id: assetId,
+        deletedAt: { not: null },
+      },
+    });
+    return raw ? AssetMapper.toDomain(raw) : null;
   }
 }

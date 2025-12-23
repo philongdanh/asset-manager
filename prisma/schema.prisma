@@ -17,6 +17,11 @@ model Organization {
   orgName String @map("org_name")
   status  String @default("ACTIVE")
 
+  // Timestamps
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
   // Relations
   departments          Department[]
   users                User[]
@@ -42,6 +47,11 @@ model Department {
   name           String
   parentId       String? @map("parent_department_id")
 
+  // Timestamps
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
   // Relations
   organization Organization @relation(fields: [organizationId], references: [id])
   parent       Department?  @relation("DepartmentHierarchy", fields: [parentId], references: [id])
@@ -64,14 +74,17 @@ model User {
   username       String
   email          String  @unique
 
+  // Timestamps
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
   // Relations
   organization Organization @relation(fields: [organizationId], references: [id])
   department   Department?  @relation(fields: [departmentId], references: [id])
 
-  // Auth & Roles
   userRoles UserRole[]
 
-  // Asset Lifecycle Actions
   createdAssets Asset[] @relation("AssetCreator")
   currentAssets Asset[] @relation("AssetHolder")
 
@@ -106,6 +119,11 @@ model AssetCategory {
   code           String
   parentId       String? @map("parent_category_id")
 
+  // Timestamps
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
   // Relations
   organization Organization    @relation(fields: [organizationId], references: [id])
   parent       AssetCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
@@ -133,11 +151,16 @@ model Asset {
   purchasePrice      Decimal   @map("purchase_price") @db.Decimal(15, 2)
   originalCost       Decimal   @map("original_cost") @db.Decimal(15, 2)
   currentValue       Decimal   @map("current_value") @db.Decimal(15, 2)
-  status             String // e.g. In Use, Maintenance, Liquidated
+  status             String
   warrantyExpiryDate DateTime? @map("warranty_expiry_date") @db.Date
   location           String?
   specifications     String?   @db.Text
-  condition          String? // Good, Average, Poor
+  condition          String?
+
+  // Timestamps
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   // Relations
   organization      Organization  @relation(fields: [organizationId], references: [id])
@@ -154,8 +177,8 @@ model Asset {
   inventoryDetails  InventoryDetail[]
   accountingEntries AccountingEntry[]
 
-  @@unique([organizationId, assetCode]) // Asset code unique within Org
-  @@index([organizationId]) // Optimize queries by organization
+  @@unique([organizationId, assetCode])
+  @@index([organizationId])
   @@map("Assets")
 }
 
@@ -164,11 +187,15 @@ model AssetDepreciation {
   assetId                 String   @map("asset_id")
   organizationId          String   @map("organization_id")
   depreciationDate        DateTime @map("depreciation_date") @db.Date
-  method                  String // Straight line, Declining balance
+  method                  String
   depreciationValue       Decimal  @map("depreciation_value") @db.Decimal(15, 2)
   accumulatedDepreciation Decimal  @map("accumulated_depreciation") @db.Decimal(15, 2)
   remainingValue          Decimal  @map("remaining_value") @db.Decimal(15, 2)
   accountingEntryId       String?  @map("accounting_entry_id")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
@@ -191,6 +218,10 @@ model MaintenanceSchedule {
   performedByUserId String?   @map("performed_by_user_id")
   result            String?
 
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id])
@@ -212,6 +243,10 @@ model AssetTransfer {
   transferType     String   @map("transfer_type")
   reason           String?  @db.Text
   status           String
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   asset          Asset        @relation(fields: [assetId], references: [id])
@@ -237,6 +272,10 @@ model AssetDisposal {
   status            String
   accountingEntryId String?  @map("accounting_entry_id")
 
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
   organization Organization @relation(fields: [organizationId], references: [id])
@@ -256,6 +295,10 @@ model AssetDocument {
   uploadDate       DateTime @default(now()) @map("upload_date")
   uploadedByUserId String   @map("uploaded_by_user_id")
   description      String?  @db.Text
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   asset        Asset        @relation(fields: [assetId], references: [id])
@@ -277,6 +320,10 @@ model InventoryCheck {
   status          String
   createdByUserId String   @map("created_by_user_id")
 
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   // Relations
   organization Organization      @relation(fields: [organizationId], references: [id])
   creator      User              @relation("InventoryCreator", fields: [createdByUserId], references: [id])
@@ -295,6 +342,10 @@ model InventoryDetail {
   isMatched       Boolean  @map("is_matched")
   notes           String?  @db.Text
 
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   // Relations
   inventoryCheck InventoryCheck @relation(fields: [inventoryId], references: [id])
   asset          Asset          @relation(fields: [assetId], references: [id])
@@ -309,7 +360,7 @@ model AuditLog {
   userId         String   @map("user_id")
   action         String
   entityType     String   @map("entity_type")
-  entityId       String   @map("entity_id") // Changed to String to match other IDs
+  entityId       String   @map("entity_id")
   oldValue       String?  @map("old_value") @db.Text
   newValue       String?  @map("new_value") @db.Text
   actionTime     DateTime @default(now()) @map("action_time")
@@ -335,11 +386,14 @@ model AccountingEntry {
   description    String?
   assetId        String?  @map("asset_id")
 
-  // Polymorphic References (stored as scalar since Prisma handles polymorphism differently)
-  referenceId   String? @map("reference_id") // Changed to String
+  referenceId   String? @map("reference_id")
   referenceType String? @map("reference_type")
 
   createdByUserId String @map("created_by_user_id")
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   organization Organization @relation(fields: [organizationId], references: [id])
@@ -353,11 +407,15 @@ model BudgetPlan {
   id              String  @id @default(uuid()) @map("budget_id")
   organizationId  String  @map("organization_id")
   departmentId    String  @map("department_id")
-  fiscalYear      Int     @map("fiscal_year") // Keep as Int as it represents a year number (e.g., 2025)
+  fiscalYear      Int     @map("fiscal_year")
   budgetType      String  @map("budget_type")
   allocatedAmount Decimal @map("allocated_amount") @db.Decimal(15, 2)
   spentAmount     Decimal @default(0) @map("spent_amount") @db.Decimal(15, 2)
   status          String
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   organization Organization @relation(fields: [organizationId], references: [id])
@@ -375,6 +433,10 @@ model Role {
   organizationId String @map("organization_id")
   roleName       String @map("role_name")
 
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
   // Relations
   organization    Organization     @relation(fields: [organizationId], references: [id])
   userRoles       UserRole[]
@@ -386,8 +448,12 @@ model Role {
 
 model Permission {
   id          String  @id @default(uuid()) @map("permission_id")
-  name        String  @unique // e.g. "asset:create"
+  name        String  @unique
   description String?
+
+  // Timestamps
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   rolePermissions RolePermission[]
@@ -395,7 +461,6 @@ model Permission {
   @@map("Permissions")
 }
 
-// Many-to-Many User <-> Role
 model UserRole {
   userId String @map("user_id")
   roleId String @map("role_id")
@@ -407,7 +472,6 @@ model UserRole {
   @@map("UserRoles")
 }
 
-// Many-to-Many Role <-> Permission
 model RolePermission {
   roleId       String @map("role_id")
   permissionId String @map("permission_id")

@@ -22,7 +22,7 @@ export class Asset extends BaseEntity {
   private _condition: string | null;
 
   protected constructor(builder: AssetBuilder) {
-    super(builder.id);
+    super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
     this._organizationId = builder.organizationId;
     this._categoryId = builder.categoryId;
     this._createdByUserId = builder.createdByUserId;
@@ -132,6 +132,7 @@ export class Asset extends BaseEntity {
     }
     this._assetName = name;
     this._categoryId = categoryId;
+    this.markAsUpdated();
   }
 
   public updateTechnicalDetails(
@@ -142,6 +143,7 @@ export class Asset extends BaseEntity {
     this._model = model;
     this._serialNumber = serialNumber;
     this._manufacturer = manufacturer;
+    this.markAsUpdated();
   }
 
   public updateFinancials(
@@ -173,6 +175,7 @@ export class Asset extends BaseEntity {
     this._currentValue = currentValue;
     this._purchaseDate = purchaseDate;
     this._warrantyExpiryDate = warrantyDate;
+    this.markAsUpdated();
   }
 
   public updatePhysicalCondition(
@@ -190,6 +193,7 @@ export class Asset extends BaseEntity {
     this._condition = condition;
     this._location = location;
     this._specifications = specifications;
+    this.markAsUpdated();
   }
 
   public changeStatus(newStatus: string): void {
@@ -207,18 +211,26 @@ export class Asset extends BaseEntity {
       );
     }
     this._status = newStatus;
+    this.markAsUpdated();
   }
 
   public assignToUser(userId: string, departmentId: string): void {
     this._currentUserId = userId;
     this._currentDepartmentId = departmentId;
     this._status = 'IN_USE';
+    this.markAsUpdated();
   }
 
   public unassign(): void {
     this._currentUserId = null;
     this._currentDepartmentId = null;
     this._status = 'AVAILABLE';
+    this.markAsUpdated();
+  }
+
+  public markAsDeleted(): void {
+    super.markAsDeleted();
+    this._status = 'DISPOSED';
   }
 
   // --- Static Factory ---
@@ -254,13 +266,19 @@ export class AssetBuilder {
   public location: string | null = null;
   public specifications: string | null = null;
   public condition: string | null = 'GOOD';
+  public createdAt: Date;
+  public updatedAt: Date;
+  public deletedAt: Date | null = null;
 
   constructor(
     public readonly id: string,
     public readonly organizationId: string,
     public readonly assetCode: string,
     public readonly assetName: string,
-  ) {}
+  ) {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  }
 
   public withCategory(categoryId: string): this {
     this.categoryId = categoryId;
@@ -340,6 +358,17 @@ export class AssetBuilder {
 
   public withCondition(condition: string | null): this {
     this.condition = condition;
+    return this;
+  }
+
+  public withTimestamps(
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt?: Date | null,
+  ): this {
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt || null;
     return this;
   }
 

@@ -1,14 +1,37 @@
 export abstract class BaseEntity {
   protected readonly _id: string;
+  protected _createdAt: Date;
+  protected _updatedAt: Date;
+  protected _deletedAt?: Date | null;
 
   private _domainEvents: any[] = [];
 
-  constructor(id: string) {
+  constructor(
+    id: string,
+    createdAt?: Date,
+    updatedAt?: Date,
+    deletedAt?: Date | null,
+  ) {
     this._id = id;
+    this._createdAt = createdAt || new Date();
+    this._updatedAt = updatedAt || new Date();
+    this._deletedAt = deletedAt || null;
   }
 
   get id(): string {
     return this._id;
+  }
+
+  get createdAt(): Date {
+    return this._createdAt;
+  }
+
+  get updatedAt(): Date {
+    return this._updatedAt;
+  }
+
+  get deletedAt(): Date | null {
+    return this._deletedAt || null;
   }
 
   public equals(other?: BaseEntity): boolean {
@@ -21,6 +44,22 @@ export abstract class BaseEntity {
     }
 
     return this._id === other._id;
+  }
+
+  // ========== Timestamp Methods ===========
+
+  protected markAsUpdated(): void {
+    this._updatedAt = new Date();
+  }
+
+  protected markAsDeleted(): void {
+    this._deletedAt = new Date();
+    this.markAsUpdated();
+  }
+
+  protected restore(): void {
+    this._deletedAt = null;
+    this.markAsUpdated();
   }
 
   // ========== Domain Events Helpers (Optional) ===========

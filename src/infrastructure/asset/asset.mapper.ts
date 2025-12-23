@@ -22,7 +22,10 @@ export class AssetMapper {
       .withModel(raw.model)
       .withSerialNumber(raw.serialNumber)
       .withManufacturer(raw.manufacturer)
-      .withCondition(raw.condition);
+      .withCondition(raw.condition)
+      .withOriginalCost(raw.originalCost.toNumber())
+      .withCurrentValue(raw.currentValue.toNumber())
+      .withTimestamps(raw.createdAt, raw.updatedAt, raw.deletedAt);
 
     return builder.build();
   }
@@ -50,6 +53,9 @@ export class AssetMapper {
         location: asset.location,
         specifications: asset.specifications,
         condition: asset.condition,
+        createdAt: asset.createdAt,
+        updatedAt: asset.updatedAt,
+        deletedAt: asset.deletedAt,
       },
     };
   }

@@ -63,7 +63,7 @@ export class AuditLog extends BaseEntity {
     return this._userAgent;
   }
 
-  public get createdAt(): Date {
+  public get _createdAt(): Date {
     return this._createdAt;
   }
 

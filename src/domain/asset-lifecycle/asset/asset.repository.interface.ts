@@ -19,6 +19,7 @@ export interface IAssetRepository {
       limit?: number;
       offset?: number;
       search?: string;
+      includeDeleted?: boolean;
     },
   ): Promise<{ data: Asset[]; total: number }>;
 
@@ -44,7 +45,15 @@ export interface IAssetRepository {
 
   saveMany(assets: Asset[]): Promise<void>;
 
-  delete(assetId: string): Promise<void>;
+  delete(assetId: string): Promise<void>; // Soft delete
 
-  deleteMany(assetIds: string[]): Promise<void>;
+  deleteMany(assetIds: string[]): Promise<void>; // Soft delete
+
+  hardDelete(assetId: string): Promise<void>;
+
+  hardDeleteMany(assetIds: string[]): Promise<void>;
+
+  restore(assetId: string): Promise<void>;
+
+  restoreMany(assetIds: string[]): Promise<void>;
 }
