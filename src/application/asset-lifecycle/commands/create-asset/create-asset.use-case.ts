@@ -38,6 +38,7 @@ export class CreateAssetUseCase {
   ) {}
 
   async execute(command: CreateAssetCommand): Promise<Asset> {
+    // 1. Validate organization exists
     const existingOrg = await this.organizationRepository.findById(
       command.organizationId,
     );
@@ -45,6 +46,7 @@ export class CreateAssetUseCase {
       throw new EntityNotFoundException('Organization', command.organizationId);
     }
 
+    // 2. Check for duplicate asset code
     const isCodeTaken = await this.assetRepository.existsByCode(
       command.organizationId,
       command.code,
@@ -53,11 +55,13 @@ export class CreateAssetUseCase {
       throw new EntityAlreadyExistsException(Asset.name, 'code', command.code);
     }
 
+    // 3. Validate category exists
     const category = await this.categoryRepository.findById(command.categoryId);
     if (!category) {
       throw new EntityNotFoundException('AssetCategory', command.categoryId);
     }
 
+    // 4. Validate department if provided
     if (command.departmentId) {
       const dept = await this.departmentRepository.findById(
         command.departmentId,
@@ -67,6 +71,7 @@ export class CreateAssetUseCase {
       }
     }
 
+    // 5. Generate ID and build asset
     const id = this.idGenerator.generate();
 
     const builder = Asset.builder(
@@ -79,6 +84,7 @@ export class CreateAssetUseCase {
       .createdBy(command.createdByUserId)
       .withPrice(command.purchasePrice);
 
+    // Optional fields - only set if provided
     if (command.purchaseDate !== undefined) {
       builder.withPurchaseDate(command.purchaseDate);
     }
@@ -119,6 +125,7 @@ export class CreateAssetUseCase {
       builder.withCondition(command.condition);
     }
 
+    // 6. Build and save asset
     const newAsset = builder.build();
     return await this.assetRepository.save(newAsset);
   }

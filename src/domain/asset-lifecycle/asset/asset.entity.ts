@@ -7,6 +7,8 @@ export class Asset extends BaseEntity {
   private _assetName: string;
   private _assetCode: string;
   private _purchasePrice: number;
+  private _originalCost: number;
+  private _currentValue: number;
   private _status: string;
   private _currentDepartmentId: string | null;
   private _currentUserId: string | null;
@@ -27,6 +29,8 @@ export class Asset extends BaseEntity {
     this._assetName = builder.assetName;
     this._assetCode = builder.assetCode;
     this._purchasePrice = builder.purchasePrice;
+    this._originalCost = builder.originalCost;
+    this._currentValue = builder.currentValue;
     this._status = builder.status;
     this._currentDepartmentId = builder.currentDepartmentId;
     this._currentUserId = builder.currentUserId;
@@ -63,6 +67,14 @@ export class Asset extends BaseEntity {
 
   public get purchasePrice(): number {
     return this._purchasePrice;
+  }
+
+  public get originalCost(): number {
+    return this._originalCost;
+  }
+
+  public get currentValue(): number {
+    return this._currentValue;
   }
 
   public get status(): string {
@@ -134,13 +146,15 @@ export class Asset extends BaseEntity {
 
   public updateFinancials(
     price: number,
+    originalCost: number,
+    currentValue: number,
     purchaseDate: Date | null,
     warrantyDate: Date | null,
   ): void {
-    if (price < 0)
+    if (price < 0 || originalCost < 0 || currentValue < 0)
       throw new BusinessRuleViolationException(
-        'INVALID_PRICE',
-        'Price cannot be negative.',
+        'INVALID_FINANCIAL_VALUE',
+        'Financial values cannot be negative.',
       );
     if (purchaseDate && purchaseDate > new Date()) {
       throw new BusinessRuleViolationException(
@@ -155,6 +169,8 @@ export class Asset extends BaseEntity {
       );
     }
     this._purchasePrice = price;
+    this._originalCost = originalCost;
+    this._currentValue = currentValue;
     this._purchaseDate = purchaseDate;
     this._warrantyExpiryDate = warrantyDate;
   }
@@ -225,6 +241,8 @@ export class AssetBuilder {
   public categoryId: string;
   public createdByUserId: string;
   public purchasePrice: number = 0;
+  public originalCost: number = 0;
+  public currentValue: number = 0;
   public status: string = 'AVAILABLE';
   public currentDepartmentId: string | null = null;
   public currentUserId: string | null = null;
@@ -259,8 +277,23 @@ export class AssetBuilder {
     return this;
   }
 
+  public withStatus(status: string): AssetBuilder {
+    this.status = status;
+    return this;
+  }
+
   public withPurchaseDate(date: Date | null): this {
     this.purchaseDate = date;
+    return this;
+  }
+
+  public withOriginalCost(cost: number): this {
+    this.originalCost = cost;
+    return this;
+  }
+
+  public withCurrentValue(value: number): this {
+    this.currentValue = value;
     return this;
   }
 
@@ -350,6 +383,17 @@ export class AssetBuilder {
         'INVALID_WARRANTY_DATE',
         'Warranty must be after purchase date.',
       );
+    if (this.originalCost < 0)
+      throw new BusinessRuleViolationException(
+        'INVALID_COST',
+        'Original cost cannot be negative.',
+      );
+    if (this.originalCost === 0 && this.purchasePrice > 0) {
+      this.originalCost = this.purchasePrice;
+    }
+    if (this.currentValue === 0 && this.purchasePrice > 0) {
+      this.currentValue = this.purchasePrice;
+    }
     if (this.condition) {
       const validConditions = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'BROKEN'];
       if (!validConditions.includes(this.condition)) {
