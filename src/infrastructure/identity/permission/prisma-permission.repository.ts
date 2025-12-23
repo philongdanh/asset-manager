@@ -3,7 +3,7 @@ import {
   IPermissionRepository,
   Permission,
 } from 'src/domain/identity/permission';
-import { PrismaService } from '../prisma';
+import { PrismaService } from '../../prisma';
 import { PermissionMapper } from './permission.mapper';
 
 @Injectable()

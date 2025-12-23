@@ -10,7 +10,7 @@ import {
 import { PrismaAssetCategoryRepository } from 'src/infrastructure/asset-category/prisma-asset-category.repository';
 import { ASSET_CATEGORY_REPOSITORY } from 'src/domain/asset-lifecycle/asset-category';
 import { ORGANIZATION_REPOSITORY } from 'src/domain/identity/organization';
-import { PrismaOrganizationRepository } from 'src/infrastructure/organization';
+import { PrismaOrganizationRepository } from 'src/infrastructure/identity/organization';
 
 @Module({
   controllers: [AssetCategoryController],

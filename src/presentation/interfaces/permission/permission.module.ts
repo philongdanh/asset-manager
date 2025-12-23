@@ -6,7 +6,7 @@ import {
   FindPermissionsUseCase,
 } from 'src/application/permission';
 import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
-import { PrismaPermissionRepository } from 'src/infrastructure/permission';
+import { PrismaPermissionRepository } from 'src/infrastructure/identity/permission';
 import { UuidGeneratorService } from 'src/infrastructure/id-generator';
 import { PrismaService } from 'src/infrastructure/prisma';
 

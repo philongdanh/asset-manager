@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma';
+import { PrismaService } from '../../prisma';
 import { IUserRepository, User } from 'src/domain/identity/user';
 import { Role } from 'src/domain/identity/role';
 import { UserMapper } from './user.mapper';
@@ -8,6 +8,33 @@ import { RoleMapper } from '../role';
 @Injectable()
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
+  findAll(
+    organizationId: string,
+    options?: {
+      departmentId?: string;
+      status?: string;
+      roleId?: string;
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<{ data: User[]; total: number }> {
+    throw new Error('Method not implemented.');
+  }
+  findByDepartment(departmentId: string): Promise<User[]> {
+    throw new Error('Method not implemented.');
+  }
+  existsByEmail(email: string): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
+  existsByUsername(organizationId: string, username: string): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
+  delete(id: string): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  updateRoles(userId: string, roleIds: string[]): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
 
   async countByOrganizationId(organizationId: string): Promise<number> {
     return this.prisma.user.count({
