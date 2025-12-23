@@ -17,6 +17,12 @@ model Organization {
   orgName String @map("org_name")
   status  String @default("ACTIVE")
 
+  taxCode String? @map("tax_code")
+  address String? @map("address")
+  phone   String? @map("phone")
+  email   String? @map("email")
+  website String? @map("website")
+
   // Timestamps
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
