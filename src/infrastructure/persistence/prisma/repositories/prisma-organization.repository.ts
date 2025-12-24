@@ -12,10 +12,10 @@ import { Prisma } from 'generated/prisma/client';
 export class PrismaOrganizationRepository implements IOrganizationRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findById(id: string): Promise<Organization | null> {
+  async findById(organizationId: string): Promise<Organization | null> {
     const org = await this.prisma.organization.findFirst({
       where: {
-        id,
+        id: organizationId,
         deletedAt: null,
       },
     });
@@ -27,10 +27,10 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
     return OrganizationMapper.toDomain(org);
   }
 
-  async findByCode(taxCode: string): Promise<Organization | null> {
+  async findByCode(code: string): Promise<Organization | null> {
     const org = await this.prisma.organization.findFirst({
       where: {
-        taxCode: taxCode,
+        taxCode: code,
         deletedAt: null,
       },
     });
@@ -39,17 +39,22 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
   }
 
   async findAll(options?: {
-    status?: string;
+    status?: OrganizationStatus;
     limit?: number;
     offset?: number;
     search?: string;
     includeDeleted?: boolean;
   }): Promise<{ data: Organization[]; total: number }> {
     const where: Prisma.OrganizationWhereInput = {};
+
     if (!options?.includeDeleted) {
       where.deletedAt = null;
     }
-    if (options?.status) where.status = options.status;
+
+    if (options?.status) {
+      where.status = options.status;
+    }
+
     if (options?.search) {
       where.OR = [
         { orgName: { contains: options.search, mode: 'insensitive' } },
@@ -129,9 +134,14 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
     return count > 0;
   }
 
-  async isActive(id: string): Promise<boolean> {
-    const org = await this.findById(id);
-    return org ? org.status === OrganizationStatus.ACTIVE : false;
+  async existsById(organizationId: string): Promise<boolean> {
+    const count = await this.prisma.organization.count({
+      where: {
+        id: organizationId,
+        deletedAt: null,
+      },
+    });
+    return count > 0;
   }
 
   async save(organization: Organization): Promise<Organization> {
@@ -163,87 +173,134 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
     );
   }
 
-  async delete(id: string): Promise<void> {
-    // Soft delete
+  async delete(organizationId: string): Promise<void> {
     await this.prisma.organization.update({
-      where: { id },
+      where: { id: organizationId },
       data: {
         deletedAt: new Date(),
         updatedAt: new Date(),
-        status: 'INACTIVE',
+        status: OrganizationStatus.DELETED,
       },
     });
   }
 
-  async deleteMany(ids: string[]): Promise<void> {
+  async deleteMany(organizationIds: string[]): Promise<void> {
     await this.prisma.organization.updateMany({
-      where: { id: { in: ids } },
+      where: { id: { in: organizationIds } },
       data: {
         deletedAt: new Date(),
         updatedAt: new Date(),
-        status: 'INACTIVE',
+        status: OrganizationStatus.DELETED,
       },
     });
   }
 
-  async hardDelete(id: string): Promise<void> {
+  async hardDelete(organizationId: string): Promise<void> {
     await this.prisma.organization.delete({
-      where: { id },
+      where: { id: organizationId },
     });
   }
 
-  async hardDeleteMany(ids: string[]): Promise<void> {
+  async hardDeleteMany(organizationIds: string[]): Promise<void> {
     await this.prisma.organization.deleteMany({
-      where: { id: { in: ids } },
+      where: { id: { in: organizationIds } },
     });
   }
 
-  async restore(id: string): Promise<void> {
+  async restore(organizationId: string): Promise<void> {
     await this.prisma.organization.update({
-      where: { id },
+      where: { id: organizationId },
       data: {
         deletedAt: null,
         updatedAt: new Date(),
-        status: 'ACTIVE',
+        status: OrganizationStatus.ACTIVE,
       },
     });
   }
 
-  async restoreMany(ids: string[]): Promise<void> {
+  async restoreMany(organizationIds: string[]): Promise<void> {
     await this.prisma.organization.updateMany({
-      where: { id: { in: ids } },
+      where: { id: { in: organizationIds } },
       data: {
         deletedAt: null,
         updatedAt: new Date(),
-        status: 'ACTIVE',
+        status: OrganizationStatus.ACTIVE,
       },
     });
   }
 
-  async updateInfo(organizationId: string, newName: string): Promise<void> {
-    await this.prisma.organization.update({
-      where: { id: organizationId },
-      data: {
-        orgName: newName,
-        updatedAt: new Date(),
-      },
-    });
+  async getOrganizationsSummary(): Promise<{
+    totalCount: number;
+    activeCount: number;
+    inactiveCount: number;
+    suspendedCount: number;
+    deletedCount: number;
+  }> {
+    const [
+      totalCount,
+      activeCount,
+      inactiveCount,
+      suspendedCount,
+      deletedCount,
+    ] = await Promise.all([
+      this.prisma.organization.count(),
+      this.prisma.organization.count({
+        where: { status: OrganizationStatus.ACTIVE, deletedAt: null },
+      }),
+      this.prisma.organization.count({
+        where: { status: OrganizationStatus.INACTIVE, deletedAt: null },
+      }),
+      this.prisma.organization.count({
+        where: { status: OrganizationStatus.SUSPENDED, deletedAt: null },
+      }),
+      this.prisma.organization.count({
+        where: { deletedAt: { not: null } },
+      }),
+    ]);
+
+    return {
+      totalCount,
+      activeCount,
+      inactiveCount,
+      suspendedCount,
+      deletedCount,
+    };
   }
 
-  async setStatus(organizationId: string, status: boolean): Promise<void> {
-    await this.prisma.organization.update({
-      where: { id: organizationId },
-      data: {
-        status: status ? 'ACTIVE' : 'INACTIVE',
-        updatedAt: new Date(),
-      },
+  async findOrganizationsWithStatus(
+    status: OrganizationStatus,
+  ): Promise<Organization[]> {
+    const where: Prisma.OrganizationWhereInput = {
+      status,
+    };
+
+    // Nếu status không phải DELETED, exclude deleted records
+    if (status !== OrganizationStatus.DELETED) {
+      where.deletedAt = null;
+    }
+
+    const orgs = await this.prisma.organization.findMany({
+      where,
+      orderBy: { createdAt: 'desc' },
     });
+
+    return orgs.map((org) => OrganizationMapper.toDomain(org));
   }
 
-  async find(): Promise<Organization[]> {
-    const organizations = await this.prisma.organization.findMany({
-      where: { deletedAt: null },
+  async findRecentlyCreated(days: number): Promise<Organization[]> {
+    const date = new Date();
+    date.setDate(date.getDate() - days);
+
+    const orgs = await this.prisma.organization.findMany({
+      where: {
+        createdAt: {
+          gte: date,
+        },
+        deletedAt: null,
+      },
+      orderBy: { createdAt: 'desc' },
     });
-    return organizations.map((org) => OrganizationMapper.toDomain(org));
+
+    return orgs.map((org) => OrganizationMapper.toDomain(org));
   }
 }
