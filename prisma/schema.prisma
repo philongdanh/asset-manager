@@ -79,6 +79,7 @@ model User {
   departmentId   String? @map("department_id")
   username       String
   email          String  @unique
+  status         String  @default("ACTIVE")
 
   // Timestamps
   createdAt DateTime  @default(now()) @map("created_at")

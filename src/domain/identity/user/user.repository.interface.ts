@@ -98,6 +98,11 @@ export interface IUserRepository {
 
   findInactiveUsers(daysThreshold: number): Promise<User[]>;
 
+  findInactiveUsersByOrganization(
+    organizationId: string,
+    daysThreshold?: number,
+  ): Promise<User[]>;
+
   findUsersByAsset(assetId: string): Promise<User[]>; // Historical assignments
 
   searchUsersByKeyword(

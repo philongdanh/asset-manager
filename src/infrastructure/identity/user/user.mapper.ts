@@ -1,24 +1,49 @@
-import { User as PrismaUser } from 'generated/prisma/client';
-import { User } from 'src/domain/identity/user';
+import { Prisma, User as PrismaUser } from 'generated/prisma/browser';
+import { User, UserStatus } from 'src/domain/identity/user';
 
 export class UserMapper {
   static toDomain(prismaUser: PrismaUser): User {
-    return new User(
+    return User.builder(
       prismaUser.id,
       prismaUser.organizationId,
       prismaUser.username,
       prismaUser.email,
-      prismaUser.departmentId,
-    );
+    )
+      .inDepartment(prismaUser.departmentId)
+      .withStatus(prismaUser.status as UserStatus)
+      .withTimestamps(
+        prismaUser.createdAt,
+        prismaUser.updatedAt,
+        prismaUser.deletedAt,
+      )
+      .build();
   }
 
-  static toPersistence(user: User): PrismaUser {
+  static toPersistence(user: User): Prisma.UserUpsertArgs {
     return {
-      id: user.id,
-      organizationId: user.organizationId,
-      departmentId: user.departmentId,
-      username: user.username,
-      email: user.email,
+      where: {
+        id: user.id,
+      },
+      create: {
+        organizationId: user.organizationId,
+        departmentId: user.departmentId,
+        username: user.username,
+        email: user.email,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        deletedAt: user.deletedAt,
+      },
+      update: {
+        organizationId: user.organizationId,
+        departmentId: user.departmentId,
+        username: user.username,
+        email: user.email,
+        status: user.status,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+        deletedAt: user.deletedAt,
+      },
     };
   }
 }
