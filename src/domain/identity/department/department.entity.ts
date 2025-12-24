@@ -6,7 +6,7 @@ export class Department extends BaseEntity {
   private _parentId: string | null;
 
   protected constructor(builder: DepartmentBuilder) {
-    super(builder.id);
+    super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
     this._organizationId = builder.organizationId;
     this._name = builder.name;
     this._parentId = builder.parentId;
@@ -34,6 +34,7 @@ export class Department extends BaseEntity {
       );
     }
     this._name = newName;
+    this.markAsUpdated();
   }
 
   public moveToParent(newParentId: string | null): void {
@@ -44,6 +45,25 @@ export class Department extends BaseEntity {
       );
     }
     this._parentId = newParentId;
+    this.markAsUpdated();
+  }
+
+  public updateDetails(name: string, parentId: string | null): void {
+    if (!name || name.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'DEPARTMENT_NAME_REQUIRED',
+        'Department name cannot be empty.',
+      );
+    }
+    if (parentId === this.id) {
+      throw new BusinessRuleViolationException(
+        'INVALID_PARENT_DEPARTMENT',
+        'A department cannot be its own parent.',
+      );
+    }
+    this._name = name;
+    this._parentId = parentId;
+    this.markAsUpdated();
   }
 
   // --- Static Builder Access ---
@@ -62,19 +82,35 @@ export class Department extends BaseEntity {
 }
 
 export class DepartmentBuilder {
-  public readonly id: string;
-  public readonly organizationId: string;
   public name: string;
   public parentId: string | null = null;
+  public createdAt: Date;
+  public updatedAt: Date;
+  public deletedAt: Date | null = null;
 
-  constructor(id: string, organizationId: string, name: string) {
-    this.id = id;
-    this.organizationId = organizationId;
+  constructor(
+    public readonly id: string,
+    public readonly organizationId: string,
+    name: string,
+  ) {
     this.name = name;
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
   }
 
   public withParent(parentId: string | null): this {
     this.parentId = parentId;
+    return this;
+  }
+
+  public withTimestamps(
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt?: Date | null,
+  ): this {
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt || null;
     return this;
   }
 

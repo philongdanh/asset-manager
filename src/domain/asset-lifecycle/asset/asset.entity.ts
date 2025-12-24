@@ -1,5 +1,26 @@
 import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
+// --- Enums ---
+export enum AssetStatus {
+  AVAILABLE = 'AVAILABLE',
+  IN_USE = 'IN_USE',
+  MAINTENANCE = 'MAINTENANCE',
+  DISPOSED = 'DISPOSED',
+  LOST = 'LOST',
+  RESERVED = 'RESERVED',
+  RETIRED = 'RETIRED',
+}
+
+export enum AssetCondition {
+  EXCELLENT = 'EXCELLENT',
+  GOOD = 'GOOD',
+  FAIR = 'FAIR',
+  POOR = 'POOR',
+  BROKEN = 'BROKEN',
+  NEW = 'NEW',
+  USED = 'USED',
+}
+
 export class Asset extends BaseEntity {
   private _organizationId: string;
   private _categoryId: string;
@@ -9,7 +30,7 @@ export class Asset extends BaseEntity {
   private _purchasePrice: number;
   private _originalCost: number;
   private _currentValue: number;
-  private _status: string;
+  private _status: AssetStatus;
   private _currentDepartmentId: string | null;
   private _currentUserId: string | null;
   private _model: string | null;
@@ -19,7 +40,7 @@ export class Asset extends BaseEntity {
   private _warrantyExpiryDate: Date | null;
   private _location: string | null;
   private _specifications: string | null;
-  private _condition: string | null;
+  private _condition: AssetCondition | null;
 
   protected constructor(builder: AssetBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
@@ -77,7 +98,7 @@ export class Asset extends BaseEntity {
     return this._currentValue;
   }
 
-  public get status(): string {
+  public get status(): AssetStatus {
     return this._status;
   }
 
@@ -117,7 +138,7 @@ export class Asset extends BaseEntity {
     return this._specifications;
   }
 
-  public get condition(): string | null {
+  public get condition(): AssetCondition | null {
     return this._condition;
   }
 
@@ -179,37 +200,17 @@ export class Asset extends BaseEntity {
   }
 
   public updatePhysicalCondition(
-    condition: string | null,
+    condition: AssetCondition | null,
     location: string | null,
     specifications: string | null,
   ): void {
-    const validConditions = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'BROKEN'];
-    if (condition && !validConditions.includes(condition)) {
-      throw new BusinessRuleViolationException(
-        'INVALID_CONDITION',
-        `Condition must be one of: ${validConditions.join(', ')}`,
-      );
-    }
     this._condition = condition;
     this._location = location;
     this._specifications = specifications;
     this.markAsUpdated();
   }
 
-  public changeStatus(newStatus: string): void {
-    const validStatuses = [
-      'AVAILABLE',
-      'IN_USE',
-      'MAINTENANCE',
-      'DISPOSED',
-      'LOST',
-    ];
-    if (!validStatuses.includes(newStatus)) {
-      throw new BusinessRuleViolationException(
-        'INVALID_STATUS',
-        'Invalid asset status.',
-      );
-    }
+  public changeStatus(newStatus: AssetStatus): void {
     this._status = newStatus;
     this.markAsUpdated();
   }
@@ -217,20 +218,41 @@ export class Asset extends BaseEntity {
   public assignToUser(userId: string, departmentId: string): void {
     this._currentUserId = userId;
     this._currentDepartmentId = departmentId;
-    this._status = 'IN_USE';
+    this._status = AssetStatus.IN_USE;
     this.markAsUpdated();
   }
 
   public unassign(): void {
     this._currentUserId = null;
     this._currentDepartmentId = null;
-    this._status = 'AVAILABLE';
+    this._status = AssetStatus.AVAILABLE;
     this.markAsUpdated();
   }
 
   public markAsDeleted(): void {
     super.markAsDeleted();
-    this._status = 'DISPOSED';
+    this._status = AssetStatus.DISPOSED;
+  }
+
+  // --- Helper Methods ---
+  public isAvailable(): boolean {
+    return this._status === AssetStatus.AVAILABLE;
+  }
+
+  public isInUse(): boolean {
+    return this._status === AssetStatus.IN_USE;
+  }
+
+  public isUnderMaintenance(): boolean {
+    return this._status === AssetStatus.MAINTENANCE;
+  }
+
+  public isDisposed(): boolean {
+    return this._status === AssetStatus.DISPOSED;
+  }
+
+  public isLost(): boolean {
+    return this._status === AssetStatus.LOST;
   }
 
   // --- Static Factory ---
@@ -255,7 +277,7 @@ export class AssetBuilder {
   public purchasePrice: number = 0;
   public originalCost: number = 0;
   public currentValue: number = 0;
-  public status: string = 'AVAILABLE';
+  public status: AssetStatus = AssetStatus.AVAILABLE;
   public currentDepartmentId: string | null = null;
   public currentUserId: string | null = null;
   public model: string | null = null;
@@ -265,7 +287,7 @@ export class AssetBuilder {
   public warrantyExpiryDate: Date | null = null;
   public location: string | null = null;
   public specifications: string | null = null;
-  public condition: string | null = 'GOOD';
+  public condition: AssetCondition | null = AssetCondition.GOOD;
   public createdAt: Date;
   public updatedAt: Date;
   public deletedAt: Date | null = null;
@@ -295,7 +317,7 @@ export class AssetBuilder {
     return this;
   }
 
-  public withStatus(status: string): AssetBuilder {
+  public withStatus(status: AssetStatus): this {
     this.status = status;
     return this;
   }
@@ -327,7 +349,7 @@ export class AssetBuilder {
 
   public assignedTo(userId: string | null): this {
     this.currentUserId = userId;
-    if (userId) this.status = 'IN_USE';
+    if (userId) this.status = AssetStatus.IN_USE;
     return this;
   }
 
@@ -356,7 +378,7 @@ export class AssetBuilder {
     return this;
   }
 
-  public withCondition(condition: string | null): this {
+  public withCondition(condition: AssetCondition | null): this {
     this.condition = condition;
     return this;
   }
@@ -422,15 +444,6 @@ export class AssetBuilder {
     }
     if (this.currentValue === 0 && this.purchasePrice > 0) {
       this.currentValue = this.purchasePrice;
-    }
-    if (this.condition) {
-      const validConditions = ['EXCELLENT', 'GOOD', 'FAIR', 'POOR', 'BROKEN'];
-      if (!validConditions.includes(this.condition)) {
-        throw new BusinessRuleViolationException(
-          'INVALID_CONDITION',
-          `Condition must be one of: ${validConditions.join(', ')}`,
-        );
-      }
     }
 
     return Asset.createFromBuilder(this);

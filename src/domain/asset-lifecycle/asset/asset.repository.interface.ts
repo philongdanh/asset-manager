@@ -1,4 +1,4 @@
-import { Asset } from './asset.entity';
+import { Asset, AssetStatus } from './asset.entity';
 
 export const ASSET_REPOSITORY = Symbol('ASSET_REPOSITORY');
 
@@ -12,7 +12,7 @@ export interface IAssetRepository {
   findAll(
     organizationId: string,
     options?: {
-      status?: string;
+      status?: AssetStatus;
       categoryId?: string;
       departmentId?: string;
       userId?: string;
@@ -56,4 +56,23 @@ export interface IAssetRepository {
   restore(assetId: string): Promise<void>;
 
   restoreMany(assetIds: string[]): Promise<void>;
+
+  // --- Special Methods ---
+
+  findByStatus(organizationId: string, status: AssetStatus): Promise<Asset[]>;
+
+  getAssetsSummary(organizationId: string): Promise<{
+    totalCount: number;
+    totalValue: number;
+    byStatus: Record<AssetStatus, { count: number; value: number }>;
+    byCategory: Record<string, { count: number; value: number }>;
+    byDepartment: Record<string, { count: number; value: number }>;
+  }>;
+
+  findAssetsWithWarrantyExpiring(
+    organizationId: string,
+    daysThreshold: number,
+  ): Promise<Asset[]>;
+
+  findAssetsForMaintenance(organizationId: string): Promise<Asset[]>;
 }

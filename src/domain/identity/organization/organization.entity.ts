@@ -127,20 +127,39 @@ export class Organization extends BaseEntity {
     return emailRegex.test(email);
   }
 
-  // --- Static Builder Access ---
+  // --- Helper Methods ---
+  public isActive(): boolean {
+    return this._status === OrganizationStatus.ACTIVE;
+  }
+
+  public isInactive(): boolean {
+    return this._status === OrganizationStatus.INACTIVE;
+  }
+
+  public isSuspended(): boolean {
+    return this._status === OrganizationStatus.SUSPENDED;
+  }
+
+  public isDeleted(): boolean {
+    return this._status === OrganizationStatus.DELETED;
+  }
+
+  public isPending(): boolean {
+    return this._status === OrganizationStatus.PENDING;
+  }
+
+  // --- Static Factory ---
   public static builder(id: string, orgName: string): OrganizationBuilder {
     return new OrganizationBuilder(id, orgName);
   }
 
-  // Static factory method
   public static createFromBuilder(builder: OrganizationBuilder): Organization {
     return new Organization(builder);
   }
 }
 
+// --- Builder Class ---
 export class OrganizationBuilder {
-  public readonly id: string;
-  public orgName: string;
   public status: OrganizationStatus = OrganizationStatus.ACTIVE;
   public taxCode: string | null = null;
   public address: string | null = null;
@@ -151,9 +170,10 @@ export class OrganizationBuilder {
   public updatedAt: Date;
   public deletedAt: Date | null = null;
 
-  constructor(id: string, orgName: string) {
-    this.id = id;
-    this.orgName = orgName;
+  constructor(
+    public readonly id: string,
+    public readonly orgName: string,
+  ) {
     this.createdAt = new Date();
     this.updatedAt = new Date();
   }
@@ -196,11 +216,6 @@ export class OrganizationBuilder {
   }
 
   public build(): Organization {
-    this.validate();
-    return Organization.createFromBuilder(this);
-  }
-
-  private validate(): void {
     if (!this.id) {
       throw new BusinessRuleViolationException(
         'ORGANIZATION_ID_REQUIRED',
@@ -219,6 +234,8 @@ export class OrganizationBuilder {
         'Invalid email format.',
       );
     }
+
+    return Organization.createFromBuilder(this);
   }
 
   private isValidEmail(email: string): boolean {

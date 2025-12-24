@@ -5,7 +5,7 @@ export const ASSET_CATEGORY_REPOSITORY = Symbol('ASSET_CATEGORY_REPOSITORY');
 export interface IAssetCategoryRepository {
   // --- Query Methods ---
 
-  findById(id: string): Promise<AssetCategory | null>;
+  findById(categoryId: string): Promise<AssetCategory | null>;
 
   findByCode(
     organizationId: string,
@@ -17,6 +17,7 @@ export interface IAssetCategoryRepository {
     options?: {
       limit?: number;
       offset?: number;
+      includeDeleted?: boolean;
     },
   ): Promise<{ data: AssetCategory[]; total: number }>;
 
@@ -24,15 +25,33 @@ export interface IAssetCategoryRepository {
 
   findRootCategories(organizationId: string): Promise<AssetCategory[]>;
 
+  findByOrganization(organizationId: string): Promise<AssetCategory[]>;
+
   // --- Validation Methods ---
 
   existsByCode(organizationId: string, code: string): Promise<boolean>;
 
-  hasDependencies(id: string): Promise<boolean>;
+  existsById(categoryId: string): Promise<boolean>;
+
+  hasDependencies(categoryId: string): Promise<boolean>;
 
   // --- Persistence Methods ---
 
   save(category: AssetCategory): Promise<AssetCategory>;
 
-  delete(id: string): Promise<void>;
+  update(category: AssetCategory): Promise<AssetCategory>;
+
+  saveMany(categories: AssetCategory[]): Promise<void>;
+
+  delete(categoryId: string): Promise<void>; // Soft delete
+
+  deleteMany(categoryIds: string[]): Promise<void>; // Soft delete
+
+  hardDelete(categoryId: string): Promise<void>;
+
+  hardDeleteMany(categoryIds: string[]): Promise<void>;
+
+  restore(categoryId: string): Promise<void>;
+
+  restoreMany(categoryIds: string[]): Promise<void>;
 }

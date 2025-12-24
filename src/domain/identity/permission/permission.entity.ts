@@ -5,7 +5,7 @@ export class Permission extends BaseEntity {
   private _description: string | null;
 
   protected constructor(builder: PermissionBuilder) {
-    super(builder.id);
+    super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
     this._name = builder.name;
     this._description = builder.description;
   }
@@ -34,27 +34,53 @@ export class Permission extends BaseEntity {
     if (description !== undefined) {
       this._description = description;
     }
+
+    this.markAsUpdated();
   }
 
-  // --- Static Builder Access ---
+  // --- Helper Methods ---
+  public isSystemPermission(): boolean {
+    return this._name.startsWith('SYSTEM.');
+  }
+
+  public isModulePermission(module?: string): boolean {
+    if (!module) return false;
+    return this._name.startsWith(`${module.toUpperCase()}.`);
+  }
+
+  public getModuleFromName(): string | null {
+    const parts = this._name.split('.');
+    return parts.length > 1 ? parts[0] : null;
+  }
+
+  public getActionFromName(): string | null {
+    const parts = this._name.split('.');
+    return parts.length > 1 ? parts.slice(1).join('.') : null;
+  }
+
+  // --- Static Factory ---
   public static builder(id: string, name: string): PermissionBuilder {
     return new PermissionBuilder(id, name);
   }
 
-  // Static factory method
   public static createFromBuilder(builder: PermissionBuilder): Permission {
     return new Permission(builder);
   }
 }
 
+// --- Builder Class ---
 export class PermissionBuilder {
-  public readonly id: string;
-  public name: string;
   public description: string | null = null;
+  public createdAt: Date;
+  public updatedAt: Date;
+  public deletedAt: Date | null = null;
 
-  constructor(id: string, name: string) {
-    this.id = id;
-    this.name = name;
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+  ) {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
   }
 
   public withDescription(description: string | null): this {
@@ -62,12 +88,18 @@ export class PermissionBuilder {
     return this;
   }
 
-  public build(): Permission {
-    this.validate();
-    return Permission.createFromBuilder(this);
+  public withTimestamps(
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt?: Date | null,
+  ): this {
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt || null;
+    return this;
   }
 
-  private validate(): void {
+  public build(): Permission {
     if (!this.id) {
       throw new BusinessRuleViolationException(
         'PERMISSION_ID_REQUIRED',
@@ -80,5 +112,15 @@ export class PermissionBuilder {
         'Permission name cannot be empty.',
       );
     }
+
+    // Validate name format: should be in format MODULE.ACTION or SYSTEM.ACTION
+    if (!this.name.includes('.')) {
+      throw new BusinessRuleViolationException(
+        'INVALID_PERMISSION_FORMAT',
+        'Permission name must be in format: MODULE.ACTION or SYSTEM.ACTION',
+      );
+    }
+
+    return Permission.createFromBuilder(this);
   }
 }

@@ -7,7 +7,7 @@ export class AssetCategory extends BaseEntity {
   private _parentId: string | null;
 
   protected constructor(builder: AssetCategoryBuilder) {
-    super(builder.id);
+    super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
     this._organizationId = builder.organizationId;
     this._categoryName = builder.categoryName;
     this._code = builder.code;
@@ -47,6 +47,7 @@ export class AssetCategory extends BaseEntity {
     }
     this._categoryName = name;
     this._code = code;
+    this.markAsUpdated();
   }
 
   public changeParent(newParentId: string | null): void {
@@ -57,6 +58,7 @@ export class AssetCategory extends BaseEntity {
       );
     }
     this._parentId = newParentId;
+    this.markAsUpdated();
   }
 
   // --- Static Builder Access ---
@@ -78,26 +80,36 @@ export class AssetCategory extends BaseEntity {
 }
 
 export class AssetCategoryBuilder {
-  public readonly id: string;
-  public readonly organizationId: string;
-  public readonly code: string;
   public categoryName: string;
   public parentId: string | null = null;
+  public createdAt: Date;
+  public updatedAt: Date;
+  public deletedAt: Date | null = null;
 
   constructor(
-    id: string,
-    organizationId: string,
-    code: string,
+    public readonly id: string,
+    public readonly organizationId: string,
+    public readonly code: string,
     categoryName: string,
   ) {
-    this.id = id;
-    this.organizationId = organizationId;
-    this.code = code;
     this.categoryName = categoryName;
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
   }
 
   public withParent(parentId: string | null): this {
     this.parentId = parentId;
+    return this;
+  }
+
+  public withTimestamps(
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt?: Date | null,
+  ): this {
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt || null;
     return this;
   }
 
