@@ -27,7 +27,10 @@ export class UpdateOrganizationHandler {
 
     // Only update if organization is not deleted
     if (organization.status === OrganizationStatus.DELETED) {
-      throw new Error('Cannot update a deleted organization');
+      throw new UseCaseException(
+        'Cannot update a deleted organization',
+        UpdateOrganizationCommand.name,
+      );
     }
 
     // Update fields
@@ -42,8 +45,9 @@ export class UpdateOrganizationHandler {
           command.taxCode,
         );
         if (existingOrg && existingOrg.id !== command.organizationId) {
-          throw new Error(
+          throw new UseCaseException(
             `Tax code ${command.taxCode} already in use by another organization`,
+            UpdateOrganizationCommand.name,
           );
         }
       }

@@ -7,6 +7,7 @@ import {
 } from 'src/domain/identity/organization';
 import { CreateOrganizationCommand } from '../create-organization.command';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
+import { UseCaseException } from 'src/application/core/exceptions/use-case.exception';
 
 @Injectable()
 export class CreateOrganizationHandler {
@@ -24,8 +25,9 @@ export class CreateOrganizationHandler {
         command.taxCode,
       );
       if (existsByTaxCode) {
-        throw new Error(
+        throw new UseCaseException(
           `Organization with tax code ${command.taxCode} already exists`,
+          CreateOrganizationCommand.name,
         );
       }
     }
@@ -35,8 +37,9 @@ export class CreateOrganizationHandler {
         command.email,
       );
       if (existsByEmail) {
-        throw new Error(
+        throw new UseCaseException(
           `Organization with email ${command.email} already exists`,
+          CreateOrganizationCommand.name,
         );
       }
     }
