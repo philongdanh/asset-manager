@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { UseCaseException } from 'src/application/core/exceptions/use-case.exception';
+import { UseCaseException } from 'src/application/core/exceptions';
 import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { PrismaAssetRepository } from 'src/infrastructure/asset/prisma-asset.repository';
-import { UuidGeneratorService } from 'src/infrastructure/id-generator';
-import { PrismaService } from 'src/infrastructure/prisma';
+import { PrismaAssetRepository } from 'src/infrastructure/persistence/prisma/repositories/prisma-asset.repository';
+import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
+import { PrismaService } from 'src/infrastructure/persistence/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { UserController } from './user.controller';
 import { CreateUserCommand } from 'src/application/identity/commands/create-user';

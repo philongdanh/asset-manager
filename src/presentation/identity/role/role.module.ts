@@ -7,7 +7,7 @@ import { ROLE_REPOSITORY } from 'src/domain/identity/role';
 import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
 import { PrismaRoleRepository } from 'src/infrastructure/identity/role';
 import { PrismaPermissionRepository } from 'src/infrastructure/identity/permission';
-import { PrismaService } from 'src/infrastructure/prisma';
+import { PrismaService } from 'src/infrastructure/persistence/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { RoleController } from './role.controller';
 

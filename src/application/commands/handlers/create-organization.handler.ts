@@ -1,13 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { UseCaseException } from 'src/application/core/exceptions';
 import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
   Organization,
   OrganizationStatus,
 } from 'src/domain/identity/organization';
-import { CreateOrganizationCommand } from '../create-organization.command';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
-import { UseCaseException } from 'src/application/core/exceptions/use-case.exception';
+import { CreateOrganizationCommand } from '../create-organization.command';
 
 @Injectable()
 export class CreateOrganizationHandler {

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UuidGeneratorService } from 'src/infrastructure/id-generator';
-import { PrismaService } from 'src/infrastructure/prisma';
+import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
+import { PrismaService } from 'src/infrastructure/persistence/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { DepartmentController } from './department.controller';
 import { DEPARTMENT_REPOSITORY } from 'src/domain/identity/department';

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Organization } from 'generated/prisma/browser';
-import { UseCaseException } from 'src/application/core/exceptions/use-case.exception';
+import { UseCaseException } from 'src/application/core/exceptions';
 import {
+  Organization,
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
 } from 'src/domain/identity/organization';
