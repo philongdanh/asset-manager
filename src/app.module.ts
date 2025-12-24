@@ -3,13 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AssetModule } from './presentation/asset/asset.module';
 import { ConfigModule } from '@nestjs/config';
-import { OrganizationModule } from './presentation/interfaces/organization/organization.module';
+import { OrganizationModule } from './presentation/identity/organization/organization.module';
 import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
-import { PermissionModule } from './presentation/interfaces/permission/permission.module';
-import { RoleModule } from './presentation/interfaces/role/role.module';
+import { PermissionModule } from './presentation/identity/permission/permission.module';
+import { RoleModule } from './presentation/identity/role/role.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './presentation/interfaces/exceptions/filters/global-exception.filter';
-import { DepartmentModule } from './presentation/interfaces/department/department.module';
+import { DepartmentModule } from './presentation/identity/department/department.module';
 
 @Module({
   imports: [

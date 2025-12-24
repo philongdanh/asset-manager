@@ -8,13 +8,13 @@ import {
   Patch,
   Query,
 } from '@nestjs/common';
-import { CreateOrganizationCommand } from 'src/application/identity/commands/create-organization/create-organization.command';
-import { CreateOrganizationUseCase } from 'src/application/identity/commands/create-organization/create-organization.use-case';
-import { UpdateOrganizationUseCase } from 'src/application/identity/commands/update-organization/update-organization.use-case';
-import { FindOrganizationsUseCase } from 'src/application/identity/queries/find-organizations/find-organizations.use-case';
+import { CreateOrganizationCommand } from 'src/application/commands/create-organization.command';
+import { CreateOrganizationUseCase } from 'src/application/commands/create-organization/create-organization.use-case';
+import { UpdateOrganizationUseCase } from 'src/application/commands/update-organization/update-organization.use-case';
+import { FindOrganizationsUseCase } from 'src/application/identity/organization/queries/find-organizations/find-organizations.use-case';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { UpdateOrganizationDto } from './dto/update-organization.dto';
-import { UpdateOrganizationCommand } from 'src/application/identity/commands/update-organization';
+import { UpdateOrganizationCommand } from 'src/application/commands/update-organization';
 
 @Controller('organizations')
 export class OrganizationController {

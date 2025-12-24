@@ -5,8 +5,8 @@ import { PrismaOrganizationRepository } from 'src/infrastructure/identity/organi
 import { PrismaService } from 'src/infrastructure/prisma';
 import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { OrganizationController } from './organization.controller';
-import { CreateOrganizationUseCase } from 'src/application/identity/commands/create-organization';
-import { UpdateOrganizationUseCase } from 'src/application/identity/commands/update-organization';
+import { CreateOrganizationUseCase } from 'src/application/commands/create-organization';
+import { UpdateOrganizationUseCase } from 'src/application/commands/update-organization';
 
 @Module({
   controllers: [OrganizationController],
