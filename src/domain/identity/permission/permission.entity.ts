@@ -5,7 +5,7 @@ export class Permission extends BaseEntity {
   private _description: string | null;
 
   protected constructor(builder: PermissionBuilder) {
-    super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
+    super(builder.id, builder.createdAt, builder.updatedAt);
     this._name = builder.name;
     this._description = builder.description;
   }
@@ -38,26 +38,6 @@ export class Permission extends BaseEntity {
     this.markAsUpdated();
   }
 
-  // --- Helper Methods ---
-  public isSystemPermission(): boolean {
-    return this._name.startsWith('SYSTEM.');
-  }
-
-  public isModulePermission(module?: string): boolean {
-    if (!module) return false;
-    return this._name.startsWith(`${module.toUpperCase()}.`);
-  }
-
-  public getModuleFromName(): string | null {
-    const parts = this._name.split('.');
-    return parts.length > 1 ? parts[0] : null;
-  }
-
-  public getActionFromName(): string | null {
-    const parts = this._name.split('.');
-    return parts.length > 1 ? parts.slice(1).join('.') : null;
-  }
-
   // --- Static Factory ---
   public static builder(id: string, name: string): PermissionBuilder {
     return new PermissionBuilder(id, name);
@@ -73,7 +53,6 @@ export class PermissionBuilder {
   public description: string | null = null;
   public createdAt: Date;
   public updatedAt: Date;
-  public deletedAt: Date | null = null;
 
   constructor(
     public readonly id: string,
@@ -88,14 +67,9 @@ export class PermissionBuilder {
     return this;
   }
 
-  public withTimestamps(
-    createdAt: Date,
-    updatedAt: Date,
-    deletedAt?: Date | null,
-  ): this {
+  public withTimestamps(createdAt: Date, updatedAt: Date): this {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
-    this.deletedAt = deletedAt || null;
     return this;
   }
 

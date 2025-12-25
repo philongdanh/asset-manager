@@ -34,7 +34,7 @@ export class ActivateOrganizationHandler {
     }
 
     try {
-      organization.activate();
+      organization.updateStatus();
       await this.organizationRepository.update(organization);
     } catch (err: any) {
       console.error(err);

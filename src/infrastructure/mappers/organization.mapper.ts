@@ -13,13 +13,13 @@ export class OrganizationMapper {
       prismaOrganization.id,
       prismaOrganization.orgName,
     )
-      .withStatus(prismaOrganization.status as OrganizationStatus)
+      .withStatus(this.mapStringToOrganizationStatus(prismaOrganization.status))
       .withTaxCode(prismaOrganization.taxCode)
-      .withAddress(prismaOrganization.address)
       .withContactInfo(
         prismaOrganization.phone,
         prismaOrganization.email,
         prismaOrganization.website,
+        prismaOrganization.address,
       )
       .withTimestamps(
         prismaOrganization.createdAt,
@@ -35,7 +35,7 @@ export class OrganizationMapper {
   ): Prisma.OrganizationCreateInput {
     return {
       id: organization.id,
-      orgName: organization.orgName,
+      orgName: organization.name,
       status: organization.status,
       taxCode: organization.taxCode,
       address: organization.address,
@@ -51,8 +51,8 @@ export class OrganizationMapper {
   static toUpdatePersistence(
     organization: Organization,
   ): Prisma.OrganizationUpdateInput {
-    return {
-      orgName: organization.orgName,
+    const updateData: Prisma.OrganizationUpdateInput = {
+      orgName: organization.name,
       status: organization.status,
       taxCode: organization.taxCode,
       address: organization.address,
@@ -60,7 +60,24 @@ export class OrganizationMapper {
       email: organization.email,
       website: organization.website,
       updatedAt: organization.updatedAt,
-      deletedAt: organization.deletedAt,
     };
+
+    // Only include deletedAt if it's explicitly set
+    if (organization.deletedAt !== undefined) {
+      updateData.deletedAt = organization.deletedAt;
+    }
+
+    return updateData;
+  }
+
+  private static mapStringToOrganizationStatus(
+    status: string,
+  ): OrganizationStatus {
+    const statusMap: Record<string, OrganizationStatus> = {
+      ACTIVE: OrganizationStatus.ACTIVE,
+      INACTIVE: OrganizationStatus.INACTIVE,
+    };
+
+    return statusMap[status] || OrganizationStatus.INACTIVE;
   }
 }

@@ -1,9 +1,18 @@
-import { Prisma, User as PrismaUser } from 'generated/prisma/browser';
+import {
+  Prisma,
+  User as PrismaUser,
+  UserRole as PrismaUserRole,
+  Role as PrismaRole,
+} from 'generated/prisma/client';
 import { User, UserStatus } from 'src/domain/identity/user';
 
 export class UserMapper {
-  static toDomain(prismaUser: PrismaUser): User {
-    return User.builder(
+  static toDomain(
+    prismaUser: PrismaUser & {
+      userRoles?: (PrismaUserRole & { role?: PrismaRole })[];
+    },
+  ): User {
+    const builder = User.builder(
       prismaUser.id,
       prismaUser.organizationId,
       prismaUser.username,
@@ -15,35 +24,49 @@ export class UserMapper {
         prismaUser.createdAt,
         prismaUser.updatedAt,
         prismaUser.deletedAt,
-      )
-      .build();
+      );
+
+    return builder.build();
   }
 
-  static toPersistence(user: User): Prisma.UserUpsertArgs {
+  static toPersistence(user: User): Prisma.UserCreateInput {
     return {
-      where: {
-        id: user.id,
+      id: user.id,
+      organization: {
+        connect: { id: user.organizationId },
       },
-      create: {
-        organizationId: user.organizationId,
-        departmentId: user.departmentId,
-        username: user.username,
-        email: user.email,
-        status: user.status,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        deletedAt: user.deletedAt,
-      },
-      update: {
-        organizationId: user.organizationId,
-        departmentId: user.departmentId,
-        username: user.username,
-        email: user.email,
-        status: user.status,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        deletedAt: user.deletedAt,
-      },
+      department: user.departmentId
+        ? { connect: { id: user.departmentId } }
+        : undefined,
+      username: user.username,
+      email: user.email,
+      status: user.status,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
     };
+  }
+
+  static toUpdatePersistence(user: User): Prisma.UserUpdateInput {
+    const updateData: Prisma.UserUpdateInput = {
+      username: user.username,
+      email: user.email,
+      status: user.status,
+      updatedAt: user.updatedAt,
+    };
+
+    // Handle department relation update
+    if (user.departmentId === null) {
+      updateData.department = { disconnect: true };
+    } else if (user.departmentId !== undefined) {
+      updateData.department = { connect: { id: user.departmentId } };
+    }
+
+    // Handle deletedAt - only include if it's explicitly set
+    if (user.deletedAt !== undefined) {
+      updateData.deletedAt = user.deletedAt;
+    }
+
+    return updateData;
   }
 }

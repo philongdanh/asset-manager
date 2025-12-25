@@ -26,25 +26,25 @@ export class Department extends BaseEntity {
   }
 
   // --- Business Methods ---
-  public rename(newName: string): void {
-    if (!newName || newName.trim().length === 0) {
+  public rename(name: string): void {
+    if (!name || name.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'DEPARTMENT_NAME_REQUIRED',
         'Department name cannot be empty.',
       );
     }
-    this._name = newName;
+    this._name = name;
     this.markAsUpdated();
   }
 
-  public moveToParent(newParentId: string | null): void {
-    if (newParentId === this.id) {
+  public moveToParent(parentId: string | null): void {
+    if (parentId === this.id) {
       throw new BusinessRuleViolationException(
         'INVALID_PARENT_DEPARTMENT',
         'A department cannot be its own parent.',
       );
     }
-    this._parentId = newParentId;
+    this._parentId = parentId;
     this.markAsUpdated();
   }
 

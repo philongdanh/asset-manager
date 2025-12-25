@@ -1,10 +1,8 @@
 export abstract class BaseEntity {
   protected readonly _id: string;
-  protected _createdAt: Date;
-  protected _updatedAt: Date;
+  protected _createdAt?: Date;
+  protected _updatedAt?: Date;
   protected _deletedAt?: Date | null;
-
-  private _domainEvents: any[] = [];
 
   constructor(
     id: string,
@@ -15,23 +13,23 @@ export abstract class BaseEntity {
     this._id = id;
     this._createdAt = createdAt || new Date();
     this._updatedAt = updatedAt || new Date();
-    this._deletedAt = deletedAt || null;
+    this._deletedAt = deletedAt;
   }
 
   get id(): string {
     return this._id;
   }
 
-  get createdAt(): Date {
+  get createdAt(): Date | undefined {
     return this._createdAt;
   }
 
-  get updatedAt(): Date {
+  get updatedAt(): Date | undefined {
     return this._updatedAt;
   }
 
-  get deletedAt(): Date | null {
-    return this._deletedAt || null;
+  get deletedAt(): Date | null | undefined {
+    return this._deletedAt;
   }
 
   public equals(other?: BaseEntity): boolean {
@@ -62,18 +60,13 @@ export abstract class BaseEntity {
     this.markAsUpdated();
   }
 
-  // ========== Domain Events Helpers (Optional) ===========
+  // ========== Timestamp Check Methods ===========
 
-  get domainEvents(): any[] {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-assignment
-    return [...this._domainEvents];
+  public hasTimestamps(): boolean {
+    return this._createdAt !== undefined && this._updatedAt !== undefined;
   }
 
-  protected addDomainEvent(event: any): void {
-    this._domainEvents.push(event);
-  }
-
-  public clearEvents(): void {
-    this._domainEvents = [];
+  public hasSoftDelete(): boolean {
+    return this._deletedAt !== undefined;
   }
 }

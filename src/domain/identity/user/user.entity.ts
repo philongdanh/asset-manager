@@ -201,7 +201,7 @@ export class UserBuilder {
         'Username cannot be empty.',
       );
     }
-    if (!this.email || !this.isValidEmail(this.email)) {
+    if (!this.email || this.email.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'INVALID_EMAIL',
         'A valid email is required.',
@@ -209,10 +209,5 @@ export class UserBuilder {
     }
 
     return User.createFromBuilder(this);
-  }
-
-  private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   }
 }

@@ -13,6 +13,6 @@ export class GetPermissionsHandler {
   ) {}
 
   async execute(query: GetPermissionsQuery) {
-    return await this.permissionRepository.findAll(query.options);
+    return await this.permissionRepository.find(query.options);
   }
 }

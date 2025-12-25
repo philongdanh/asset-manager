@@ -13,9 +13,6 @@ export class GetRolesHandler {
   ) {}
 
   async execute(query: GetRolesQuery) {
-    return await this.roleRepository.findAll(
-      query.organizationId,
-      query.options,
-    );
+    return await this.roleRepository.find(query.organizationId, query.options);
   }
 }

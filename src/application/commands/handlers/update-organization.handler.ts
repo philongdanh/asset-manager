@@ -3,9 +3,8 @@ import { UseCaseException } from 'src/application/core/exceptions';
 import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
-  OrganizationStatus,
 } from 'src/domain/identity/organization';
-import { UpdateOrganizationCommand } from '../update-organization.command';
+import { UpdateInfoOrgCommand } from '../update-organization.command';
 
 @Injectable()
 export class UpdateOrganizationHandler {
@@ -14,50 +13,31 @@ export class UpdateOrganizationHandler {
     private readonly organizationRepository: IOrganizationRepository,
   ) {}
 
-  async execute(command: UpdateOrganizationCommand): Promise<void> {
+  async execute(command: UpdateInfoOrgCommand): Promise<void> {
     const organization = await this.organizationRepository.findById(
       command.organizationId,
     );
     if (!organization) {
       throw new UseCaseException(
         `Organization with ID ${command.organizationId} not found`,
-        UpdateOrganizationCommand.name,
+        UpdateInfoOrgCommand.name,
       );
     }
 
-    // Only update if organization is not deleted
-    if (organization.status === OrganizationStatus.DELETED) {
+    if (!organization.isActive()) {
       throw new UseCaseException(
-        'Cannot update a deleted organization',
-        UpdateOrganizationCommand.name,
+        'Cannot update a inactive organization',
+        UpdateInfoOrgCommand.name,
       );
     }
 
-    // Update fields
-    if (command.orgName) {
-      organization.updateName(command.orgName);
-    }
-
-    if (command.taxCode !== undefined) {
-      // Check if tax code is unique
-      if (command.taxCode) {
-        const existingOrg = await this.organizationRepository.findByTaxCode(
-          command.taxCode,
-        );
-        if (existingOrg && existingOrg.id !== command.organizationId) {
-          throw new UseCaseException(
-            `Tax code ${command.taxCode} already in use by another organization`,
-            UpdateOrganizationCommand.name,
-          );
-        }
-      }
-      organization.updateTaxCode(command.taxCode);
-    }
-
-    if (command.address !== undefined) {
-      organization.updateAddress(command.address);
-    }
-
-    await this.organizationRepository.update(organization);
+    organization.updateInfo(
+      command.name,
+      command.phone,
+      command.email,
+      command.website,
+      command.address,
+    );
+    await this.organizationRepository.save(organization);
   }
 }

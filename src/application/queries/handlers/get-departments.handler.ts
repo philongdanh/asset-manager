@@ -13,7 +13,7 @@ export class GetDepartmentsHandler {
   ) {}
 
   async execute(query: GetDepartmentsQuery) {
-    return await this.departmentRepository.findAll(
+    return await this.departmentRepository.find(
       query.organizationId,
       query.options,
     );

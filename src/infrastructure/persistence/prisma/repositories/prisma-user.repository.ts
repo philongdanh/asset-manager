@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { User, Prisma, Role } from 'generated/prisma/browser';
-import { IUserRepository, UserStatus } from 'src/domain/identity/user';
+import { Prisma } from 'generated/prisma/client';
+import { IUserRepository, User, UserStatus } from 'src/domain/identity/user';
 import { RoleMapper } from 'src/infrastructure/mappers/role.mapper';
 import { UserMapper } from 'src/infrastructure/mappers/user.mapper';
 import { PrismaService } from '../prisma.service';
@@ -60,7 +60,7 @@ export class PrismaUserRepository implements IUserRepository {
     return user ? UserMapper.toDomain(user) : null;
   }
 
-  async findAll(
+  async find(
     organizationId: string,
     options?: {
       departmentId?: string;
@@ -77,6 +77,9 @@ export class PrismaUserRepository implements IUserRepository {
     // Apply filters
     if (options?.departmentId) {
       where.departmentId = options.departmentId;
+    }
+    if (options?.status) {
+      where.status = options.status;
     }
     if (options?.roleId) {
       where.userRoles = {
@@ -101,7 +104,13 @@ export class PrismaUserRepository implements IUserRepository {
         skip: options?.offset || 0,
         take: options?.limit || 100,
         orderBy: { createdAt: 'desc' },
-        include: { userRoles: { include: { role: true } } },
+        include: {
+          userRoles: {
+            include: {
+              role: true,
+            },
+          },
+        },
       }),
       this.prisma.user.count({ where }),
     ]);
@@ -114,7 +123,10 @@ export class PrismaUserRepository implements IUserRepository {
 
   async findByDepartment(departmentId: string): Promise<User[]> {
     const users = await this.prisma.user.findMany({
-      where: { departmentId },
+      where: {
+        departmentId,
+        deletedAt: null,
+      },
       include: {
         userRoles: {
           include: {
@@ -128,7 +140,10 @@ export class PrismaUserRepository implements IUserRepository {
 
   async findByOrganization(organizationId: string): Promise<User[]> {
     const users = await this.prisma.user.findMany({
-      where: { organizationId },
+      where: {
+        organizationId,
+        deletedAt: null,
+      },
       include: {
         userRoles: {
           include: {
@@ -146,6 +161,7 @@ export class PrismaUserRepository implements IUserRepository {
         userRoles: {
           some: { roleId },
         },
+        deletedAt: null,
       },
       include: {
         userRoles: {
@@ -172,8 +188,15 @@ export class PrismaUserRepository implements IUserRepository {
             },
           },
         },
+        deletedAt: null,
       },
-      include: { userRoles: { include: { role: true } } },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
     });
     return users.map((user) => UserMapper.toDomain(user));
   }
@@ -181,7 +204,10 @@ export class PrismaUserRepository implements IUserRepository {
   // --- Validation Methods ---
   async existsByEmail(email: string): Promise<boolean> {
     const count = await this.prisma.user.count({
-      where: { email },
+      where: {
+        email,
+        deletedAt: null,
+      },
     });
     return count > 0;
   }
@@ -194,6 +220,7 @@ export class PrismaUserRepository implements IUserRepository {
       where: {
         organizationId,
         username,
+        deletedAt: null,
       },
     });
     return count > 0;
@@ -201,7 +228,10 @@ export class PrismaUserRepository implements IUserRepository {
 
   async existsById(userId: string): Promise<boolean> {
     const count = await this.prisma.user.count({
-      where: { id: userId },
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
     });
     return count > 0;
   }
@@ -209,60 +239,117 @@ export class PrismaUserRepository implements IUserRepository {
   // --- Persistence Methods ---
   async save(user: User): Promise<User> {
     const data = UserMapper.toPersistence(user);
-    const savedUser = await this.prisma.user.upsert(data);
+    const savedUser = await this.prisma.user.create({
+      data,
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
     return UserMapper.toDomain(savedUser);
   }
 
   async update(user: User): Promise<User> {
-    return this.save(user);
+    const data = UserMapper.toUpdatePersistence(user);
+    const updatedUser = await this.prisma.user.update({
+      where: { id: user.id },
+      data,
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+    return UserMapper.toDomain(updatedUser);
   }
 
   async saveMany(users: User[]): Promise<void> {
-    const transactions = users.map((user) => {
-      const data = UserMapper.toPersistence(user);
-      return this.prisma.user.upsert(data);
-    });
-    await this.prisma.$transaction(transactions);
+    await this.prisma.$transaction(
+      users.map((user) => {
+        const data = UserMapper.toPersistence(user);
+        return this.prisma.user.create({ data });
+      }),
+    );
   }
 
   async delete(userId: string): Promise<void> {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { deletedAt: new Date() },
-    });
+    const user = await this.findById(userId);
+    if (!user) return;
+
+    user.markAsDeleted();
+    await this.update(user);
   }
 
   async deleteMany(userIds: string[]): Promise<void> {
-    await this.prisma.user.updateMany({
+    const users = await this.prisma.user.findMany({
       where: { id: { in: userIds } },
-      data: { deletedAt: new Date() },
     });
+
+    await this.prisma.$transaction(
+      users.map((prismaUser) => {
+        const user = UserMapper.toDomain(prismaUser);
+        user.markAsDeleted();
+        const data = UserMapper.toUpdatePersistence(user);
+        return this.prisma.user.update({
+          where: { id: user.id },
+          data,
+        });
+      }),
+    );
   }
 
   async hardDelete(userId: string): Promise<void> {
-    await this.prisma.user.delete({
-      where: { id: userId },
-    });
+    // First delete dependent records
+    await this.prisma.$transaction([
+      this.prisma.userRole.deleteMany({
+        where: { userId },
+      }),
+      this.prisma.user.delete({
+        where: { id: userId },
+      }),
+    ]);
   }
 
   async hardDeleteMany(userIds: string[]): Promise<void> {
-    await this.prisma.user.deleteMany({
-      where: { id: { in: userIds } },
-    });
+    await this.prisma.$transaction([
+      this.prisma.userRole.deleteMany({
+        where: { userId: { in: userIds } },
+      }),
+      this.prisma.user.deleteMany({
+        where: { id: { in: userIds } },
+      }),
+    ]);
   }
 
   async restore(userId: string): Promise<void> {
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { deletedAt: null },
-    });
+    const user = await this.findById(userId);
+    if (!user) return;
+
+    user.restore();
+    await this.update(user);
   }
 
   async restoreMany(userIds: string[]): Promise<void> {
-    await this.prisma.user.updateMany({
+    const users = await this.prisma.user.findMany({
       where: { id: { in: userIds } },
-      data: { deletedAt: null },
     });
+
+    await this.prisma.$transaction(
+      users.map((prismaUser) => {
+        const user = UserMapper.toDomain(prismaUser);
+        user.restore();
+        const data = UserMapper.toUpdatePersistence(user);
+        return this.prisma.user.update({
+          where: { id: user.id },
+          data,
+        });
+      }),
+    );
   }
 
   // --- User-Role Management ---
@@ -277,6 +364,8 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async assignRoles(userId: string, roleIds: string[]): Promise<void> {
+    if (roleIds.length === 0) return;
+
     const createOperations = roleIds.map((roleId) => ({
       userId,
       roleId,
@@ -297,6 +386,8 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async removeRoles(userId: string, roleIds: string[]): Promise<void> {
+    if (roleIds.length === 0) return;
+
     await this.prisma.userRole.deleteMany({
       where: {
         userId,
@@ -306,15 +397,20 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async updateRoles(userId: string, roleIds: string[]): Promise<void> {
-    // Xóa tất cả roles hiện tại
-    await this.prisma.userRole.deleteMany({
-      where: { userId },
-    });
-
-    // Thêm roles mới
-    if (roleIds.length > 0) {
-      await this.assignRoles(userId, roleIds);
-    }
+    await this.prisma.$transaction([
+      // Delete existing roles
+      this.prisma.userRole.deleteMany({
+        where: { userId },
+      }),
+      // Add new roles if any
+      ...(roleIds.length > 0
+        ? [
+            this.prisma.userRole.createMany({
+              data: roleIds.map((roleId) => ({ userId, roleId })),
+            }),
+          ]
+        : []),
+    ]);
   }
 
   async getUserRoles(userId: string): Promise<string[]> {
@@ -332,10 +428,22 @@ export class PrismaUserRepository implements IUserRepository {
     return count > 0;
   }
 
-  async getRolesByUserId(userId: string): Promise<Role[]> {
+  async getRolesByUserId(
+    userId: string,
+  ): Promise<import('src/domain/identity/role').Role[]> {
     const userRoles = await this.prisma.userRole.findMany({
       where: { userId },
-      include: { role: true },
+      include: {
+        role: {
+          include: {
+            rolePermissions: {
+              include: {
+                permission: true,
+              },
+            },
+          },
+        },
+      },
     });
     return userRoles.map((userRole) => RoleMapper.toDomain(userRole.role));
   }
@@ -343,7 +451,10 @@ export class PrismaUserRepository implements IUserRepository {
   // --- User-Asset Management ---
   async getAssignedAssets(userId: string): Promise<string[]> {
     const assets = await this.prisma.asset.findMany({
-      where: { currentUserId: userId },
+      where: {
+        currentUserId: userId,
+        deletedAt: null,
+      },
       select: { id: true },
     });
     return assets.map((asset) => asset.id);
@@ -351,63 +462,13 @@ export class PrismaUserRepository implements IUserRepository {
 
   async getCreatedAssets(userId: string): Promise<string[]> {
     const assets = await this.prisma.asset.findMany({
-      where: { createdByUserId: userId },
+      where: {
+        createdByUserId: userId,
+        deletedAt: null,
+      },
       select: { id: true },
     });
     return assets.map((asset) => asset.id);
-  }
-
-  // --- Special Methods ---
-  async getUsersSummary(organizationId: string): Promise<{
-    totalCount: number;
-    byStatus: Record<UserStatus, number>;
-    byDepartment: Record<string, number>;
-    withAssetsCount: number;
-  }> {
-    const [users, departmentGroups, withAssetsCount] = await Promise.all([
-      this.prisma.user.findMany({
-        where: { organizationId },
-      }),
-
-      this.prisma.user.groupBy({
-        by: ['departmentId'],
-        _count: true,
-        where: { organizationId, deletedAt: null },
-      }),
-
-      this.prisma.user.count({
-        where: {
-          organizationId,
-          deletedAt: null,
-          currentAssets: { some: {} },
-        },
-      }),
-    ]);
-
-    // Tính toán status dựa trên deletedAt
-    const activeCount = users.filter((user) => !user.deletedAt).length;
-    const deletedCount = users.filter((user) => user.deletedAt).length;
-
-    const byStatus: Record<UserStatus, number> = {
-      [UserStatus.ACTIVE]: activeCount,
-      [UserStatus.INACTIVE]: 0,
-      [UserStatus.SUSPENDED]: 0,
-      [UserStatus.PENDING]: 0,
-      [UserStatus.DELETED]: deletedCount,
-    };
-
-    const byDepartment: Record<string, number> = {};
-    departmentGroups.forEach((group) => {
-      const key = group.departmentId || 'No Department';
-      byDepartment[key] = group._count;
-    });
-
-    return {
-      totalCount: users.length,
-      byStatus,
-      byDepartment,
-      withAssetsCount,
-    };
   }
 
   async findUsersWithoutDepartment(organizationId: string): Promise<User[]> {
@@ -417,7 +478,13 @@ export class PrismaUserRepository implements IUserRepository {
         departmentId: null,
         deletedAt: null,
       },
-      include: { userRoles: { include: { role: true } } },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
     });
     return users.map((user) => UserMapper.toDomain(user));
   }
@@ -430,8 +497,15 @@ export class PrismaUserRepository implements IUserRepository {
       where: {
         status: UserStatus.INACTIVE,
         updatedAt: { lt: dateThreshold },
+        deletedAt: null,
       },
-      include: { userRoles: { include: { role: true } } },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
     });
 
     return users.map((user) => UserMapper.toDomain(user));
@@ -444,6 +518,7 @@ export class PrismaUserRepository implements IUserRepository {
     const where: Prisma.UserWhereInput = {
       organizationId,
       status: UserStatus.INACTIVE,
+      deletedAt: null,
     };
 
     if (daysThreshold) {
@@ -454,7 +529,13 @@ export class PrismaUserRepository implements IUserRepository {
 
     const users = await this.prisma.user.findMany({
       where,
-      include: { userRoles: { include: { role: true } } },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
     });
 
     return users.map((user) => UserMapper.toDomain(user));
@@ -467,26 +548,15 @@ export class PrismaUserRepository implements IUserRepository {
           { currentAssets: { some: { id: assetId } } },
           { createdAssets: { some: { id: assetId } } },
         ],
-      },
-      include: { userRoles: { include: { role: true } } },
-    });
-    return users.map((user) => UserMapper.toDomain(user));
-  }
-
-  async searchUsersByKeyword(
-    organizationId: string,
-    keyword: string,
-  ): Promise<User[]> {
-    const users = await this.prisma.user.findMany({
-      where: {
-        organizationId,
-        OR: [
-          { username: { contains: keyword, mode: 'insensitive' } },
-          { email: { contains: keyword, mode: 'insensitive' } },
-        ],
         deletedAt: null,
       },
-      include: { userRoles: { include: { role: true } } },
+      include: {
+        userRoles: {
+          include: {
+            role: true,
+          },
+        },
+      },
     });
     return users.map((user) => UserMapper.toDomain(user));
   }
@@ -510,85 +580,12 @@ export class PrismaUserRepository implements IUserRepository {
     const permissions = new Set<string>();
     userRoles.forEach((userRole) => {
       userRole.role.rolePermissions.forEach((rp) => {
-        permissions.add(rp.permission.name);
+        if (rp.permission) {
+          permissions.add(rp.permission.name);
+        }
       });
     });
 
     return Array.from(permissions);
-  }
-
-  async getUserActivitySummary(
-    userId: string,
-    startDate: Date,
-    endDate: Date,
-  ): Promise<{
-    assetsAssigned: number;
-    assetsTransferred: number;
-    maintenancePerformed: number;
-    documentsUploaded: number;
-    inventoryChecks: number;
-  }> {
-    const [
-      assetsAssigned,
-      assetsTransferred,
-      maintenancePerformed,
-      documentsUploaded,
-      inventoryChecks,
-    ] = await Promise.all([
-      // Assets assigned to user
-      this.prisma.asset.count({
-        where: {
-          currentUserId: userId,
-          updatedAt: { gte: startDate, lte: endDate },
-        },
-      }),
-
-      // Assets transferred by/to user
-      this.prisma.assetTransfer.count({
-        where: {
-          OR: [{ fromUserId: userId }, { toUserId: userId }],
-          transferDate: { gte: startDate, lte: endDate },
-        },
-      }),
-
-      // Maintenance performed by user
-      this.prisma.maintenanceSchedule.count({
-        where: {
-          performedByUserId: userId,
-          actualDate: { gte: startDate, lte: endDate },
-        },
-      }),
-
-      // Documents uploaded by user
-      this.prisma.assetDocument.count({
-        where: {
-          uploadedByUserId: userId,
-          uploadDate: { gte: startDate, lte: endDate },
-        },
-      }),
-
-      // Inventory checks performed by user
-      this.prisma.inventoryDetail.count({
-        where: {
-          checkedByUserId: userId,
-          checkedDate: { gte: startDate, lte: endDate },
-        },
-      }),
-    ]);
-
-    return {
-      assetsAssigned,
-      assetsTransferred,
-      maintenancePerformed,
-      documentsUploaded,
-      inventoryChecks,
-    };
-  }
-
-  // --- Count Method (from existing implementation) ---
-  async countByOrganizationId(organizationId: string): Promise<number> {
-    return this.prisma.user.count({
-      where: { organizationId },
-    });
   }
 }

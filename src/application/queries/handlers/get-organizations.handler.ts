@@ -13,6 +13,6 @@ export class GetOrganizationsHandler {
   ) {}
 
   async execute(query: GetOrganizationsQuery) {
-    return await this.organizationRepository.findAll(query.options);
+    return await this.organizationRepository.find(query.options);
   }
 }

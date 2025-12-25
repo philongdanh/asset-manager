@@ -29,7 +29,7 @@ export class RenameRoleHandler {
         role.organizationId,
         command.roleName,
       );
-      if (existsByName && role.roleName !== command.roleName) {
+      if (existsByName && role.name !== command.roleName) {
         throw new UseCaseException(
           `Role name ${command.roleName} already exists in this organization`,
           RenameRoleCommand.name,

@@ -9,7 +9,7 @@ export interface IAssetRepository {
 
   findByCode(organizationId: string, assetCode: string): Promise<Asset | null>;
 
-  findAll(
+  find(
     organizationId: string,
     options?: {
       status?: AssetStatus;
@@ -60,14 +60,6 @@ export interface IAssetRepository {
   // --- Special Methods ---
 
   findByStatus(organizationId: string, status: AssetStatus): Promise<Asset[]>;
-
-  getAssetsSummary(organizationId: string): Promise<{
-    totalCount: number;
-    totalValue: number;
-    byStatus: Record<AssetStatus, { count: number; value: number }>;
-    byCategory: Record<string, { count: number; value: number }>;
-    byDepartment: Record<string, { count: number; value: number }>;
-  }>;
 
   findAssetsWithWarrantyExpiring(
     organizationId: string,

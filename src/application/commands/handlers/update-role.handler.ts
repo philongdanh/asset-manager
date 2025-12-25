@@ -25,7 +25,7 @@ export class UpdateRoleHandler {
 
     try {
       // Update fields
-      if (command.roleName && command.roleName !== role.roleName) {
+      if (command.roleName && command.roleName !== role.name) {
         // Check role name uniqueness
         const existsByName = await this.roleRepository.existsByName(
           role.organizationId,

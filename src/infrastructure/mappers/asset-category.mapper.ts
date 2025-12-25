@@ -6,26 +6,67 @@ import { AssetCategory } from 'src/domain/asset-lifecycle/asset-category';
 
 export class AssetCategoryMapper {
   static toDomain(prismaCategory: PrismaAssetCategory): AssetCategory {
-    return new AssetCategory(
+    return AssetCategory.builder(
       prismaCategory.id,
       prismaCategory.organizationId,
-      prismaCategory.categoryName,
       prismaCategory.code,
-      prismaCategory.parentId,
-    );
+      prismaCategory.categoryName,
+    )
+      .withParent(prismaCategory.parentId)
+      .withTimestamps(
+        prismaCategory.createdAt,
+        prismaCategory.updatedAt,
+        prismaCategory.deletedAt,
+      )
+      .build();
   }
 
-  static toPersistence(
+  static toCreateInput(
     assetCategory: AssetCategory,
-  ): Prisma.AssetCategoryCreateArgs {
+  ): Prisma.AssetCategoryCreateInput {
     return {
-      data: {
-        id: assetCategory.id,
-        organizationId: assetCategory.organizationId,
-        categoryName: assetCategory.name,
-        code: assetCategory.code,
-        parentId: assetCategory.parentId,
+      id: assetCategory.id,
+      organization: {
+        connect: {
+          id: assetCategory.id,
+        },
       },
+      categoryName: assetCategory.categoryName,
+      code: assetCategory.code,
+      parent: assetCategory.parentId
+        ? {
+            connect: { id: assetCategory.parentId },
+          }
+        : undefined,
+      createdAt: assetCategory.createdAt,
+      updatedAt: assetCategory.updatedAt,
+      deletedAt: assetCategory.deletedAt,
+    };
+  }
+
+  static toUpdateInput(
+    assetCategory: AssetCategory,
+  ): Prisma.AssetCategoryUpdateInput {
+    return {
+      categoryName: assetCategory.categoryName,
+      code: assetCategory.code,
+      parent: assetCategory.parentId
+        ? {
+            connect: { id: assetCategory.parentId },
+          }
+        : { disconnect: true },
+      updatedAt: assetCategory.updatedAt,
+      deletedAt: assetCategory.deletedAt,
+    };
+  }
+
+  static toUpsertArgs(
+    assetCategory: AssetCategory,
+  ): Prisma.AssetCategoryUpsertArgs {
+    return {
+      where: { id: assetCategory.id },
+      create: this.toCreateInput(assetCategory),
+      update: this.toUpdateInput(assetCategory),
     };
   }
 }

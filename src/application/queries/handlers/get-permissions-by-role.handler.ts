@@ -13,6 +13,6 @@ export class GetPermissionsByRoleHandler {
   ) {}
 
   async execute(query: GetPermissionsByRoleQuery) {
-    return await this.permissionRepository.findByRoleId(query.roleId);
+    return await this.permissionRepository.findByRole(query.roleId);
   }
 }

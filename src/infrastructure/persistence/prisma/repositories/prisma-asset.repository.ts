@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { IAssetRepository } from 'src/domain/asset-lifecycle/asset/asset.repository.interface';
-import { Asset } from 'src/domain/asset-lifecycle/asset/asset.entity';
+import {
+  Asset,
+  AssetStatus,
+  AssetCondition,
+} from 'src/domain/asset-lifecycle/asset/asset.entity';
 import { AssetMapper } from '../../../mappers/asset.mapper';
 import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
 import { Prisma } from 'generated/prisma/client';
@@ -8,6 +12,136 @@ import { Prisma } from 'generated/prisma/client';
 @Injectable()
 export class PrismaAssetRepository implements IAssetRepository {
   constructor(private prisma: PrismaService) {}
+
+  async findByStatus(
+    organizationId: string,
+    status: AssetStatus,
+  ): Promise<Asset[]> {
+    const raws = await this.prisma.asset.findMany({
+      where: {
+        organizationId,
+        status,
+        deletedAt: null,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+    return raws.map((raw) => AssetMapper.toDomain(raw));
+  }
+
+  async getAssetsSummary(organizationId: string): Promise<{
+    totalCount: number;
+    totalValue: number;
+    byStatus: Record<AssetStatus, { count: number; value: number }>;
+    byCategory: Record<string, { count: number; value: number }>;
+    byDepartment: Record<string, { count: number; value: number }>;
+  }> {
+    const assets = await this.prisma.asset.findMany({
+      where: {
+        organizationId,
+        deletedAt: null,
+      },
+      select: {
+        status: true,
+        categoryId: true,
+        currentDepartmentId: true,
+        currentValue: true,
+      },
+    });
+
+    // Khởi tạo kết quả
+    const result = {
+      totalCount: assets.length,
+      totalValue: 0,
+      byStatus: {} as Record<AssetStatus, { count: number; value: number }>,
+      byCategory: {} as Record<string, { count: number; value: number }>,
+      byDepartment: {} as Record<string, { count: number; value: number }>,
+    };
+
+    // Khởi tạo các trạng thái
+    Object.values(AssetStatus).forEach((status) => {
+      result.byStatus[status] = { count: 0, value: 0 };
+    });
+
+    // Tính toán thống kê
+    assets.forEach((asset) => {
+      const value = asset.currentValue.toNumber();
+      result.totalValue += value;
+
+      // Thống kê theo trạng thái
+      result.byStatus[asset.status as AssetStatus].count += 1;
+      result.byStatus[asset.status as AssetStatus].value += value;
+
+      // Thống kê theo danh mục
+      if (asset.categoryId) {
+        if (!result.byCategory[asset.categoryId]) {
+          result.byCategory[asset.categoryId] = { count: 0, value: 0 };
+        }
+        result.byCategory[asset.categoryId].count += 1;
+        result.byCategory[asset.categoryId].value += value;
+      }
+
+      // Thống kê theo phòng ban
+      if (asset.currentDepartmentId) {
+        if (!result.byDepartment[asset.currentDepartmentId]) {
+          result.byDepartment[asset.currentDepartmentId] = {
+            count: 0,
+            value: 0,
+          };
+        }
+        result.byDepartment[asset.currentDepartmentId].count += 1;
+        result.byDepartment[asset.currentDepartmentId].value += value;
+      }
+    });
+
+    return result;
+  }
+
+  async findAssetsWithWarrantyExpiring(
+    organizationId: string,
+    daysThreshold: number,
+  ): Promise<Asset[]> {
+    const today = new Date();
+    const thresholdDate = new Date();
+    thresholdDate.setDate(today.getDate() + daysThreshold);
+
+    const raws = await this.prisma.asset.findMany({
+      where: {
+        organizationId,
+        deletedAt: null,
+        warrantyExpiryDate: {
+          not: null,
+          gte: today,
+          lte: thresholdDate,
+        },
+      },
+      orderBy: {
+        warrantyExpiryDate: 'asc',
+      },
+    });
+
+    return raws.map((raw) => AssetMapper.toDomain(raw));
+  }
+
+  async findAssetsForMaintenance(organizationId: string): Promise<Asset[]> {
+    const raws = await this.prisma.asset.findMany({
+      where: {
+        organizationId,
+        deletedAt: null,
+        OR: [
+          { status: AssetStatus.MAINTENANCE },
+          { condition: AssetCondition.POOR },
+          { condition: AssetCondition.BROKEN },
+        ],
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+
+    return raws.map((raw) => AssetMapper.toDomain(raw));
+  }
 
   async findById(assetId: string): Promise<Asset | null> {
     const raw = await this.prisma.asset.findUnique({
@@ -33,10 +167,10 @@ export class PrismaAssetRepository implements IAssetRepository {
     return raw ? AssetMapper.toDomain(raw) : null;
   }
 
-  async findAll(
+  async find(
     organizationId: string,
     options?: {
-      status?: string;
+      status?: AssetStatus;
       categoryId?: string;
       departmentId?: string;
       userId?: string;
@@ -183,7 +317,7 @@ export class PrismaAssetRepository implements IAssetRepository {
       data: {
         deletedAt: new Date(),
         updatedAt: new Date(),
-        status: 'DISPOSED',
+        status: AssetStatus.DISPOSED,
       },
     });
   }
@@ -194,7 +328,7 @@ export class PrismaAssetRepository implements IAssetRepository {
       data: {
         deletedAt: new Date(),
         updatedAt: new Date(),
-        status: 'DISPOSED',
+        status: AssetStatus.DISPOSED,
       },
     });
   }
@@ -217,7 +351,7 @@ export class PrismaAssetRepository implements IAssetRepository {
       data: {
         deletedAt: null,
         updatedAt: new Date(),
-        status: 'AVAILABLE',
+        status: AssetStatus.AVAILABLE,
       },
     });
   }
@@ -228,7 +362,7 @@ export class PrismaAssetRepository implements IAssetRepository {
       data: {
         deletedAt: null,
         updatedAt: new Date(),
-        status: 'AVAILABLE',
+        status: AssetStatus.AVAILABLE,
       },
     });
   }
