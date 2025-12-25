@@ -1,7 +1,7 @@
 export class CreateRoleCommand {
   constructor(
-    public readonly id: string,
-    public readonly organizationId: string,
-    public readonly roleName: string,
+    public readonly orgId: string,
+    public readonly name: string,
+    public readonly permIds?: string[],
   ) {}
 }

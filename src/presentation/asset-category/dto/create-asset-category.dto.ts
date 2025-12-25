@@ -3,7 +3,7 @@ import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 export class CreateAssetCategoryDto {
   @IsNotEmpty()
   @IsUUID()
-  orgId: string;
+  organizationId: string;
 
   @IsNotEmpty()
   @IsString()

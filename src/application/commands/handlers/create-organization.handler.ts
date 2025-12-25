@@ -12,16 +12,14 @@ import { CreateOrganizationCommand } from '../create-organization.command';
 @Injectable()
 export class CreateOrganizationHandler {
   constructor(
-    @Inject(ID_GENERATOR)
-    private readonly idGenerator: IIdGenerator,
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly organizationRepository: IOrganizationRepository,
+    private readonly orgRepo: IOrganizationRepository,
   ) {}
 
   async execute(command: CreateOrganizationCommand): Promise<Organization> {
-    // Validate unique constraints
     if (command.taxCode) {
-      const existsByTaxCode = await this.organizationRepository.existsByTaxCode(
+      const existsByTaxCode = await this.orgRepo.existsByTaxCode(
         command.taxCode,
       );
       if (existsByTaxCode) {
@@ -32,31 +30,17 @@ export class CreateOrganizationHandler {
       }
     }
 
-    if (command.email) {
-      const existsByEmail = await this.organizationRepository.existsByEmail(
-        command.email,
-      );
-      if (existsByEmail) {
-        throw new UseCaseException(
-          `Organization with email ${command.email} already exists`,
-          CreateOrganizationCommand.name,
-        );
-      }
-    }
-
-    // Build organization entity
     const id = this.idGenerator.generate();
-    const builder = Organization.builder(id, command.name)
+    const org = Organization.builder(id, command.name)
       .withStatus(command.status || OrganizationStatus.ACTIVE)
       .withTaxCode(command.taxCode || null)
-      .withAddress(command.address || null)
       .withContactInfo(
         command.phone || null,
         command.email || null,
         command.website || null,
-      );
-
-    const organization = builder.build();
-    return await this.organizationRepository.save(organization);
+        command.address || null,
+      )
+      .build();
+    return await this.orgRepo.save(org);
   }
 }

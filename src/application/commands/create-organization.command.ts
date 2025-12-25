@@ -4,12 +4,12 @@ import { CommandValidationException } from '../core/exceptions';
 export class CreateOrganizationCommand {
   constructor(
     public readonly name: string,
+    public readonly taxCode: string,
     public readonly status: OrganizationStatus,
-    public readonly taxCode?: string,
-    public readonly address?: string,
     public readonly phone?: string,
     public readonly email?: string,
     public readonly website?: string,
+    public readonly address?: string,
   ) {
     this.validate();
   }
@@ -17,11 +17,17 @@ export class CreateOrganizationCommand {
   private validate(): void {
     const errors: Array<{ field: string; message: string }> = [];
 
-    // Required fields validation
     if (!this.name || this.name.trim().length === 0) {
       errors.push({
         field: 'name',
         message: 'Organization name is required',
+      });
+    }
+
+    if (this.taxCode && this.taxCode.trim().length === 0) {
+      errors.push({
+        field: 'taxCode',
+        message: 'Tax code cannot be empty if provided',
       });
     }
 
@@ -34,14 +40,6 @@ export class CreateOrganizationCommand {
       errors.push({
         field: 'status',
         message: 'Invalid organization status value',
-      });
-    }
-
-    // Format validation
-    if (this.taxCode && this.taxCode.trim().length === 0) {
-      errors.push({
-        field: 'taxCode',
-        message: 'Tax code cannot be empty if provided',
       });
     }
 

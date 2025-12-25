@@ -3,7 +3,6 @@ import {
   PERMISSION_REPOSITORY,
   type IPermissionRepository,
 } from 'src/domain/identity/permission';
-import { GetPermissionsQuery } from '../get-permissions.query';
 
 @Injectable()
 export class GetPermissionsHandler {
@@ -12,7 +11,7 @@ export class GetPermissionsHandler {
     private readonly permissionRepository: IPermissionRepository,
   ) {}
 
-  async execute(query: GetPermissionsQuery) {
-    return await this.permissionRepository.find(query.options);
+  async execute() {
+    return await this.permissionRepository.find();
   }
 }

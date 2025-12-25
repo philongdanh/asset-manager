@@ -9,10 +9,10 @@ import { GetOrganizationsQuery } from '../get-organizations.query';
 export class GetOrganizationsHandler {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
-    private readonly organizationRepository: IOrganizationRepository,
+    private readonly orgRepo: IOrganizationRepository,
   ) {}
 
   async execute(query: GetOrganizationsQuery) {
-    return await this.organizationRepository.find(query.options);
+    return await this.orgRepo.find(query.options);
   }
 }

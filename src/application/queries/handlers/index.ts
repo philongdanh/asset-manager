@@ -1,1 +1,1 @@
-export * from '.';
+export * from './get-permissions.handler';

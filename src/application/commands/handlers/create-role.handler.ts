@@ -1,50 +1,26 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { CreateRoleCommand } from 'src/application/commands/create-role.command';
-import { UseCaseException } from 'src/application/core/exceptions';
 import {
   ROLE_REPOSITORY,
   type IRoleRepository,
   Role,
 } from 'src/domain/identity/role';
+import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 @Injectable()
 export class CreateRoleHandler {
   constructor(
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepository: IRoleRepository,
   ) {}
 
   async execute(command: CreateRoleCommand): Promise<Role> {
-    // Validate unique constraint
-    const existsByName = await this.roleRepository.existsByName(
-      command.organizationId,
-      command.roleName,
-    );
-    if (existsByName) {
-      throw new UseCaseException(
-        `Role with name ${command.roleName} already exists in this organization`,
-        CreateRoleCommand.name,
-      );
-    }
-
-    try {
-      // Build role entity
-      const builder = Role.builder(
-        command.id,
-        command.organizationId,
-        command.roleName,
-      );
-
-      const role = builder.build();
-
-      // Save to repository
-      return await this.roleRepository.save(role);
-    } catch (err) {
-      console.error(err);
-      throw new UseCaseException(
-        'Failed to create role',
-        CreateRoleCommand.name,
-      );
-    }
+    const id = this.idGenerator.generate();
+    const role = Role.builder(id, command.orgId, command.name).build();
+    if (command.permIds && command.permIds.length > 0)
+      await this.roleRepository.assignPermissions(role.id, command.permIds);
+    await this.roleRepository.save(role);
+    return role;
   }
 }

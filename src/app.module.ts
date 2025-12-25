@@ -1,26 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AssetModule } from './presentation/asset/asset.module';
 import { ConfigModule } from '@nestjs/config';
-import { OrganizationModule } from './presentation/identity/organization/organization.module';
-import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
-import { PermissionModule } from './presentation/identity/permission/permission.module';
-import { RoleModule } from './presentation/identity/role/role.module';
+import { OrganizationModule } from './presentation/organization/organization.module';
 import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionFilter } from './presentation/interfaces/exceptions/filters/global-exception.filter';
-import { DepartmentModule } from './presentation/identity/department/department.module';
+import { GlobalExceptionFilter } from './presentation/interfaces';
 
 @Module({
   imports: [
     //
     ConfigModule.forRoot(),
     OrganizationModule,
-    DepartmentModule,
-    AssetCategoryModule,
-    AssetModule,
-    PermissionModule,
-    RoleModule,
   ],
   controllers: [AppController],
   providers: [

@@ -7,16 +7,17 @@ import {
   UserStatus,
 } from 'src/domain/identity/user';
 import { CreateUserCommand } from '../create-user.command';
+import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 @Injectable()
 export class CreateUserHandler {
   constructor(
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
   ) {}
 
   async execute(command: CreateUserCommand): Promise<User> {
-    // Validate unique constraints
     const existsByEmail = await this.userRepository.existsByEmail(
       command.email,
     );
@@ -38,27 +39,16 @@ export class CreateUserHandler {
       );
     }
 
-    try {
-      // Build user entity
-      const builder = User.builder(
-        command.id,
-        command.organizationId,
-        command.username,
-        command.email,
-      )
-        .inDepartment(command.departmentId || null)
-        .withStatus((command.status as UserStatus) || UserStatus.ACTIVE);
-
-      const user = builder.build();
-
-      // Save to repository
-      return await this.userRepository.save(user);
-    } catch (err) {
-      console.error(err);
-      throw new UseCaseException(
-        'Failed to create user',
-        CreateUserCommand.name,
-      );
-    }
+    const id = this.idGenerator.generate();
+    const user = User.builder(
+      id,
+      command.organizationId,
+      command.username,
+      command.email,
+    )
+      .inDepartment(command.departmentId || null)
+      .withStatus((command.status as UserStatus) || UserStatus.ACTIVE)
+      .build();
+    return await this.userRepository.save(user);
   }
 }

@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 export class CreateAssetDto {
   @IsNotEmpty()
   @IsUUID()
-  orgId: string;
+  organizationId: string;
 
   @IsNotEmpty()
   @IsString()

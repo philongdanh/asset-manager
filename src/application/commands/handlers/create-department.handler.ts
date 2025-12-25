@@ -6,58 +6,31 @@ import {
   Department,
 } from 'src/domain/identity/department';
 import { CreateDepartmentCommand } from '../create-department.command';
+import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 @Injectable()
 export class CreateDepartmentHandler {
   constructor(
+    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(DEPARTMENT_REPOSITORY)
-    private readonly departmentRepository: IDepartmentRepository,
+    private readonly departmentRepo: IDepartmentRepository,
   ) {}
 
-  async execute(command: CreateDepartmentCommand): Promise<Department> {
-    // Validate unique constraint
-    const existsByName = await this.departmentRepository.existsByName(
-      command.organizationId,
-      command.name,
-    );
-    if (existsByName) {
-      throw new UseCaseException(
-        `Department with name ${command.name} already exists in this organization`,
-        CreateDepartmentCommand.name,
-      );
-    }
-
-    // Validate parent department if provided
-    if (command.parentId) {
-      const parentDepartment = await this.departmentRepository.findById(
-        command.parentId,
-      );
+  async execute(cmd: CreateDepartmentCommand): Promise<Department> {
+    if (cmd.parentId) {
+      const parentDepartment = await this.departmentRepo.findById(cmd.parentId);
       if (!parentDepartment) {
         throw new UseCaseException(
-          `Parent department with ID ${command.parentId} not found`,
+          `Parent department with ID ${cmd.parentId} not found`,
           CreateDepartmentCommand.name,
         );
       }
     }
 
-    try {
-      // Build department entity
-      const builder = Department.builder(
-        command.id,
-        command.organizationId,
-        command.name,
-      ).withParent(command.parentId || null);
-
-      const department = builder.build();
-
-      // Save to repository
-      return await this.departmentRepository.save(department);
-    } catch (err) {
-      console.error(err);
-      throw new UseCaseException(
-        'Failed to create department',
-        CreateDepartmentCommand.name,
-      );
-    }
+    const id = this.idGenerator.generate();
+    const department = Department.builder(id, cmd.orgId, cmd.name)
+      .withParent(cmd.parentId)
+      .build();
+    return await this.departmentRepo.save(department);
   }
 }
