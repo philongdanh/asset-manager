@@ -5,11 +5,13 @@ import { ConfigModule } from '@nestjs/config';
 import { OrganizationModule } from './presentation/organization/organization.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './presentation/interfaces';
+import { AuthModule } from './presentation/auth';
 
 @Module({
   imports: [
     //
     ConfigModule.forRoot(),
+    AuthModule,
     OrganizationModule,
   ],
   controllers: [AppController],

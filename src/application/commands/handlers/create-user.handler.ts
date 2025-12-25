@@ -44,6 +44,7 @@ export class CreateUserHandler {
       id,
       command.organizationId,
       command.username,
+      command.password,
       command.email,
     )
       .inDepartment(command.departmentId || null)

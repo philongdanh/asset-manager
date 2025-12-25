@@ -78,6 +78,7 @@ model User {
   organizationId String  @map("organization_id")
   departmentId   String? @map("department_id")
   username       String
+  password       String
   email          String  @unique
   status         String  @default("ACTIVE")
 

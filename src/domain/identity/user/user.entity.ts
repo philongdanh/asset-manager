@@ -13,6 +13,7 @@ export class User extends BaseEntity {
   private _departmentId: string | null;
   private _username: string;
   private _email: string;
+  private _password: string;
   private _status: UserStatus;
 
   protected constructor(builder: UserBuilder) {
@@ -21,6 +22,7 @@ export class User extends BaseEntity {
     this._departmentId = builder.departmentId;
     this._username = builder.username;
     this._email = builder.email;
+    this._password = builder.password;
     this._status = builder.status;
   }
 
@@ -39,6 +41,10 @@ export class User extends BaseEntity {
 
   public get email(): string {
     return this._email;
+  }
+
+  public get password(): string {
+    return this._password;
   }
 
   public get status(): UserStatus {
@@ -70,6 +76,25 @@ export class User extends BaseEntity {
       );
     }
     this._username = newUsername;
+    this.markAsUpdated();
+  }
+
+  public changePassword(newPassword: string): void {
+    if (!newPassword || newPassword.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'PASSWORD_REQUIRED',
+        'Password cannot be empty.',
+      );
+    }
+
+    if (newPassword.length < 8) {
+      throw new BusinessRuleViolationException(
+        'PASSWORD_TOO_SHORT',
+        'Password must be at least 8 characters long.',
+      );
+    }
+
+    this._password = newPassword;
     this.markAsUpdated();
   }
 
@@ -123,6 +148,10 @@ export class User extends BaseEntity {
     return !!this._departmentId;
   }
 
+  public verifyPassword(password: string): boolean {
+    return this._password === password;
+  }
+
   private isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -134,8 +163,9 @@ export class User extends BaseEntity {
     organizationId: string,
     username: string,
     email: string,
+    password: string,
   ): UserBuilder {
-    return new UserBuilder(id, organizationId, username, email);
+    return new UserBuilder(id, organizationId, username, email, password);
   }
 
   public static createFromBuilder(builder: UserBuilder): User {
@@ -156,6 +186,7 @@ export class UserBuilder {
     public readonly organizationId: string,
     public readonly username: string,
     public readonly email: string,
+    public password: string,
   ) {
     this.createdAt = new Date();
     this.updatedAt = new Date();
@@ -168,6 +199,11 @@ export class UserBuilder {
 
   public withStatus(status: UserStatus): this {
     this.status = status;
+    return this;
+  }
+
+  public withPassword(password: string): this {
+    this.password = password;
     return this;
   }
 
@@ -205,6 +241,12 @@ export class UserBuilder {
       throw new BusinessRuleViolationException(
         'INVALID_EMAIL',
         'A valid email is required.',
+      );
+    }
+    if (!this.password || this.password.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'PASSWORD_REQUIRED',
+        'Password is mandatory.',
       );
     }
 

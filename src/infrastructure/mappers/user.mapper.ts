@@ -16,6 +16,7 @@ export class UserMapper {
       prismaUser.id,
       prismaUser.organizationId,
       prismaUser.username,
+      prismaUser.password,
       prismaUser.email,
     )
       .inDepartment(prismaUser.departmentId)
@@ -39,6 +40,7 @@ export class UserMapper {
         ? { connect: { id: user.departmentId } }
         : undefined,
       username: user.username,
+      password: user.password,
       email: user.email,
       status: user.status,
       createdAt: user.createdAt,
