@@ -10,17 +10,20 @@ import {
   type IRoleRepository,
   ROLE_REPOSITORY,
 } from 'src/domain/identity/role';
-import { type IOrganizationRepository, ORGANIZATION_REPOSITORY } from 'src/domain/identity/organization';
+import {
+  type IPermissionRepository,
+  PERMISSION_REPOSITORY,
+} from 'src/domain/identity/permission';
 
 @Injectable()
 export class SignInHandler {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-    @Inject(ORGANIZATION_REPOSITORY)
-    private readonly orgRepo: IOrganizationRepository,
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepo: IRoleRepository,
+    @Inject(PERMISSION_REPOSITORY)
+    private readonly permRepo: IPermissionRepository,
   ) {}
 
   async execute(cmd: SignInCommand) {
@@ -44,21 +47,20 @@ export class SignInHandler {
       );
     }
 
-    const org = await this.orgRepo.findById(user.organizationId);
-    if (!org) {
-      throw new Error('');
-    }
     const roles = await this.roleRepo.findByUserId(user.id);
+    const permissions = await this.permRepo.findByRoles(
+      roles.map((role) => role.id),
+    );
 
     return {
       id: user.id,
       username: user.username,
-      org: {
-        id: org.id,
-        name: org.name,
-      },
       email: user.email,
-      roles: roles.map((role) => ({ id: role.id, name: role.name })),
+      organizationId: user.organizationId,
+      departmentId: user.departmentId,
+      status: user.status,
+      roles: roles.map((role) => role.name),
+      permissions: permissions.map((perm) => perm.id),
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

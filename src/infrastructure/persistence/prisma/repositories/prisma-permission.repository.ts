@@ -10,12 +10,14 @@ import { PermissionMapper } from '../../../mappers/permission.mapper';
 export class PrismaPermissionRepository implements IPermissionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByRole(roleId: string): Promise<Permission[]> {
+  async findByRoles(roleIds: string[]): Promise<Permission[]> {
     const permission = await this.prisma.permission.findMany({
       where: {
         rolePermissions: {
           every: {
-            roleId,
+            roleId: {
+              in: roleIds,
+            },
           },
         },
       },

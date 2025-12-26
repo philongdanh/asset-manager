@@ -87,14 +87,6 @@ export class PermissionBuilder {
       );
     }
 
-    // Validate name format: should be in format MODULE.ACTION or SYSTEM.ACTION
-    if (!this.name.includes('.')) {
-      throw new BusinessRuleViolationException(
-        'INVALID_PERMISSION_FORMAT',
-        'Permission name must be in format: MODULE.ACTION or SYSTEM.ACTION',
-      );
-    }
-
     return Permission.createFromBuilder(this);
   }
 }

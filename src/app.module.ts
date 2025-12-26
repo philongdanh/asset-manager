@@ -9,8 +9,7 @@ import { AuthModule } from './presentation/auth';
 
 @Module({
   imports: [
-    //
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     OrganizationModule,
   ],

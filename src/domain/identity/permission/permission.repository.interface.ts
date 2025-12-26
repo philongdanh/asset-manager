@@ -9,7 +9,7 @@ export interface IPermissionRepository {
 
   find(): Promise<{ data: Permission[]; total: number }>;
 
-  findByRole(roleId: string): Promise<Permission[]>;
+  findByRoles(roleIds: string[]): Promise<Permission[]>;
 
   // --- Validation Methods ---
 

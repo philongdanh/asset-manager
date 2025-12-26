@@ -6,25 +6,43 @@ import { SignInHandler } from 'src/application/commands/handlers';
 import { PrismaUserRepository } from 'src/infrastructure/persistence/prisma/repositories/prisma-user.repository';
 import { ROLE_REPOSITORY } from 'src/domain/identity/role';
 import { PrismaRoleRepository } from 'src/infrastructure/persistence/prisma/repositories/prisma-role.repository';
-import { ORGANIZATION_REPOSITORY } from 'src/domain/identity/organization';
-import { PrismaOrganizationRepository } from 'src/infrastructure/persistence/prisma/repositories/prisma-organization.repository';
+import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
+import { PrismaPermissionRepository } from 'src/infrastructure/persistence/prisma/repositories/prisma-permission.repository';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './auth.service';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
+  imports: [
+    JwtModule.registerAsync({
+      global: true,
+      useFactory(conf: ConfigService) {
+        return {
+          secret: conf.get('ACCESS_TOKEN_SECRET'),
+          signOptions: {
+            expiresIn: '60s',
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
+  ],
   controllers: [AuthController],
   providers: [
+    ConfigService,
+    AuthService,
     PrismaService,
     {
       provide: USER_REPOSITORY,
       useClass: PrismaUserRepository,
     },
     {
-      provide: ORGANIZATION_REPOSITORY,
-      useClass: PrismaOrganizationRepository,
-    },
-    SignInHandler,
-    {
       provide: ROLE_REPOSITORY,
       useClass: PrismaRoleRepository,
+    },
+    {
+      provide: PERMISSION_REPOSITORY,
+      useClass: PrismaPermissionRepository,
     },
     SignInHandler,
   ],
