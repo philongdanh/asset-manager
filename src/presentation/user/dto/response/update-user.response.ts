@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { OrganizationStatus } from 'src/domain/identity/organization';
 
-export class GetOrganizationDto {
+export class UpdateOrganizationResponse {
   @Expose()
   @IsUUID()
   id: string;

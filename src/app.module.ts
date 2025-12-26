@@ -6,12 +6,14 @@ import { OrganizationModule } from './presentation/organization/organization.mod
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './presentation/interfaces';
 import { AuthModule } from './presentation/auth';
+import { UserModule } from './presentation/user';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     OrganizationModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

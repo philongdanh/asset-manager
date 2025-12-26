@@ -24,10 +24,11 @@ import { Public } from '../auth/decorators';
 import {
   CreateOrganizationRequest,
   GetOrganizationsRequest,
-  GetOrganizationsDto,
+  GetOrganizationsResponse,
   GetOrganizationDetailsResponse,
   UpdateOrganizationRequest,
   UpdateOrganizationResponse,
+  CreateOrganizationResponse,
 } from './dto';
 
 @Controller('organizations')
@@ -41,7 +42,9 @@ export class OrganizationController {
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
-  async create(@Body() dto: CreateOrganizationRequest) {
+  async create(
+    @Body() dto: CreateOrganizationRequest,
+  ): Promise<CreateOrganizationResponse> {
     const cmd = new CreateOrganizationCommand(
       dto.name,
       dto.status,
@@ -51,21 +54,33 @@ export class OrganizationController {
       dto.website || null,
       dto.address || null,
     );
-    return await this.createOrgHandler.execute(cmd);
+    const org = await this.createOrgHandler.execute(cmd);
+    return <CreateOrganizationResponse>{
+      id: org.id,
+      name: org.name,
+      status: org.status,
+      phone: org.phone,
+      email: org.email,
+      taxCode: org.taxCode,
+      website: org.website,
+      address: org.address,
+      createdAt: org.createdAt,
+      updatedAt: org.updatedAt,
+    };
   }
 
   @Public()
   @Get()
   async getList(
     @Query() query: GetOrganizationsRequest,
-  ): Promise<GetOrganizationsDto[]> {
+  ): Promise<GetOrganizationsResponse[]> {
     const orgs = await this.getOrgsHandler.execute({
       status: query.status,
       includeDeleted: query.includeDeleted,
     });
     return orgs.map(
       (org) =>
-        <GetOrganizationsDto>{
+        <GetOrganizationsResponse>{
           id: org.id,
           name: org.name,
           taxCode: org.taxCode,

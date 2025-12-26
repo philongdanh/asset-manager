@@ -1,3 +1,5 @@
+import { UserStatus } from 'src/domain/identity/user';
+
 export class CreateUserCommand {
   constructor(
     public readonly organizationId: string,
@@ -5,6 +7,6 @@ export class CreateUserCommand {
     public readonly password: string,
     public readonly email: string,
     public readonly departmentId?: string | null,
-    public readonly status?: string,
+    public readonly status?: UserStatus,
   ) {}
 }
