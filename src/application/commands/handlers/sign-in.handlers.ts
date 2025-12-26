@@ -4,18 +4,26 @@ import { UseCaseException } from 'src/application/core/exceptions';
 import {
   USER_REPOSITORY,
   type IUserRepository,
-  User,
 } from 'src/domain/identity/user';
 import { SignInCommand } from '../sign-in.command';
+import {
+  type IRoleRepository,
+  ROLE_REPOSITORY,
+} from 'src/domain/identity/role';
+import { type IOrganizationRepository, ORGANIZATION_REPOSITORY } from 'src/domain/identity/organization';
 
 @Injectable()
 export class SignInHandler {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
+    @Inject(ORGANIZATION_REPOSITORY)
+    private readonly orgRepo: IOrganizationRepository,
+    @Inject(ROLE_REPOSITORY)
+    private readonly roleRepo: IRoleRepository,
   ) {}
 
-  async execute(cmd: SignInCommand): Promise<User> {
+  async execute(cmd: SignInCommand) {
     const user = await this.userRepo.findByUsername(cmd.orgId, cmd.username);
     if (!user) {
       throw new UseCaseException(
@@ -24,16 +32,6 @@ export class SignInHandler {
       );
     }
 
-    if (user.isDeleted()) {
-      throw new UseCaseException(
-        `Account has been deleted`,
-        SignInCommand.name,
-      );
-    }
-
-    if (user.isSuspended()) {
-      throw new UseCaseException(`Account is suspended`, SignInCommand.name);
-    }
     if (user.isInactive()) {
       throw new UseCaseException(`Account is inactive`, SignInCommand.name);
     }
@@ -46,11 +44,23 @@ export class SignInHandler {
       );
     }
 
-    if (user.isPending()) {
-      user.activate();
-      await this.userRepo.save(user);
+    const org = await this.orgRepo.findById(user.organizationId);
+    if (!org) {
+      throw new Error('');
     }
+    const roles = await this.roleRepo.findByUserId(user.id);
 
-    return user;
+    return {
+      id: user.id,
+      username: user.username,
+      org: {
+        id: org.id,
+        name: org.name,
+      },
+      email: user.email,
+      roles: roles.map((role) => ({ id: role.id, name: role.name })),
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 }

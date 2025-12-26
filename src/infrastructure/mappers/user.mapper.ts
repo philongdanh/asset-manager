@@ -16,8 +16,8 @@ export class UserMapper {
       prismaUser.id,
       prismaUser.organizationId,
       prismaUser.username,
-      prismaUser.password,
       prismaUser.email,
+      prismaUser.password,
     )
       .inDepartment(prismaUser.departmentId)
       .withStatus(prismaUser.status as UserStatus)

@@ -14,6 +14,7 @@ export class PrismaUserRepository implements IUserRepository {
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
+        organization: true,
         userRoles: {
           include: {
             role: true,
@@ -413,12 +414,28 @@ export class PrismaUserRepository implements IUserRepository {
     ]);
   }
 
-  async getUserRoles(userId: string): Promise<string[]> {
+  async getUserRoles(
+    userId: string,
+  ): Promise<{ id: string; name: string; permissionIds: string[] }[]> {
     const userRoles = await this.prisma.userRole.findMany({
       where: { userId },
-      select: { roleId: true },
+      include: {
+        role: {
+          include: {
+            rolePermissions: {
+              select: {
+                permissionId: true,
+              },
+            },
+          },
+        },
+      },
     });
-    return userRoles.map((ur) => ur.roleId);
+    return userRoles.map((ur) => ({
+      id: ur.roleId,
+      name: ur.role.roleName,
+      permissionIds: ur.role.rolePermissions.map((perm) => perm.permissionId),
+    }));
   }
 
   async hasRole(userId: string, roleId: string): Promise<boolean> {

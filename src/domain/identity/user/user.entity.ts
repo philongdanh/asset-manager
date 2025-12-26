@@ -3,9 +3,6 @@ import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 export enum UserStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
-  SUSPENDED = 'SUSPENDED',
-  PENDING = 'PENDING',
-  DELETED = 'DELETED',
 }
 
 export class User extends BaseEntity {
@@ -108,14 +105,8 @@ export class User extends BaseEntity {
     this.markAsUpdated();
   }
 
-  public suspend(): void {
-    this._status = UserStatus.SUSPENDED;
-    this.markAsUpdated();
-  }
-
   public markAsDeleted(): void {
     super.markAsDeleted();
-    this._status = UserStatus.DELETED;
   }
 
   public restore(): void {
@@ -132,16 +123,8 @@ export class User extends BaseEntity {
     return this._status === UserStatus.INACTIVE;
   }
 
-  public isSuspended(): boolean {
-    return this._status === UserStatus.SUSPENDED;
-  }
-
   public isDeleted(): boolean {
-    return this._status === UserStatus.DELETED;
-  }
-
-  public isPending(): boolean {
-    return this._status === UserStatus.PENDING;
+    return this._deletedAt !== null;
   }
 
   public hasDepartment(): boolean {

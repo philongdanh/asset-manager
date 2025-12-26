@@ -1,4 +1,5 @@
 import 'dotenv/config';
+import * as bcrypt from 'bcrypt';
 import { PrismaClient } from 'generated/prisma/client'; // Adjust path if necessary
 import { PrismaPg } from '@prisma/adapter-pg';
 import { randomUUID } from 'crypto';
@@ -183,6 +184,7 @@ async function main() {
 
   // 5. Create Root User with UUID
   const rootUserId = randomUUID();
+  const hashedPassword = await bcrypt.hash('123456', await bcrypt.genSalt(10));
   const rootUser = await prisma.user.upsert({
     where: { email: 'root@system.local' },
     update: {},
@@ -190,7 +192,7 @@ async function main() {
       id: rootUserId,
       organizationId: org.id,
       username: 'root_admin',
-      password: '123456',
+      password: hashedPassword,
       email: 'root@system.local',
       status: 'ACTIVE',
     },

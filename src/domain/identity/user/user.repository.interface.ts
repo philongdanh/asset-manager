@@ -5,15 +5,6 @@ export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
 export interface IUserRepository {
   // --- Query Methods ---
 
-  findById(userId: string): Promise<User | null>;
-
-  findByEmail(email: string): Promise<User | null>;
-
-  findByUsername(
-    organizationId: string,
-    username: string,
-  ): Promise<User | null>;
-
   find(
     organizationId: string,
     options?: {
@@ -27,13 +18,20 @@ export interface IUserRepository {
     },
   ): Promise<{ data: User[]; total: number }>;
 
+  findById(userId: string): Promise<User | null>;
+
+  findByUsername(
+    organizationId: string,
+    username: string,
+  ): Promise<User | null>;
+
+  findByEmail(email: string): Promise<User | null>;
+
   findByDepartment(departmentId: string): Promise<User[]>;
 
   findByOrganization(organizationId: string): Promise<User[]>;
 
   findByRole(roleId: string): Promise<User[]>;
-
-  findUsersWithRole(roleId: string, organizationId: string): Promise<User[]>;
 
   // --- Validation Methods ---
 
@@ -67,7 +65,13 @@ export interface IUserRepository {
 
   removeRoles(userId: string, roleIds: string[]): Promise<void>;
 
-  getUserRoles(userId: string): Promise<string[]>; // Returns role IDs
+  getUserRoles(userId: string): Promise<
+    {
+      id: string;
+      name: string;
+      permissionIds: string[];
+    }[]
+  >;
 
   hasRole(userId: string, roleId: string): Promise<boolean>;
 
