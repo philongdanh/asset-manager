@@ -6,7 +6,7 @@ import {
   Department,
 } from 'src/domain/identity/department';
 import { CreateDepartmentCommand } from '../create-department.command';
-import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
+import { ID_GENERATOR, type IIdGenerator } from 'src/domain/core/interfaces';
 
 @Injectable()
 export class CreateDepartmentHandler {

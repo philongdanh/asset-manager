@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { OrganizationController } from './organization.controller';
-import { ID_GENERATOR } from 'src/shared/domain/interfaces';
+import { ID_GENERATOR } from 'src/domain/core/interfaces';
 import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
 import { ORGANIZATION_REPOSITORY } from 'src/domain/identity/organization';
 import { PrismaOrganizationRepository } from 'src/infrastructure/persistence/prisma/repositories/prisma-organization.repository';

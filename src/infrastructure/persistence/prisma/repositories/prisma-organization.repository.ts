@@ -12,6 +12,34 @@ import { OrganizationMapper } from 'src/infrastructure/mappers/organization.mapp
 export class PrismaOrganizationRepository implements IOrganizationRepository {
   constructor(private prisma: PrismaService) {}
 
+  async find(
+    status?: OrganizationStatus,
+    includeDeleted?: boolean,
+  ): Promise<Organization[]> {
+    const where: Prisma.OrganizationWhereInput = {};
+    if (!includeDeleted) {
+      where.deletedAt = null;
+    }
+    if (status) {
+      // Map enum to string for Prisma query
+      where.status = status;
+    }
+    const orgs = await this.prisma.organization.findMany({
+      where: {
+        status,
+        deletedAt: includeDeleted
+          ? {
+              not: null,
+            }
+          : null,
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+    return orgs.map((org) => OrganizationMapper.toDomain(org));
+  }
+
   async findById(organizationId: string): Promise<Organization | null> {
     const org = await this.prisma.organization.findFirst({
       where: {
@@ -30,33 +58,6 @@ export class PrismaOrganizationRepository implements IOrganizationRepository {
       },
     });
     return org ? OrganizationMapper.toDomain(org) : null;
-  }
-
-  async find(options?: {
-    status?: OrganizationStatus;
-    includeDeleted?: boolean;
-  }): Promise<{ data: Organization[]; total: number }> {
-    const where: Prisma.OrganizationWhereInput = {};
-    if (!options?.includeDeleted) {
-      where.deletedAt = null;
-    }
-    if (options?.status) {
-      // Map enum to string for Prisma query
-      where.status = options.status;
-    }
-    const [data, total] = await Promise.all([
-      this.prisma.organization.findMany({
-        where,
-        orderBy: {
-          updatedAt: 'desc',
-        },
-      }),
-      this.prisma.organization.count({ where }),
-    ]);
-    return {
-      data: data.map((org) => OrganizationMapper.toDomain(org)),
-      total,
-    };
   }
 
   async findByTaxCode(taxCode: string): Promise<Organization | null> {

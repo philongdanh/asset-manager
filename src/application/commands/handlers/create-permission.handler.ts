@@ -5,7 +5,7 @@ import {
   Permission,
 } from 'src/domain/identity/permission';
 import { CreatePermissionCommand } from '../create-permission.command';
-import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
+import { ID_GENERATOR, type IIdGenerator } from 'src/domain/core/interfaces';
 
 @Injectable()
 export class CreatePermissionHandler {

@@ -7,10 +7,11 @@ export enum OrganizationStatus {
 
 export class Organization extends BaseEntity {
   private _name: string;
-  private _taxCode: string | null;
   private _status: OrganizationStatus;
+
   private _phone: string | null;
   private _email: string | null;
+  private _taxCode: string | null;
   private _website: string | null;
   private _address: string | null;
 
@@ -132,13 +133,16 @@ export class Organization extends BaseEntity {
 // --- Builder Class ---
 export class OrganizationBuilder {
   public status: OrganizationStatus = OrganizationStatus.ACTIVE;
-  public taxCode: string | null = null;
+
   public phone: string | null = null;
   public email: string | null = null;
+  public taxCode: string | null = null;
   public website: string | null = null;
   public address: string | null = null;
+
   public createdAt: Date;
   public updatedAt: Date;
+
   public deletedAt: Date | null = null;
 
   constructor(
