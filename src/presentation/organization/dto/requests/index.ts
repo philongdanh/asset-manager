@@ -1,2 +1,3 @@
-export * from './create-organization.dto';
-export * from './update-organization.dto';
+export * from './create-organization.request';
+export * from './get-organizations.dto';
+export * from './update-organization.request';

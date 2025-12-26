@@ -1,5 +1,5 @@
 import { OrganizationStatus } from 'src/domain/identity/organization';
-import { CommandValidationException } from '../core/exceptions';
+import { CommandValidationException } from 'src/application/core/exceptions';
 
 export class CreateOrganizationCommand {
   constructor(

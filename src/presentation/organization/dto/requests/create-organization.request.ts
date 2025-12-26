@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
@@ -8,27 +9,33 @@ import {
 } from 'class-validator';
 import { OrganizationStatus } from 'src/domain/identity/organization';
 
-export class CreateOrganizationDto {
+export class CreateOrganizationRequest {
+  @Expose()
   @IsNotEmpty()
   @IsString()
   name: string;
 
+  @Expose()
   @IsOptional()
   @IsEnum(OrganizationStatus)
   status: OrganizationStatus = OrganizationStatus.ACTIVE;
 
+  @Expose()
   @IsOptional()
   @IsString()
   phone?: string;
 
+  @Expose()
   @IsOptional()
   @IsEmail()
   email?: string;
 
+  @Expose()
   @IsOptional()
   @IsString()
   taxCode?: string;
 
+  @Expose()
   @IsOptional()
   @IsUrl({
     require_protocol: true,
@@ -37,6 +44,7 @@ export class CreateOrganizationDto {
   })
   website?: string;
 
+  @Expose()
   @IsOptional()
   @IsString()
   address?: string;

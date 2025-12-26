@@ -18,10 +18,10 @@ export class Organization extends BaseEntity {
   protected constructor(builder: OrganizationBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
     this._name = builder.name;
-    this._taxCode = builder.taxCode;
     this._status = builder.status;
     this._phone = builder.phone;
     this._email = builder.email;
+    this._taxCode = builder.taxCode;
     this._website = builder.website;
     this._address = builder.address;
   }
@@ -29,10 +29,6 @@ export class Organization extends BaseEntity {
   // --- Getters ---
   public get name(): string {
     return this._name;
-  }
-
-  public get taxCode(): string | null {
-    return this._taxCode;
   }
 
   public get status(): OrganizationStatus {
@@ -47,6 +43,10 @@ export class Organization extends BaseEntity {
     return this._email;
   }
 
+  public get taxCode(): string | null {
+    return this._taxCode;
+  }
+
   public get website(): string | null {
     return this._website;
   }
@@ -55,24 +55,19 @@ export class Organization extends BaseEntity {
     return this._address;
   }
 
-  // --- Setters ---
-  public set taxCode(taxCode: string | null) {
-    this._taxCode = taxCode;
-    this.markAsUpdated();
-  }
-
-  public set status(status: OrganizationStatus) {
+  // --- Business Methods ---
+  public withStatus(status: OrganizationStatus) {
     if (this._status !== status) {
       this._status = status;
       this.markAsUpdated();
     }
   }
 
-  // --- Business Methods ---
   public updateInfo(
     name?: string,
     phone?: string | null,
     email?: string | null,
+    taxCode?: string | null,
     website?: string | null,
     address?: string | null,
   ): void {
@@ -92,6 +87,10 @@ export class Organization extends BaseEntity {
 
     if (email !== undefined) {
       this._email = email;
+    }
+
+    if (taxCode !== undefined) {
+      this._taxCode = taxCode;
     }
 
     if (website !== undefined) {

@@ -3,12 +3,12 @@ import { IsBoolean, IsEnum, IsOptional } from 'class-validator';
 import { OrganizationStatus } from 'src/domain/identity/organization';
 
 export class GetOrganizationsRequest {
-  @Expose({ name: 'status' })
+  @Expose()
   @IsOptional()
   @IsEnum(OrganizationStatus)
   status?: OrganizationStatus;
 
-  @Expose({ name: 'include_deleted' })
+  @Expose()
   @IsOptional()
   @IsBoolean()
   includeDeleted?: boolean;

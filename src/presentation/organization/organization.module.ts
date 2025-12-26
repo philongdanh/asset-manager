@@ -7,6 +7,8 @@ import { PrismaOrganizationRepository } from 'src/infrastructure/persistence/pri
 import { PrismaService } from 'src/infrastructure/persistence/prisma';
 import { GetOrganizationsHandler } from 'src/application/queries/handlers/get-organizations.handler';
 import { CreateOrganizationHandler } from 'src/application/commands/handlers/create-organization.handler';
+import { GetOrganizationDetails } from 'src/application/queries/handlers';
+import { UpdateOrganizationHandler } from 'src/application/commands/handlers';
 
 @Module({
   controllers: [OrganizationController],
@@ -22,6 +24,8 @@ import { CreateOrganizationHandler } from 'src/application/commands/handlers/cre
     },
     CreateOrganizationHandler,
     GetOrganizationsHandler,
+    GetOrganizationDetails,
+    UpdateOrganizationHandler,
   ],
 })
 export class OrganizationModule {}

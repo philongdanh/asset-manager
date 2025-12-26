@@ -15,7 +15,5 @@ export interface IOrganizationRepository {
 
   // --- Persistence Methods ---
   save(organization: Organization): Promise<Organization>;
-  delete(organizationIds: string[]): Promise<void>; // Soft delete
-  hardDelete(organizationIds: string[]): Promise<void>;
-  restore(organizationIds: string[]): Promise<void>;
+  delete(organizationIds: string[]): Promise<void>; // hard delete
 }

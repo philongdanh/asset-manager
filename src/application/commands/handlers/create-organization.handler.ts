@@ -15,17 +15,12 @@ export class CreateOrganizationHandler {
     private readonly orgRepo: IOrganizationRepository,
   ) {}
 
-  async execute(command: CreateOrganizationCommand): Promise<Organization> {
+  async execute(cmd: CreateOrganizationCommand): Promise<Organization> {
     const id = this.idGenerator.generate();
-    const org = Organization.builder(id, command.name)
-      .withStatus(command.status)
-      .withTaxCode(command.taxCode)
-      .withContactInfo(
-        command.phone,
-        command.email,
-        command.website,
-        command.address,
-      )
+    const org = Organization.builder(id, cmd.name)
+      .withStatus(cmd.status)
+      .withTaxCode(cmd.taxCode)
+      .withContactInfo(cmd.phone, cmd.email, cmd.website, cmd.address)
       .build();
     return await this.orgRepo.save(org);
   }
