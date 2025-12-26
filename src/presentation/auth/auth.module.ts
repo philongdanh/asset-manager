@@ -11,6 +11,8 @@ import { PrismaPermissionRepository } from 'src/infrastructure/persistence/prism
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
@@ -32,6 +34,10 @@ import { ConfigService } from '@nestjs/config';
     ConfigService,
     AuthService,
     PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
     {
       provide: USER_REPOSITORY,
       useClass: PrismaUserRepository,
