@@ -3,42 +3,42 @@ import { InventoryCheck } from './inventory-check.entity';
 export const INVENTORY_CHECK_REPOSITORY = Symbol('INVENTORY_CHECK_REPOSITORY');
 
 export interface IInventoryCheckRepository {
-    // --- Query Methods ---
+  // --- Query Methods ---
 
-    findById(id: string): Promise<InventoryCheck | null>;
+  findById(id: string): Promise<InventoryCheck | null>;
 
-    findAll(
-        organizationId: string,
-        options?: {
-            status?: string;
-            startDate?: Date;
-            endDate?: Date;
-            limit?: number;
-            offset?: number;
-        },
-    ): Promise<{ data: InventoryCheck[]; total: number }>;
+  findAll(
+    organizationId: string,
+    options?: {
+      status?: string;
+      startDate?: Date;
+      endDate?: Date;
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<{ data: InventoryCheck[]; total: number }>;
 
-    findByDepartment(departmentId: string): Promise<InventoryCheck[]>;
+  findByDepartment(departmentId: string): Promise<InventoryCheck[]>;
 
-    findActiveCheck(organizationId: string): Promise<InventoryCheck | null>;
+  findActiveCheck(organizationId: string): Promise<InventoryCheck | null>;
 
-    // --- Validation Methods ---
+  // --- Validation Methods ---
 
-    hasPendingCheck(departmentId: string): Promise<boolean>;
+  hasPendingCheck(departmentId: string): Promise<boolean>;
 
-    // --- Persistence Methods ---
+  // --- Persistence Methods ---
 
-    save(inventoryCheck: InventoryCheck): Promise<InventoryCheck>;
+  save(inventoryCheck: InventoryCheck): Promise<InventoryCheck>;
 
-    delete(id: string): Promise<void>;
+  delete(id: string): Promise<void>;
 
-    updateCheckDetails(
-        inventoryCheckId: string,
-        details: Array<{
-            assetId: string;
-            isFound: boolean;
-            actualStatus: string;
-            notes?: string;
-        }>,
-    ): Promise<void>;
+  updateCheckDetails(
+    inventoryCheckId: string,
+    details: Array<{
+      assetId: string;
+      isFound: boolean;
+      actualStatus: string;
+      notes?: string;
+    }>,
+  ): Promise<void>;
 }

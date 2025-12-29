@@ -1,3 +1,3 @@
 export class GetInventoryCheckDetailsQuery {
-    constructor(public readonly inventoryCheckId: string) { }
+  constructor(public readonly inventoryCheckId: string) {}
 }

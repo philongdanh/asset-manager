@@ -1,3 +1,3 @@
 export class GetAssetTransferDetailsQuery {
-    constructor(public readonly transferId: string) { }
+  constructor(public readonly transferId: string) {}
 }

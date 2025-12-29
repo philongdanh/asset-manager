@@ -2,13 +2,13 @@ import { Module, Provider } from '@nestjs/common';
 import { ASSET_TRANSFER_REPOSITORY } from './domain';
 import { PrismaAssetTransferRepository } from './infrastructure';
 import {
-    ApproveAssetTransferHandler,
-    CancelAssetTransferHandler,
-    CompleteAssetTransferHandler,
-    CreateAssetTransferHandler,
-    RejectAssetTransferHandler,
-    GetAssetTransferDetailsHandler,
-    GetAssetTransfersHandler,
+  ApproveAssetTransferHandler,
+  CancelAssetTransferHandler,
+  CompleteAssetTransferHandler,
+  CreateAssetTransferHandler,
+  RejectAssetTransferHandler,
+  GetAssetTransferDetailsHandler,
+  GetAssetTransfersHandler,
 } from './application';
 import { AssetTransferController } from './presentation';
 import { PrismaService } from '../../infrastructure/persistence/prisma/prisma.service';
@@ -18,33 +18,33 @@ import { ASSET_REPOSITORY } from '../asset/domain';
 import { PrismaAssetRepository } from '../asset/infrastructure/persistence/repositories/prisma-asset.repository';
 
 const handlers: Provider[] = [
-    CreateAssetTransferHandler,
-    ApproveAssetTransferHandler,
-    RejectAssetTransferHandler,
-    CompleteAssetTransferHandler,
-    CancelAssetTransferHandler,
-    GetAssetTransfersHandler,
-    GetAssetTransferDetailsHandler,
+  CreateAssetTransferHandler,
+  ApproveAssetTransferHandler,
+  RejectAssetTransferHandler,
+  CompleteAssetTransferHandler,
+  CancelAssetTransferHandler,
+  GetAssetTransfersHandler,
+  GetAssetTransferDetailsHandler,
 ];
 
 @Module({
-    controllers: [AssetTransferController],
-    providers: [
-        PrismaService,
-        {
-            provide: ID_GENERATOR,
-            useClass: UuidGeneratorService,
-        },
-        {
-            provide: ASSET_TRANSFER_REPOSITORY,
-            useClass: PrismaAssetTransferRepository,
-        },
-        {
-            provide: ASSET_REPOSITORY,
-            useClass: PrismaAssetRepository,
-        },
-        ...handlers,
-    ],
-    exports: [ASSET_TRANSFER_REPOSITORY],
+  controllers: [AssetTransferController],
+  providers: [
+    PrismaService,
+    {
+      provide: ID_GENERATOR,
+      useClass: UuidGeneratorService,
+    },
+    {
+      provide: ASSET_TRANSFER_REPOSITORY,
+      useClass: PrismaAssetTransferRepository,
+    },
+    {
+      provide: ASSET_REPOSITORY,
+      useClass: PrismaAssetRepository,
+    },
+    ...handlers,
+  ],
+  exports: [ASSET_TRANSFER_REPOSITORY],
 })
-export class AssetTransferModule { }
+export class AssetTransferModule {}
