@@ -23,6 +23,7 @@ import { AccountingEntryModule } from './modules/accounting-entry';
 import { BudgetPlanModule } from './modules/budget-plan';
 import { InventoryCheckModule } from './modules/inventory-check';
 import { AuditLogModule } from './modules/audit-log';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { AuditLogModule } from './modules/audit-log';
     BudgetPlanModule,
     InventoryCheckModule,
     AuditLogModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [
@@ -56,4 +58,4 @@ import { AuditLogModule } from './modules/audit-log';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
