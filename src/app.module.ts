@@ -14,6 +14,10 @@ import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposa
 import { MaintenanceScheduleModule } from './presentation/maintenance-schedule/maintenance-schedule.module';
 import { AssetDocumentModule } from './presentation/asset-document/asset-document.module';
 import { AssetDepreciationModule } from './presentation/asset-depreciation/asset-depreciation.module';
+import { AccountingEntryModule } from './presentation/accounting-entry/accounting-entry.module';
+import { BudgetPlanModule } from './presentation/budget-plan/budget-plan.module';
+import { InventoryCheckModule } from './presentation/inventory-check/inventory-check.module';
+import { AuditLogModule } from './presentation/audit-log/audit-log.module';
 
 @Module({
   imports: [
@@ -28,6 +32,10 @@ import { AssetDepreciationModule } from './presentation/asset-depreciation/asset
     MaintenanceScheduleModule,
     AssetDocumentModule,
     AssetDepreciationModule,
+    AccountingEntryModule,
+    BudgetPlanModule,
+    InventoryCheckModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [
