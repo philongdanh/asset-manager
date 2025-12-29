@@ -2,11 +2,17 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { OrganizationModule } from './presentation/organization/organization.module';
 import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './presentation/interfaces';
+// Identity modules - refactored to src/modules/
+import { OrganizationModule } from './modules/organization';
+import { DepartmentModule } from './modules/department';
+import { RoleModule } from './modules/role';
+import { PermissionModule } from './modules/permission';
+// Identity modules - still in old structure (to be refactored)
 import { AuthModule } from './presentation/auth';
 import { UserModule } from './presentation/user';
+// Other modules
 import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
 import { AssetModule } from './modules/asset/asset.module';
 import { AssetTransferModule } from './presentation/asset-transfer/asset-transfer.module';
@@ -22,9 +28,14 @@ import { AuditLogModule } from './presentation/audit-log/audit-log.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Identity
     AuthModule,
     OrganizationModule,
+    DepartmentModule,
+    RoleModule,
+    PermissionModule,
     UserModule,
+    // Asset Management
     AssetCategoryModule,
     AssetModule,
     AssetTransferModule,
@@ -47,3 +58,4 @@ import { AuditLogModule } from './presentation/audit-log/audit-log.module';
   ],
 })
 export class AppModule { }
+
