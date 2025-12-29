@@ -1,16 +1,19 @@
-import { IsNotEmpty, IsString, IsArray, IsOptional } from 'class-validator';
+import { Expose } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
-export class CreateRoleDto {
+export class CreateRoleRequest {
+  @Expose({ name: 'organization_id' })
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   organizationId: string;
 
+  @Expose()
   @IsNotEmpty()
   @IsString()
   name: string;
 
-  @IsOptional()
+  @Expose({ name: 'permission_ids' })
   @IsArray()
   @IsString({ each: true })
-  permissionIds?: string[];
+  permissionIds: string[];
 }

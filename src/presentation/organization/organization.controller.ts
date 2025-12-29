@@ -24,11 +24,8 @@ import { Public } from '../auth/decorators';
 import {
   CreateOrganizationRequest,
   GetOrganizationsRequest,
-  GetOrganizationsResponse,
-  GetOrganizationDetailsResponse,
   UpdateOrganizationRequest,
-  UpdateOrganizationResponse,
-  CreateOrganizationResponse,
+  OrganizationResponse,
 } from './dto';
 
 @Controller('organizations')
@@ -38,13 +35,13 @@ export class OrganizationController {
     private readonly getOrgsHandler: GetOrganizationsHandler,
     private readonly getOrgDetailsHandler: GetOrganizationDetails,
     private readonly updateOrgHandler: UpdateOrganizationHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Post()
   async create(
     @Body() dto: CreateOrganizationRequest,
-  ): Promise<CreateOrganizationResponse> {
+  ): Promise<OrganizationResponse> {
     const cmd = new CreateOrganizationCommand(
       dto.name,
       dto.status,
@@ -55,62 +52,30 @@ export class OrganizationController {
       dto.address || null,
     );
     const org = await this.createOrgHandler.execute(cmd);
-    return <CreateOrganizationResponse>{
-      id: org.id,
-      name: org.name,
-      status: org.status,
-      phone: org.phone,
-      email: org.email,
-      taxCode: org.taxCode,
-      website: org.website,
-      address: org.address,
-      createdAt: org.createdAt,
-      updatedAt: org.updatedAt,
-    };
+    return new OrganizationResponse(org);
   }
 
   @Public()
   @Get()
   async getList(
     @Query() query: GetOrganizationsRequest,
-  ): Promise<GetOrganizationsResponse[]> {
+  ): Promise<OrganizationResponse[]> {
     const orgs = await this.getOrgsHandler.execute({
       status: query.status,
       includeDeleted: query.includeDeleted,
     });
-    return orgs.map(
-      (org) =>
-        <GetOrganizationsResponse>{
-          id: org.id,
-          name: org.name,
-          taxCode: org.taxCode,
-          status: org.status,
-          createdAt: org.createdAt,
-          updatedAt: org.updatedAt,
-        },
-    );
+    return orgs.map((org) => new OrganizationResponse(org));
   }
 
   @Public()
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<GetOrganizationDetailsResponse> {
+  ): Promise<OrganizationResponse> {
     const org = await this.getOrgDetailsHandler.execute({
       organizationId: id,
     });
-    return <GetOrganizationDetailsResponse>{
-      id: org.id,
-      name: org.name,
-      status: org.status,
-      phone: org.phone,
-      email: org.email,
-      taxCode: org.taxCode,
-      website: org.website,
-      address: org.address,
-      createdAt: org.createdAt,
-      updatedAt: org.updatedAt,
-    };
+    return new OrganizationResponse(org);
   }
 
   @Public()
@@ -118,7 +83,7 @@ export class OrganizationController {
   async updateInfo(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateOrganizationRequest,
-  ): Promise<UpdateOrganizationResponse> {
+  ): Promise<OrganizationResponse> {
     const cmd = new UpdateOrganizationCommand(
       id,
       dto.name,
@@ -130,17 +95,6 @@ export class OrganizationController {
       dto.address,
     );
     const org = await this.updateOrgHandler.execute(cmd);
-    return <UpdateOrganizationResponse>{
-      id: org.id,
-      name: org.name,
-      status: org.status,
-      phone: org.phone,
-      email: org.email,
-      taxCode: org.taxCode,
-      website: org.website,
-      address: org.address,
-      createdAt: org.createdAt,
-      updatedAt: org.updatedAt,
-    };
+    return new OrganizationResponse(org);
   }
 }

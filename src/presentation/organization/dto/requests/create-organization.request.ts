@@ -30,7 +30,7 @@ export class CreateOrganizationRequest {
   @IsEmail()
   email?: string;
 
-  @Expose()
+  @Expose({ name: 'tax_code' })
   @IsOptional()
   @IsString()
   taxCode?: string;

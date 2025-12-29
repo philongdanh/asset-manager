@@ -1,5 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { CreateDepartmentDto } from './dto/create-department.dto';
+import { CreateDepartmentRequest, DepartmentResponse } from './dto';
 import { CreateDepartmentCommand } from 'src/application/commands/create-department.command';
 import { CreateDepartmentHandler } from 'src/application/commands/handlers/create-department.handler';
 
@@ -7,15 +7,16 @@ import { CreateDepartmentHandler } from 'src/application/commands/handlers/creat
 export class DepartmentController {
   constructor(
     private readonly createDepartmentHandler: CreateDepartmentHandler,
-  ) {}
+  ) { }
 
   @Post()
-  async create(@Body() dto: CreateDepartmentDto) {
+  async create(@Body() dto: CreateDepartmentRequest): Promise<DepartmentResponse> {
     const cmd = new CreateDepartmentCommand(
       dto.organizationId,
       dto.name,
       dto.parentId,
     );
-    return await this.createDepartmentHandler.execute(cmd);
+    const dept = await this.createDepartmentHandler.execute(cmd);
+    return new DepartmentResponse(dept);
   }
 }
