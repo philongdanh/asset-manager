@@ -3,50 +3,32 @@ import {
   IsDateString,
   IsEmail,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   IsUUID,
 } from 'class-validator';
-import { OrganizationStatus } from 'src/domain/identity/organization';
+import { UserStatus } from 'src/domain/identity/user';
 
-export class UpdateOrganizationResponse {
+export class UpdateUserResponse {
   @Expose()
+  @IsNotEmpty()
   @IsUUID()
   id: string;
 
   @Expose()
+  @IsNotEmpty()
   @IsString()
-  name: string;
+  username: string;
 
   @Expose()
-  @IsOptional()
-  @IsString()
-  taxCode?: string;
-
-  @Expose()
-  @IsEnum(OrganizationStatus)
-  status: OrganizationStatus;
-
-  @Expose()
-  @IsOptional()
-  @IsPhoneNumber()
-  phone?: string;
-
-  @Expose()
-  @IsOptional()
+  @IsNotEmpty()
   @IsEmail()
-  email?: string;
+  email: string;
 
-  @Expose()
   @IsOptional()
-  @IsString()
-  website?: string;
-
-  @Expose()
-  @IsOptional()
-  @IsString()
-  address?: string;
+  @IsEnum(UserStatus)
+  status?: UserStatus;
 
   @Expose()
   @IsDateString()
@@ -55,4 +37,8 @@ export class UpdateOrganizationResponse {
   @Expose()
   @IsDateString()
   updatedAt: Date;
+
+  @Expose()
+  @IsDateString()
+  deletedAt: Date | null;
 }

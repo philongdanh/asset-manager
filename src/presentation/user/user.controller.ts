@@ -6,11 +6,15 @@ import {
   HttpStatus,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { CreateUserCommand } from 'src/application/commands/create-user.command';
-import { CreateUserHandler } from 'src/application/commands/handlers';
+import {
+  CreateUserHandler,
+  UpdateUserHandler,
+} from 'src/application/commands/handlers';
 import {
   GetUserDetailsHandler,
   GetUsersHandler,
@@ -20,8 +24,10 @@ import {
   CreateUserRequest,
   GetUserDetailsResponse,
   GetUsersRequest,
+  UpdateUserRequest,
+  UpdateUserResponse,
 } from './dto';
-import { plainToInstance } from 'class-transformer';
+import { UpdateUserCommand } from 'src/application/commands';
 
 @Controller('users')
 export class UserController {
@@ -29,6 +35,7 @@ export class UserController {
     private readonly createUserHandler: CreateUserHandler,
     private readonly getUsersHandler: GetUsersHandler,
     private readonly getUserDetailsHandler: GetUserDetailsHandler,
+    private readonly updateUserHandler: UpdateUserHandler,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -69,51 +76,38 @@ export class UserController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<GetUserDetailsResponse> {
     const user = await this.getUserDetailsHandler.execute({ userId: id });
-    return plainToInstance(
-      GetUserDetailsResponse,
-      {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        status: user.status,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        deletedAt: user.deletedAt,
-      },
-      {
-        excludeExtraneousValues: true,
-      },
-    );
+    return <GetUserDetailsResponse>{
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      status: user.status,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
+    };
   }
 
-  // @Public()
-  // @Patch(':id')
-  // async updateInfo(
-  //   @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  //   @Body() dto: UpdateUserRequest,
-  // ): Promise<UpdateOrganizationResponse> {
-  //   const cmd = new UpdateOrganizationCommand(
-  //     id,
-  //     dto.organizationId,
-  //     dto.status,
-  //     dto.username,
-  //     dto.password,
-  //     dto.email,
-  //     dto.departmentId,
-  //     dto.status,
-  //   );
-  //   const org = await this.updateUserHandler.execute(cmd);
-  //   return <UpdateOrganizationResponse>{
-  //     id: org.id,
-  //     name: org.name,
-  //     status: org.status,
-  //     phone: org.phone,
-  //     email: org.email,
-  //     taxCode: org.taxCode,
-  //     website: org.website,
-  //     address: org.address,
-  //     createdAt: org.createdAt,
-  //     updatedAt: org.updatedAt,
-  //   };
-  // }
+  @Public()
+  @Patch(':id')
+  async updateInfo(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() dto: UpdateUserRequest,
+  ): Promise<UpdateUserResponse> {
+    const cmd = new UpdateUserCommand(
+      id,
+      dto.email,
+      dto.departmentId,
+      dto.status,
+    );
+    const user = await this.updateUserHandler.execute(cmd);
+    return <UpdateUserResponse>{
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      status: user.status,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
+    };
+  }
 }

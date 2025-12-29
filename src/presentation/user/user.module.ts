@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
-import { CreateUserHandler } from 'src/application/commands/handlers';
+import {
+  CreateUserHandler,
+  UpdateUserHandler,
+} from 'src/application/commands/handlers';
 import {
   GetUserDetailsHandler,
   GetUsersHandler,
@@ -26,6 +29,7 @@ import { UserController } from './user.controller';
     CreateUserHandler,
     GetUsersHandler,
     GetUserDetailsHandler,
+    UpdateUserHandler,
   ],
 })
 export class UserModule {}
