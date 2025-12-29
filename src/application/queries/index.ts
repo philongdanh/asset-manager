@@ -9,3 +9,6 @@ export * from './get-asset-details.query';
 export * from './get-asset-transfers.query';
 export * from './get-asset-transfer-details.query';
 export * from './asset-disposal';
+export * from './maintenance-schedule';
+export * from './asset-document';
+export * from './asset-depreciation';

@@ -15,3 +15,6 @@ export * from './reject-asset-transfer.command';
 export * from './complete-asset-transfer.command';
 export * from './cancel-asset-transfer.command';
 export * from './asset-disposal';
+export * from './maintenance-schedule';
+export * from './asset-document';
+export * from './asset-depreciation';

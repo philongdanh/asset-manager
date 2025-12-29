@@ -11,6 +11,9 @@ import { AssetCategoryModule } from './presentation/asset-category/asset-categor
 import { AssetModule } from './presentation/asset/asset.module';
 import { AssetTransferModule } from './presentation/asset-transfer/asset-transfer.module';
 import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposal.module';
+import { MaintenanceScheduleModule } from './presentation/maintenance-schedule/maintenance-schedule.module';
+import { AssetDocumentModule } from './presentation/asset-document/asset-document.module';
+import { AssetDepreciationModule } from './presentation/asset-depreciation/asset-depreciation.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposa
     AssetModule,
     AssetTransferModule,
     AssetDisposalModule,
+    MaintenanceScheduleModule,
+    AssetDocumentModule,
+    AssetDepreciationModule,
   ],
   controllers: [AppController],
   providers: [

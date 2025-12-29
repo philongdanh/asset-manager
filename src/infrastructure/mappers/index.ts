@@ -7,3 +7,6 @@ export * from './role.mapper';
 export * from './user.mapper';
 export * from './asset-transfer.mapper';
 export * from './asset-disposal.mapper';
+export * from './maintenance-schedule.mapper';
+export * from './asset-document.mapper';
+export * from './asset-depreciation.mapper';
