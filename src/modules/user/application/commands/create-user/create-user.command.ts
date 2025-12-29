@@ -9,5 +9,5 @@ export class CreateUserCommand {
     public readonly departmentId?: string | null,
     public readonly status?: UserStatus,
     public readonly avatarUrl?: string | null,
-  ) { }
+  ) {}
 }

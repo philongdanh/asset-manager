@@ -18,5 +18,5 @@ export class CreateAssetCommand {
     public readonly condition: string | null,
     public readonly status: string | null,
     public readonly imageUrl: string | null,
-  ) { }
+  ) {}
 }

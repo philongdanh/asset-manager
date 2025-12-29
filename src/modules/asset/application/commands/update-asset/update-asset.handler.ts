@@ -16,7 +16,7 @@ export class UpdateAssetHandler {
   constructor(
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepo: IAssetRepository,
-  ) { }
+  ) {}
 
   async execute(cmd: UpdateAssetCommand): Promise<Asset> {
     const asset = await this.assetRepo.findById(cmd.assetId);

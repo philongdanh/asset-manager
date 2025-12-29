@@ -7,7 +7,7 @@ import { Department } from '../../domain';
 
 @Controller('departments')
 export class DepartmentController {
-  constructor(private readonly commandBus: CommandBus) { }
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Permissions('DEPARTMENT_CREATE')
   @Post()
@@ -19,7 +19,7 @@ export class DepartmentController {
       dto.name,
       dto.parentId,
     );
-    const dept = (await this.commandBus.execute(cmd)) as Department;
+    const dept = await this.commandBus.execute(cmd);
     return new DepartmentResponse(dept);
   }
 }

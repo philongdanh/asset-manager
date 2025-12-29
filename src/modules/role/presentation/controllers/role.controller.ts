@@ -7,7 +7,7 @@ import { Role } from '../../domain';
 
 @Controller('roles')
 export class RoleController {
-  constructor(private readonly commandBus: CommandBus) { }
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Permissions('ROLE_VIEW')
   @Get()
@@ -23,7 +23,7 @@ export class RoleController {
       dto.name,
       dto.permissionIds,
     );
-    const role = (await this.commandBus.execute(cmd)) as Role;
+    const role = await this.commandBus.execute(cmd);
     return new RoleResponse(role);
   }
 }

@@ -34,7 +34,7 @@ export class UserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('USER_CREATE')
@@ -48,7 +48,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const result = (await this.commandBus.execute(cmd)) as User;
+    const result = await this.commandBus.execute(cmd);
     return new UserResponse(result);
   }
 
@@ -68,9 +68,7 @@ export class UserController {
       includeDeleted: query.includeDeleted,
     });
 
-    const result = (await this.queryBus.execute(
-      qry,
-    )) as { data: User[]; total: number };
+    const result = await this.queryBus.execute(qry);
     return {
       data: result.data.map((u) => new UserResponse(u)),
       total: result.total,
@@ -83,7 +81,7 @@ export class UserController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserResponse> {
     const query = new GetUserDetailsQuery(id);
-    const user = (await this.queryBus.execute(query)) as User;
+    const user = await this.queryBus.execute(query);
     return new UserResponse(user);
   }
 
@@ -99,7 +97,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const user = (await this.commandBus.execute(cmd)) as User;
+    const user = await this.commandBus.execute(cmd);
     return new UserResponse(user);
   }
 }
