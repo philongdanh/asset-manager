@@ -6,7 +6,7 @@ import {
   AssetDisposalStatus,
   AssetDisposalType,
 } from '../../../domain';
-import { PrismaService } from '../../../../../infrastructure/persistence/prisma/prisma.service';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { AssetDisposalMapper } from '../mappers/asset-disposal.mapper';
 
 @Injectable()

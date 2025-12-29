@@ -4,7 +4,7 @@ import {
   OrganizationStatus,
   Organization,
 } from '../../../domain';
-import { PrismaService } from 'src/infrastructure/persistence/prisma';
+import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { OrganizationMapper } from '../mappers/organization.mapper';
 
 @Injectable()

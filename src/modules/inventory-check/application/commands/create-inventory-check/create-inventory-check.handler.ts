@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ID_GENERATOR, type IIdGenerator } from 'src/domain/core/interfaces';
+import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import {
   INVENTORY_CHECK_REPOSITORY,
   type IInventoryCheckRepository,

@@ -12,9 +12,9 @@ import {
   INVENTORY_CHECK_REPOSITORY,
   INVENTORY_DETAIL_REPOSITORY,
 } from './domain';
-import { ID_GENERATOR } from 'src/domain/core/interfaces';
-import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
-import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
+import { ID_GENERATOR } from 'src/shared/domain/interfaces';
+import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import {
   PrismaInventoryCheckRepository,
   PrismaInventoryDetailRepository,

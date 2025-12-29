@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { UseCaseException } from 'src/application/core/exceptions';
-import { ID_GENERATOR, type IIdGenerator } from 'src/domain/core/interfaces';
+import { UseCaseException } from 'src/shared/application/exceptions';
+import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import {
   MAINTENANCE_SCHEDULE_REPOSITORY,
   type IMaintenanceScheduleRepository,

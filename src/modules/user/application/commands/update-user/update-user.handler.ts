@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { UseCaseException } from 'src/application/core/exceptions';
-import { EntityNotFoundException } from 'src/domain/core';
+import { UseCaseException } from 'src/shared/application/exceptions';
+import { EntityNotFoundException } from 'src/shared/domain';
 import {
   User,
   USER_REPOSITORY,

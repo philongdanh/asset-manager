@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PrismaService } from 'src/infrastructure/persistence/prisma';
+import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { AuthController } from './presentation';
 import { USER_REPOSITORY } from 'src/modules/user/domain';
 import { PrismaUserRepository } from 'src/modules/user/infrastructure';

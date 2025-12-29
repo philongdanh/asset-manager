@@ -5,7 +5,7 @@ import {
   Organization,
 } from '../../../domain';
 import { UpdateOrganizationCommand } from './update-organization.command';
-import { EntityNotFoundException } from 'src/domain/core';
+import { EntityNotFoundException } from 'src/shared/domain';
 
 @Injectable()
 export class UpdateOrganizationHandler {

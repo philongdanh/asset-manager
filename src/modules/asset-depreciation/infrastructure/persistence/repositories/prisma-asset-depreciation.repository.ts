@@ -5,7 +5,7 @@ import {
   AssetDepreciation,
   DepreciationMethod,
 } from '../../../domain';
-import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { AssetDepreciationMapper } from '../mappers/asset-depreciation.mapper';
 
 @Injectable()

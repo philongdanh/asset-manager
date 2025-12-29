@@ -5,7 +5,7 @@ import {
   Organization,
 } from '../../../domain';
 import { GetOrganizationDetailsQuery } from './get-organization-details.query';
-import { UseCaseException } from 'src/application/core/exceptions';
+import { UseCaseException } from 'src/shared/application/exceptions';
 
 @Injectable()
 export class GetOrganizationDetailsHandler {

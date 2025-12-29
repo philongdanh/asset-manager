@@ -6,7 +6,7 @@ import {
   AssetCondition,
 } from '../../../domain/entities/asset.entity';
 import { AssetMapper } from '../../mappers/asset.mapper';
-import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { Prisma } from 'generated/prisma/client';
 
 @Injectable()

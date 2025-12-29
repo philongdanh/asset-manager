@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { UseCaseException } from 'src/application/core/exceptions';
+import { UseCaseException } from 'src/shared/application/exceptions';
 import {
   ASSET_TRANSFER_REPOSITORY,
   type IAssetTransferRepository,

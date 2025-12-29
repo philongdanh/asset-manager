@@ -6,7 +6,7 @@ import {
   MaintenanceStatus,
   MaintenanceType,
 } from '../../../domain';
-import { PrismaService } from '../../../../../infrastructure/persistence/prisma/prisma.service';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { MaintenanceScheduleMapper } from '../mappers/maintenance-schedule.mapper';
 
 @Injectable()

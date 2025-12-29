@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IAssetCategoryRepository, AssetCategory } from '../../../domain';
-import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { AssetCategoryMapper } from '../mappers/asset-category.mapper';
 import { Prisma } from 'generated/prisma/client';
 

@@ -1,4 +1,4 @@
-import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
+import { BaseEntity, BusinessRuleViolationException } from 'src/shared/domain';
 
 export class InventoryDetail extends BaseEntity {
   private _inventoryCheckId: string;

@@ -1,4 +1,4 @@
-import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
+import { BaseEntity, BusinessRuleViolationException } from 'src/shared/domain';
 
 export class Department extends BaseEntity {
   private _organizationId: string;

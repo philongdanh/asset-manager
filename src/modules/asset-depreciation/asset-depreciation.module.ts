@@ -7,9 +7,9 @@ import {
   GetAssetDepreciationDetailsHandler,
 } from './application';
 import { AssetDepreciationController } from './presentation';
-import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
-import { ID_GENERATOR } from 'src/domain/core/interfaces';
-import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
+import { ID_GENERATOR } from 'src/shared/domain/interfaces';
+import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
 import { ASSET_REPOSITORY } from '../asset/domain';
 import { PrismaAssetRepository } from '../asset/infrastructure/persistence/repositories/prisma-asset.repository';
 

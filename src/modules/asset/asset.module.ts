@@ -5,9 +5,9 @@ import { UpdateAssetHandler } from './application/commands/update-asset/update-a
 import { GetAssetDetailsHandler } from './application/queries/get-asset-details/get-asset-details.handler';
 import { GetAssetsHandler } from './application/queries/get-assets/get-assets.handler';
 import { ASSET_REPOSITORY } from './domain/repositories/asset.repository.interface';
-import { ID_GENERATOR } from 'src/domain/core/interfaces';
-import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
-import { PrismaService } from 'src/infrastructure/persistence/prisma';
+import { ID_GENERATOR } from 'src/shared/domain/interfaces';
+import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
+import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { PrismaAssetRepository } from './infrastructure/persistence/repositories/prisma-asset.repository';
 import { AssetController } from './presentation';
 

@@ -3,7 +3,7 @@ import { Prisma } from 'generated/prisma/client';
 import { IUserRepository, User, UserStatus } from '../../../domain';
 import { RoleMapper } from 'src/modules/role/infrastructure';
 import { UserMapper } from '../mappers/user.mapper';
-import { PrismaService } from 'src/infrastructure/persistence/prisma';
+import { PrismaService } from 'src/shared/infrastructure/prisma';
 
 @Injectable()
 export class PrismaUserRepository implements IUserRepository {

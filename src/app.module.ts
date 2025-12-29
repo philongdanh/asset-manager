@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionFilter } from './presentation/interfaces';
+import { GlobalExceptionFilter } from './shared/presentation/interfaces';
 // Identity modules - refactored to src/modules/
 import { OrganizationModule } from './modules/organization';
 import { DepartmentModule } from './modules/department';
@@ -56,4 +56,4 @@ import { AuditLogModule } from './modules/audit-log';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

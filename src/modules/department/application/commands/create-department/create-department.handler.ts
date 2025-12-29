@@ -1,12 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { UseCaseException } from 'src/application/core/exceptions';
+import { UseCaseException } from 'src/shared/application/exceptions';
 import {
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
   Department,
 } from '../../../domain';
 import { CreateDepartmentCommand } from './create-department.command';
-import { ID_GENERATOR, type IIdGenerator } from 'src/domain/core/interfaces';
+import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
 @Injectable()
 export class CreateDepartmentHandler {

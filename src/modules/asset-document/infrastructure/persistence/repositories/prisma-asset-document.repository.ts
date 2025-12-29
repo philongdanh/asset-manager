@@ -5,7 +5,7 @@ import {
   AssetDocument,
   AssetDocumentType,
 } from '../../../domain';
-import { PrismaService } from '../../../../../infrastructure/persistence/prisma/prisma.service';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { AssetDocumentMapper } from '../mappers/asset-document.mapper';
 
 @Injectable()

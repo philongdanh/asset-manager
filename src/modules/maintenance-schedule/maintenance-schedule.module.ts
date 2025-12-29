@@ -10,9 +10,9 @@ import {
   GetMaintenanceScheduleDetailsHandler,
 } from './application';
 import { MaintenanceScheduleController } from './presentation';
-import { PrismaService } from '../../infrastructure/persistence/prisma/prisma.service';
-import { ID_GENERATOR } from '../../domain/core/interfaces';
-import { UuidGeneratorService } from '../../infrastructure/common/id-generator';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
+import { ID_GENERATOR } from 'src/shared/domain/interfaces';
+import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
 import { ASSET_REPOSITORY } from '../asset/domain';
 import { PrismaAssetRepository } from '../asset/infrastructure/persistence/repositories/prisma-asset.repository';
 

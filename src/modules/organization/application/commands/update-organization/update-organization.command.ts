@@ -1,5 +1,5 @@
 import { OrganizationStatus } from '../../../domain';
-import { CommandValidationException } from 'src/application/core/exceptions';
+import { CommandValidationException } from 'src/shared/application/exceptions';
 
 export class UpdateOrganizationCommand {
   constructor(

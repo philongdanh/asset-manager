@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IRoleRepository, Role } from '../../../domain';
-import { PrismaService } from 'src/infrastructure/persistence/prisma';
+import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { RoleMapper } from '../mappers/role.mapper';
 import { Prisma } from 'generated/prisma/client';
 

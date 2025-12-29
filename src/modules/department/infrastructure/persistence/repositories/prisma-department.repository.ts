@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/infrastructure/persistence/prisma';
+import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { DepartmentMapper } from '../mappers/department.mapper';
 import { Department, IDepartmentRepository } from '../../../domain';
 import { DepartmentWhereInput } from 'generated/prisma/models';

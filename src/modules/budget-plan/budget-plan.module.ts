@@ -6,9 +6,9 @@ import {
   GetBudgetPlansHandler,
 } from './application';
 import { BUDGET_PLAN_REPOSITORY } from './domain';
-import { ID_GENERATOR } from 'src/domain/core/interfaces';
-import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
-import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
+import { ID_GENERATOR } from 'src/shared/domain/interfaces';
+import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { PrismaBudgetPlanRepository } from './infrastructure';
 import { BudgetPlanController } from './presentation';
 

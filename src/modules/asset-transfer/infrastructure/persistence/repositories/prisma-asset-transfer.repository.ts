@@ -6,7 +6,7 @@ import {
   AssetTransferStatus,
   AssetTransferType,
 } from '../../../domain';
-import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
+import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import { AssetTransferMapper } from '../mappers/asset-transfer.mapper';
 
 @Injectable()

@@ -5,10 +5,10 @@ import {
   GetUsersHandler,
   GetUserDetailsHandler,
 } from './application';
-import { ID_GENERATOR } from 'src/domain/core/interfaces';
+import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { USER_REPOSITORY } from './domain';
-import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
-import { PrismaService } from 'src/infrastructure/persistence/prisma';
+import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
+import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { PrismaUserRepository } from './infrastructure';
 import { UserController } from './presentation';
 

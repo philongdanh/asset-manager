@@ -1,4 +1,4 @@
-import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
+import { BaseEntity, BusinessRuleViolationException } from 'src/shared/domain';
 
 export class Permission extends BaseEntity {
   private _name: string;

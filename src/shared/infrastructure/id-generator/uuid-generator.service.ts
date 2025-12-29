@@ -1,7 +1,7 @@
 // uuid-generator.service.ts
 import { Injectable } from '@nestjs/common';
 import { randomUUID as uuidv4 } from 'crypto';
-import { IIdGenerator } from 'src/domain/core/interfaces';
+import { IIdGenerator } from 'src/shared/domain/interfaces';
 
 @Injectable()
 export class UuidGeneratorService implements IIdGenerator {

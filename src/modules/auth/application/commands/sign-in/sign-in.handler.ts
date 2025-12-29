@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable, Inject } from '@nestjs/common';
-import { UseCaseException } from 'src/application/core/exceptions';
+import { UseCaseException } from 'src/shared/application/exceptions';
 import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
 import { SignInCommand } from './sign-in.command';
 import { type IRoleRepository, ROLE_REPOSITORY } from 'src/modules/role/domain';
