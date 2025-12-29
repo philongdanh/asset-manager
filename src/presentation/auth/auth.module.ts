@@ -9,7 +9,7 @@ import { PrismaRoleRepository } from 'src/infrastructure/persistence/prisma/repo
 import { PERMISSION_REPOSITORY } from 'src/domain/identity/permission';
 import { PrismaPermissionRepository } from 'src/infrastructure/persistence/prisma/repositories/prisma-permission.repository';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthService } from './auth.service';
+import { AuthService } from 'src/application/services';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
@@ -53,4 +53,4 @@ import { AuthGuard } from './auth.guard';
     SignInHandler,
   ],
 })
-export class AuthModule {}
+export class AuthModule { }
