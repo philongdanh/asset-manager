@@ -1,7 +1,7 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { CreateDepartmentRequest, DepartmentResponse } from '../dto';
 import { CreateDepartmentCommand, CreateDepartmentHandler } from '../../application';
-import { Permissions } from 'src/presentation/auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 
 @Controller('departments')
 export class DepartmentController {

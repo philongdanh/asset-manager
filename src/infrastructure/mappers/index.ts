@@ -1,10 +1,6 @@
 export * from '../../modules/asset/infrastructure/mappers/asset.mapper';
 export * from './asset-category.mapper';
-export * from './department.mapper';
-export * from './organization.mapper';
-export * from './permission.mapper';
-export * from './role.mapper';
-export * from './user.mapper';
+
 export * from './asset-transfer.mapper';
 export * from './asset-disposal.mapper';
 export * from './maintenance-schedule.mapper';

@@ -9,9 +9,8 @@ import { OrganizationModule } from './modules/organization';
 import { DepartmentModule } from './modules/department';
 import { RoleModule } from './modules/role';
 import { PermissionModule } from './modules/permission';
-// Identity modules - still in old structure (to be refactored)
-import { AuthModule } from './presentation/auth';
-import { UserModule } from './presentation/user';
+import { UserModule } from './modules/user';
+import { AuthModule } from './modules/auth';
 // Other modules
 import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
 import { AssetModule } from './modules/asset/asset.module';

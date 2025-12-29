@@ -22,7 +22,7 @@ import {
     GetOrganizationDetailsQuery,
     GetOrganizationDetailsHandler,
 } from '../../application/queries';
-import { Permissions } from 'src/presentation/auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 import {
     CreateOrganizationRequest,
     GetOrganizationsRequest,

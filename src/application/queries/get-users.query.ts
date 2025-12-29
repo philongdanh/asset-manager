@@ -1,4 +1,4 @@
-import { UserStatus } from 'src/domain/identity/user';
+import { UserStatus } from 'src/modules/user/domain';
 
 export class GetUsersQuery {
   constructor(
@@ -12,5 +12,5 @@ export class GetUsersQuery {
       offset?: number;
       includeDeleted?: boolean;
     },
-  ) {}
+  ) { }
 }

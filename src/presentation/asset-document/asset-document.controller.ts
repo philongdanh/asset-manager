@@ -23,7 +23,7 @@ import {
     GetAssetDocumentsHandler,
     GetAssetDocumentDetailsHandler,
 } from 'src/application/queries/handlers';
-import { Permissions } from '../auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 import { AssetDocumentResponse, UploadAssetDocumentRequest } from './dto';
 
 @Controller('asset-documents')

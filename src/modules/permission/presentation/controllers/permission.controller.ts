@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get } from '@nestjs/common';
 import { CreatePermissionRequest, PermissionResponse } from '../dto';
 import { GetPermissionsHandler, CreatePermissionHandler, CreatePermissionCommand } from '../../application';
-import { Permissions } from 'src/presentation/auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 
 @Controller('permissions')
 export class PermissionController {

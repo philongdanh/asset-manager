@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Query } from '@nestjs/common';
 import { CreateRoleRequest, RoleResponse } from '../dto';
 import { CreateRoleHandler, CreateRoleCommand } from '../../application';
-import { Permissions } from 'src/presentation/auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 
 @Controller('roles')
 export class RoleController {

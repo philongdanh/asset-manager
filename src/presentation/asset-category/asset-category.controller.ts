@@ -29,7 +29,7 @@ import {
   GetAssetCategoriesHandler,
   GetAssetCategoryDetailsHandler,
 } from 'src/application/queries/handlers';
-import { Permissions } from '../auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 import {
   AssetCategoryResponse,
   CreateAssetCategoryRequest,

@@ -27,7 +27,7 @@ import {
     GetAssetDisposalsHandler,
     GetAssetDisposalDetailsHandler,
 } from 'src/application/queries/handlers';
-import { Permissions } from '../auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 import {
     AssetDisposalResponse,
     CreateAssetDisposalRequest,

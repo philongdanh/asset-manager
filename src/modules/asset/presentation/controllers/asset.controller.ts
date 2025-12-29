@@ -21,7 +21,7 @@ import { GetAssetDetailsQuery } from '../../application/queries/get-asset-detail
 import { GetAssetsQuery } from '../../application/queries/get-assets/get-assets.query';
 import { GetAssetDetailsHandler } from '../../application/queries/get-asset-details/get-asset-details.handler';
 import { GetAssetsHandler } from '../../application/queries/get-assets/get-assets.handler';
-import { Permissions } from '../../../../presentation/auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 import {
 
   AssetResponse,

@@ -1,0 +1,24 @@
+import { Injectable, Inject } from '@nestjs/common';
+import {
+    type IUserRepository,
+    User,
+    USER_REPOSITORY,
+} from '../../../domain';
+import { GetUserDetailsQuery } from './get-user-details.query';
+import { EntityNotFoundException } from 'src/domain/core';
+
+@Injectable()
+export class GetUserDetailsHandler {
+    constructor(
+        @Inject(USER_REPOSITORY)
+        private readonly userRepo: IUserRepository,
+    ) { }
+
+    async execute(query: GetUserDetailsQuery): Promise<User> {
+        const user = await this.userRepo.findById(query.userId);
+        if (!user) {
+            throw new EntityNotFoundException(User.name, query.userId);
+        }
+        return user;
+    }
+}

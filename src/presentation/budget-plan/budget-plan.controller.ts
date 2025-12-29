@@ -20,7 +20,7 @@ import {
     GetBudgetPlanDetailsHandler,
     GetBudgetPlansHandler,
 } from 'src/application/queries/handlers';
-import { Permissions } from '../auth/decorators';
+import { Permissions } from 'src/modules/auth/presentation';
 import {
     BudgetPlanResponse,
     CreateBudgetPlanRequest,
