@@ -20,9 +20,9 @@ import { MaintenanceScheduleModule } from './modules/maintenance-schedule';
 import { AssetDocumentModule } from './modules/asset-document';
 import { AssetDepreciationModule } from './modules/asset-depreciation';
 import { AccountingEntryModule } from './modules/accounting-entry';
-import { BudgetPlanModule } from './presentation/budget-plan/budget-plan.module';
-import { InventoryCheckModule } from './presentation/inventory-check/inventory-check.module';
-import { AuditLogModule } from './presentation/audit-log/audit-log.module';
+import { BudgetPlanModule } from './modules/budget-plan';
+import { InventoryCheckModule } from './modules/inventory-check';
+import { AuditLogModule } from './modules/audit-log';
 
 @Module({
   imports: [
