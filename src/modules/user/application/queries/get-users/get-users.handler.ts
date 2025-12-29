@@ -2,8 +2,10 @@ import { Injectable, Inject } from '@nestjs/common';
 import { type IUserRepository, USER_REPOSITORY, User } from '../../../domain';
 import { GetUsersQuery } from './get-users.query';
 
-@Injectable()
-export class GetUsersHandler {
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+
+@QueryHandler(GetUsersQuery)
+export class GetUsersHandler implements IQueryHandler<GetUsersQuery> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,

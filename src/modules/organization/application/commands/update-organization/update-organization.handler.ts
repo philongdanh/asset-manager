@@ -7,8 +7,10 @@ import {
 import { UpdateOrganizationCommand } from './update-organization.command';
 import { EntityNotFoundException } from 'src/shared/domain';
 
-@Injectable()
-export class UpdateOrganizationHandler {
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+@CommandHandler(UpdateOrganizationCommand)
+export class UpdateOrganizationHandler implements ICommandHandler<UpdateOrganizationCommand> {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepo: IOrganizationRepository,

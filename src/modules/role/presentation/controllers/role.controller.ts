@@ -1,11 +1,13 @@
 import { Controller, Post, Body, Get, Query } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { CreateRoleRequest, RoleResponse } from '../dto';
-import { CreateRoleHandler, CreateRoleCommand } from '../../application';
+import { CreateRoleCommand } from '../../application';
 import { Permissions } from 'src/modules/auth/presentation';
+import { Role } from '../../domain';
 
 @Controller('roles')
 export class RoleController {
-  constructor(private readonly createRoleHandler: CreateRoleHandler) {}
+  constructor(private readonly commandBus: CommandBus) { }
 
   @Permissions('ROLE_VIEW')
   @Get()
@@ -21,7 +23,7 @@ export class RoleController {
       dto.name,
       dto.permissionIds,
     );
-    const role = await this.createRoleHandler.execute(cmd);
+    const role = (await this.commandBus.execute(cmd)) as Role;
     return new RoleResponse(role);
   }
 }

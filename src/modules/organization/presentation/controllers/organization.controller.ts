@@ -10,17 +10,14 @@ import {
   ParseUUIDPipe,
   Patch,
 } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateOrganizationCommand,
-  CreateOrganizationHandler,
   UpdateOrganizationCommand,
-  UpdateOrganizationHandler,
 } from '../../application/commands';
 import {
   GetOrganizationsQuery,
-  GetOrganizationsHandler,
   GetOrganizationDetailsQuery,
-  GetOrganizationDetailsHandler,
 } from '../../application/queries';
 import { Permissions } from 'src/modules/auth/presentation';
 import {
@@ -29,14 +26,13 @@ import {
   UpdateOrganizationRequest,
   OrganizationResponse,
 } from '../dto';
+import { Organization } from '../../domain';
 
 @Controller('organizations')
 export class OrganizationController {
   constructor(
-    private readonly createOrgHandler: CreateOrganizationHandler,
-    private readonly getOrgsHandler: GetOrganizationsHandler,
-    private readonly getOrgDetailsHandler: GetOrganizationDetailsHandler,
-    private readonly updateOrgHandler: UpdateOrganizationHandler,
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
   ) {}
 
   @HttpCode(HttpStatus.CREATED)
@@ -54,7 +50,7 @@ export class OrganizationController {
       dto.website || null,
       dto.address || null,
     );
-    const org = await this.createOrgHandler.execute(cmd);
+    const org = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
   }
 
@@ -63,7 +59,7 @@ export class OrganizationController {
   async getList(
     @Query() query: GetOrganizationsRequest,
   ): Promise<OrganizationResponse[]> {
-    const orgs = await this.getOrgsHandler.execute(
+    const orgs = await this.queryBus.execute(
       new GetOrganizationsQuery(query.status, query.includeDeleted),
     );
     return orgs.map((org) => new OrganizationResponse(org));
@@ -74,7 +70,7 @@ export class OrganizationController {
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<OrganizationResponse> {
-    const org = await this.getOrgDetailsHandler.execute(
+    const org = await this.queryBus.execute(
       new GetOrganizationDetailsQuery(id),
     );
     return new OrganizationResponse(org);
@@ -96,7 +92,7 @@ export class OrganizationController {
       dto.website,
       dto.address,
     );
-    const org = await this.updateOrgHandler.execute(cmd);
+    const org = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
   }
 }

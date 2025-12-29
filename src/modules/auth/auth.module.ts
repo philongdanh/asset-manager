@@ -8,13 +8,15 @@ import { PrismaRoleRepository } from 'src/modules/role/infrastructure';
 import { PERMISSION_REPOSITORY } from 'src/modules/permission/domain';
 import { PrismaPermissionRepository } from 'src/modules/permission/infrastructure';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthService, SignInHandler } from './application';
+import { SignInHandler, RefreshTokenHandler } from './application';
 import { ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard, PermissionsGuard } from './presentation';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
+    CqrsModule,
     JwtModule.registerAsync({
       global: true,
       useFactory(conf: ConfigService) {
@@ -31,7 +33,8 @@ import { AuthGuard, PermissionsGuard } from './presentation';
   controllers: [AuthController],
   providers: [
     ConfigService,
-    AuthService,
+    SignInHandler,
+    RefreshTokenHandler,
     PrismaService,
     {
       provide: APP_GUARD,
@@ -53,7 +56,6 @@ import { AuthGuard, PermissionsGuard } from './presentation';
       provide: PERMISSION_REPOSITORY,
       useClass: PrismaPermissionRepository,
     },
-    SignInHandler,
   ],
 })
 export class AuthModule {}

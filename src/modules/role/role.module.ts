@@ -6,8 +6,10 @@ import { ROLE_REPOSITORY } from './domain';
 import { PrismaRoleRepository } from './infrastructure';
 import { CreateRoleHandler } from './application';
 import { RoleController } from './presentation';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
+  imports: [CqrsModule],
   controllers: [RoleController],
   providers: [
     PrismaService,

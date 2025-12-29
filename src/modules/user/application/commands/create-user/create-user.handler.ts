@@ -9,8 +9,10 @@ import {
 } from '../../../domain';
 import { CreateUserCommand } from './create-user.command';
 
-@Injectable()
-export class CreateUserHandler {
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+@CommandHandler(CreateUserCommand)
+export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   constructor(
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(USER_REPOSITORY)

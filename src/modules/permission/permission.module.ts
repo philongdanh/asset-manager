@@ -6,8 +6,10 @@ import { PERMISSION_REPOSITORY } from './domain';
 import { PrismaPermissionRepository } from './infrastructure';
 import { CreatePermissionHandler, GetPermissionsHandler } from './application';
 import { PermissionController } from './presentation';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
+  imports: [CqrsModule],
   controllers: [PermissionController],
   providers: [
     PrismaService,

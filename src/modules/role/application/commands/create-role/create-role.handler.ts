@@ -3,8 +3,10 @@ import { CreateRoleCommand } from './create-role.command';
 import { ROLE_REPOSITORY, type IRoleRepository, Role } from '../../../domain';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
-@Injectable()
-export class CreateRoleHandler {
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+@CommandHandler(CreateRoleCommand)
+export class CreateRoleHandler implements ICommandHandler<CreateRoleCommand> {
   constructor(
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ROLE_REPOSITORY)

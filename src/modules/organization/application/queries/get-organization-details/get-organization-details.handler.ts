@@ -7,8 +7,10 @@ import {
 import { GetOrganizationDetailsQuery } from './get-organization-details.query';
 import { UseCaseException } from 'src/shared/application/exceptions';
 
-@Injectable()
-export class GetOrganizationDetailsHandler {
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+
+@QueryHandler(GetOrganizationDetailsQuery)
+export class GetOrganizationDetailsHandler implements IQueryHandler<GetOrganizationDetailsQuery> {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepo: IOrganizationRepository,

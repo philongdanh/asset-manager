@@ -11,8 +11,10 @@ import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
 import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { PrismaUserRepository } from './infrastructure';
 import { UserController } from './presentation';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
+  imports: [CqrsModule],
   controllers: [UserController],
   providers: [
     PrismaService,

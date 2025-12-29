@@ -56,4 +56,4 @@ import { AuditLogModule } from './modules/audit-log';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

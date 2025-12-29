@@ -7,8 +7,10 @@ import {
 import { CreatePermissionCommand } from './create-permission.command';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
-@Injectable()
-export class CreatePermissionHandler {
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+@CommandHandler(CreatePermissionCommand)
+export class CreatePermissionHandler implements ICommandHandler<CreatePermissionCommand> {
   constructor(
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(PERMISSION_REPOSITORY)

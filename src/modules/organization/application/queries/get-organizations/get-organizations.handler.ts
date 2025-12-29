@@ -6,8 +6,10 @@ import {
 } from '../../../domain';
 import { GetOrganizationsQuery } from './get-organizations.query';
 
-@Injectable()
-export class GetOrganizationsHandler {
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+
+@QueryHandler(GetOrganizationsQuery)
+export class GetOrganizationsHandler implements IQueryHandler<GetOrganizationsQuery> {
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepo: IOrganizationRepository,

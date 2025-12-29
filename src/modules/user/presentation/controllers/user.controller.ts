@@ -12,11 +12,8 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
 } from '@nestjs/common';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
-  CreateUserHandler,
-  UpdateUserHandler,
-  GetUsersHandler,
-  GetUserDetailsHandler,
   CreateUserCommand,
   UpdateUserCommand,
   GetUsersQuery,
@@ -29,16 +26,15 @@ import {
   UpdateUserRequest,
   UserResponse,
 } from '../dto';
+import { User } from '../../domain';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(
-    private readonly createUserHandler: CreateUserHandler,
-    private readonly getUsersHandler: GetUsersHandler,
-    private readonly getUserDetailsHandler: GetUserDetailsHandler,
-    private readonly updateUserHandler: UpdateUserHandler,
-  ) {}
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('USER_CREATE')
@@ -52,7 +48,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const result = await this.createUserHandler.execute(cmd);
+    const result = (await this.commandBus.execute(cmd)) as User;
     return new UserResponse(result);
   }
 
@@ -72,7 +68,9 @@ export class UserController {
       includeDeleted: query.includeDeleted,
     });
 
-    const result = await this.getUsersHandler.execute(qry);
+    const result = (await this.queryBus.execute(
+      qry,
+    )) as { data: User[]; total: number };
     return {
       data: result.data.map((u) => new UserResponse(u)),
       total: result.total,
@@ -85,7 +83,7 @@ export class UserController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserResponse> {
     const query = new GetUserDetailsQuery(id);
-    const user = await this.getUserDetailsHandler.execute(query);
+    const user = (await this.queryBus.execute(query)) as User;
     return new UserResponse(user);
   }
 
@@ -101,7 +99,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const user = await this.updateUserHandler.execute(cmd);
+    const user = (await this.commandBus.execute(cmd)) as User;
     return new UserResponse(user);
   }
 }

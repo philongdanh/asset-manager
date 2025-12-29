@@ -11,8 +11,10 @@ import {
   GetOrganizationDetailsHandler,
 } from './application';
 import { OrganizationController } from './presentation';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
+  imports: [CqrsModule],
   controllers: [OrganizationController],
   providers: [
     PrismaService,

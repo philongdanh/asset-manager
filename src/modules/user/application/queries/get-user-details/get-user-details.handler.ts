@@ -3,8 +3,10 @@ import { type IUserRepository, User, USER_REPOSITORY } from '../../../domain';
 import { GetUserDetailsQuery } from './get-user-details.query';
 import { EntityNotFoundException } from 'src/shared/domain';
 
-@Injectable()
-export class GetUserDetailsHandler {
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+
+@QueryHandler(GetUserDetailsQuery)
+export class GetUserDetailsHandler implements IQueryHandler<GetUserDetailsQuery> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,

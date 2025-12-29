@@ -1,16 +1,13 @@
 import { Controller, Post, Body } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { CreateDepartmentRequest, DepartmentResponse } from '../dto';
-import {
-  CreateDepartmentCommand,
-  CreateDepartmentHandler,
-} from '../../application';
+import { CreateDepartmentCommand } from '../../application';
 import { Permissions } from 'src/modules/auth/presentation';
+import { Department } from '../../domain';
 
 @Controller('departments')
 export class DepartmentController {
-  constructor(
-    private readonly createDepartmentHandler: CreateDepartmentHandler,
-  ) {}
+  constructor(private readonly commandBus: CommandBus) { }
 
   @Permissions('DEPARTMENT_CREATE')
   @Post()
@@ -22,7 +19,7 @@ export class DepartmentController {
       dto.name,
       dto.parentId,
     );
-    const dept = await this.createDepartmentHandler.execute(cmd);
+    const dept = (await this.commandBus.execute(cmd)) as Department;
     return new DepartmentResponse(dept);
   }
 }

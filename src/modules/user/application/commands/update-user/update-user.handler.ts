@@ -9,8 +9,10 @@ import {
 } from '../../../domain';
 import { UpdateUserCommand } from './update-user.command';
 
-@Injectable()
-export class UpdateUserHandler {
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+@CommandHandler(UpdateUserCommand)
+export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,

@@ -6,8 +6,10 @@ import { DEPARTMENT_REPOSITORY } from './domain';
 import { PrismaDepartmentRepository } from './infrastructure';
 import { CreateDepartmentHandler } from './application';
 import { DepartmentController } from './presentation';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
+  imports: [CqrsModule],
   controllers: [DepartmentController],
   providers: [
     PrismaService,

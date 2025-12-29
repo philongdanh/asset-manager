@@ -7,8 +7,10 @@ import {
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 import { CreateOrganizationCommand } from './create-organization.command';
 
-@Injectable()
-export class CreateOrganizationHandler {
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+@CommandHandler(CreateOrganizationCommand)
+export class CreateOrganizationHandler implements ICommandHandler<CreateOrganizationCommand> {
   constructor(
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ORGANIZATION_REPOSITORY)

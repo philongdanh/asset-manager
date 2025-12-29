@@ -8,8 +8,10 @@ import {
 import { CreateDepartmentCommand } from './create-department.command';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
 
-@Injectable()
-export class CreateDepartmentHandler {
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+
+@CommandHandler(CreateDepartmentCommand)
+export class CreateDepartmentHandler implements ICommandHandler<CreateDepartmentCommand> {
   constructor(
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(DEPARTMENT_REPOSITORY)
