@@ -41,6 +41,7 @@ export class Asset extends BaseEntity {
   private _location: string | null;
   private _specifications: string | null;
   private _condition: AssetCondition | null;
+  private _imageUrl: string | null;
 
   protected constructor(builder: AssetBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
@@ -63,6 +64,7 @@ export class Asset extends BaseEntity {
     this._location = builder.location;
     this._specifications = builder.specifications;
     this._condition = builder.condition;
+    this._imageUrl = builder.imageUrl;
   }
 
   // --- Getters ---
@@ -142,6 +144,10 @@ export class Asset extends BaseEntity {
     return this._condition;
   }
 
+  public get imageUrl(): string | null {
+    return this._imageUrl;
+  }
+
   // --- Business Methods for Updating ---
 
   public updateBasicInfo(name: string, categoryId: string): void {
@@ -203,10 +209,12 @@ export class Asset extends BaseEntity {
     condition: AssetCondition | null,
     location: string | null,
     specifications: string | null,
+    imageUrl: string | null,
   ): void {
     this._condition = condition;
     this._location = location;
     this._specifications = specifications;
+    this._imageUrl = imageUrl;
     this.markAsUpdated();
   }
 
@@ -288,6 +296,7 @@ export class AssetBuilder {
   public location: string | null = null;
   public specifications: string | null = null;
   public condition: AssetCondition | null = AssetCondition.GOOD;
+  public imageUrl: string | null = null;
   public createdAt: Date;
   public updatedAt: Date;
   public deletedAt: Date | null = null;
@@ -380,6 +389,11 @@ export class AssetBuilder {
 
   public withCondition(condition: AssetCondition | null): this {
     this.condition = condition;
+    return this;
+  }
+
+  public withImageUrl(url: string | null): this {
+    this.imageUrl = url;
     return this;
   }
 

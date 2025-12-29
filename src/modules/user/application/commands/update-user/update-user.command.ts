@@ -6,5 +6,6 @@ export class UpdateUserCommand {
     public readonly email?: string,
     public readonly departmentId?: string | null,
     public readonly status?: UserStatus,
-  ) {}
+    public readonly avatarUrl?: string | null,
+  ) { }
 }

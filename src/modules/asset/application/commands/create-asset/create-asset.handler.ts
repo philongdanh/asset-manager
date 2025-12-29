@@ -18,7 +18,7 @@ export class CreateAssetHandler {
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepo: IAssetRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: CreateAssetCommand): Promise<Asset> {
     const existsByCode = await this.assetRepo.existsByCode(
@@ -57,6 +57,7 @@ export class CreateAssetHandler {
       .withStatus(
         cmd.status ? (cmd.status as AssetStatus) : AssetStatus.AVAILABLE,
       )
+      .withImageUrl(cmd.imageUrl)
       .build();
 
     return await this.assetRepo.save(asset);

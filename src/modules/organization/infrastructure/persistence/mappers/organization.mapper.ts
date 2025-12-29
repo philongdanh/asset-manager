@@ -17,6 +17,7 @@ export class OrganizationMapper {
         prismaOrganization.email,
         prismaOrganization.website,
         prismaOrganization.address,
+        prismaOrganization.logoUrl,
       )
       .withTimestamps(
         prismaOrganization.createdAt,
@@ -39,6 +40,7 @@ export class OrganizationMapper {
       phone: organization.phone,
       email: organization.email,
       website: organization.website,
+      logoUrl: organization.logoUrl,
       createdAt: organization.createdAt,
       updatedAt: organization.updatedAt,
       deletedAt: organization.deletedAt,
@@ -56,6 +58,7 @@ export class OrganizationMapper {
       phone: organization.phone,
       email: organization.email,
       website: organization.website,
+      logoUrl: organization.logoUrl,
       updatedAt: organization.updatedAt,
     };
 

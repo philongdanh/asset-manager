@@ -76,6 +76,11 @@ export class CreateAssetRequest {
   @IsOptional()
   location: string | null;
 
+  @Expose({ name: 'image_url' })
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
+
   @Expose()
   @IsString()
   @IsOptional()

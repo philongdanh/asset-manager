@@ -48,4 +48,9 @@ export class CreateOrganizationRequest {
   @IsOptional()
   @IsString()
   address?: string;
+
+  @Expose({ name: 'logo_url' })
+  @IsOptional()
+  @IsString()
+  logoUrl?: string;
 }

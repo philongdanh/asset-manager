@@ -21,6 +21,9 @@ export class UserResponse {
   @Expose({ name: 'status' })
   status: UserStatus;
 
+  @Expose({ name: 'avatar_url' })
+  avatarUrl: string | null;
+
   @Expose({ name: 'created_at' })
   createdAt: Date;
 

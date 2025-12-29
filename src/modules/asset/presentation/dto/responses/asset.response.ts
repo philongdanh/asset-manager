@@ -66,6 +66,9 @@ export class AssetResponse {
   @Expose()
   condition: AssetCondition | null;
 
+  @Expose()
+  imageUrl: string | null;
+
   @Expose({ name: 'created_at' })
   createdAt: Date;
 

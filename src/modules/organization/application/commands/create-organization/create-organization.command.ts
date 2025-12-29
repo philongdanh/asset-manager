@@ -10,6 +10,7 @@ export class CreateOrganizationCommand {
     public readonly taxCode: string | null,
     public readonly website: string | null,
     public readonly address: string | null,
+    public readonly logoUrl: string | null,
   ) {
     this.validate();
   }

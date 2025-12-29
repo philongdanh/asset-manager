@@ -15,5 +15,6 @@ export class UpdateAssetCommand {
     public readonly location: string | null,
     public readonly specifications: string | null,
     public readonly status: string,
-  ) {}
+    public readonly imageUrl: string | null,
+  ) { }
 }

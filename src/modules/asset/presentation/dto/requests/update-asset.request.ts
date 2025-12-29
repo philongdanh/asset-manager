@@ -77,7 +77,13 @@ export class UpdateAssetRequest {
   specifications: string | null;
 
   @Expose()
+  @Expose()
   @IsEnum(AssetStatus)
   @IsOptional()
   status: AssetStatus | null;
+
+  @Expose({ name: 'image_url' })
+  @IsString()
+  @IsOptional()
+  imageUrl: string | null;
 }

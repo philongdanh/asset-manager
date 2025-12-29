@@ -33,7 +33,7 @@ export class OrganizationController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ORGANIZATION_CREATE')
@@ -49,6 +49,7 @@ export class OrganizationController {
       dto.taxCode || null,
       dto.website || null,
       dto.address || null,
+      dto.logoUrl || null,
     );
     const org = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
@@ -91,6 +92,7 @@ export class OrganizationController {
       dto.taxCode,
       dto.website,
       dto.address,
+      dto.logoUrl,
     );
     const org = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);

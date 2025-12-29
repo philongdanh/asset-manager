@@ -38,7 +38,7 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')
@@ -67,6 +67,7 @@ export class AssetController {
       dto.specifications || null,
       dto.condition || null,
       dto.status || null,
+      dto.imageUrl || null,
     );
     const result = await this.createHandler.execute(cmd);
     return this.toResponse(result);
@@ -94,6 +95,7 @@ export class AssetController {
       dto.location || null,
       dto.specifications || null,
       dto.status || '',
+      dto.imageUrl || null,
     );
     const result = await this.updateHandler.execute(cmd);
     return this.toResponse(result);

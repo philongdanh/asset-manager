@@ -27,6 +27,9 @@ export class OrganizationResponse {
   @Expose()
   address: string | null;
 
+  @Expose({ name: 'logo_url' })
+  logoUrl: string | null;
+
   @Expose({ name: 'created_at' })
   createdAt: Date;
 

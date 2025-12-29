@@ -17,7 +17,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: CreateUserCommand): Promise<User> {
     const existsByEmail = await this.userRepo.existsByEmail(cmd.email);
@@ -49,6 +49,7 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
     )
       .inDepartment(cmd.departmentId || null)
       .withStatus(cmd.status || UserStatus.ACTIVE)
+      .withAvatarUrl(cmd.avatarUrl || null)
       .build();
     return await this.userRepo.save(user);
   }

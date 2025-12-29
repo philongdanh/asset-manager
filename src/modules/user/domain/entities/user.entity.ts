@@ -13,6 +13,7 @@ export class User extends BaseEntity {
   private _password: string;
   private _hashedRefreshToken: string | null;
   private _status: UserStatus;
+  private _avatarUrl: string | null;
 
   protected constructor(builder: UserBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
@@ -23,6 +24,7 @@ export class User extends BaseEntity {
     this._password = builder.password;
     this._hashedRefreshToken = builder.hashedRefreshToken;
     this._status = builder.status;
+    this._avatarUrl = builder.avatarUrl;
   }
 
   // --- Getters ---
@@ -56,6 +58,10 @@ export class User extends BaseEntity {
 
   public get status(): UserStatus {
     return this._status;
+  }
+
+  public get avatarUrl(): string | null {
+    return this._avatarUrl;
   }
 
   // --- Business Methods ---
@@ -115,6 +121,11 @@ export class User extends BaseEntity {
     this.markAsUpdated();
   }
 
+  public updateAvatar(url: string | null): void {
+    this._avatarUrl = url;
+    this.markAsUpdated();
+  }
+
   public markAsDeleted(): void {
     super.markAsDeleted();
   }
@@ -170,6 +181,7 @@ export class User extends BaseEntity {
 export class UserBuilder {
   public departmentId: string | null = null;
   public status: UserStatus = UserStatus.ACTIVE;
+  public avatarUrl: string | null = null;
   public hashedRefreshToken: string | null = null;
   public createdAt: Date;
   public updatedAt: Date;
@@ -203,6 +215,11 @@ export class UserBuilder {
 
   public withPassword(password: string): this {
     this.password = password;
+    return this;
+  }
+
+  public withAvatarUrl(url: string | null): this {
+    this.avatarUrl = url;
     return this;
   }
 

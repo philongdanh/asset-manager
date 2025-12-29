@@ -39,4 +39,9 @@ export class CreateUserRequest {
   @IsOptional()
   @IsEnum(UserStatus)
   status?: UserStatus;
+
+  @Expose({ name: 'avatar_url' })
+  @IsOptional()
+  @IsString()
+  avatarUrl?: string;
 }

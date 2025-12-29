@@ -14,6 +14,7 @@ export class Organization extends BaseEntity {
   private _taxCode: string | null;
   private _website: string | null;
   private _address: string | null;
+  private _logoUrl: string | null;
 
   protected constructor(builder: OrganizationBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
@@ -24,6 +25,7 @@ export class Organization extends BaseEntity {
     this._taxCode = builder.taxCode;
     this._website = builder.website;
     this._address = builder.address;
+    this._logoUrl = builder.logoUrl;
   }
 
   // --- Getters ---
@@ -55,6 +57,10 @@ export class Organization extends BaseEntity {
     return this._address;
   }
 
+  public get logoUrl(): string | null {
+    return this._logoUrl;
+  }
+
   // --- Business Methods ---
   public withStatus(status: OrganizationStatus) {
     if (this._status !== status) {
@@ -70,6 +76,7 @@ export class Organization extends BaseEntity {
     taxCode?: string | null,
     website?: string | null,
     address?: string | null,
+    logoUrl?: string | null,
   ): void {
     if (name !== undefined) {
       if (!name || name.trim().length === 0) {
@@ -99,6 +106,10 @@ export class Organization extends BaseEntity {
 
     if (address !== undefined) {
       this._address = address;
+    }
+
+    if (logoUrl !== undefined) {
+      this._logoUrl = logoUrl;
     }
 
     this.markAsUpdated();
@@ -138,6 +149,7 @@ export class OrganizationBuilder {
   public taxCode: string | null = null;
   public website: string | null = null;
   public address: string | null = null;
+  public logoUrl: string | null = null;
 
   public createdAt: Date;
   public updatedAt: Date;
@@ -167,11 +179,13 @@ export class OrganizationBuilder {
     email: string | null,
     website: string | null,
     address: string | null,
+    logoUrl: string | null,
   ): this {
     this.phone = phone;
     this.email = email;
     this.website = website;
     this.address = address;
+    this.logoUrl = logoUrl;
     return this;
   }
 
