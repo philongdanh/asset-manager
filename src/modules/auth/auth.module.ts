@@ -14,46 +14,46 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard, PermissionsGuard } from './presentation';
 
 @Module({
-    imports: [
-        JwtModule.registerAsync({
-            global: true,
-            useFactory(conf: ConfigService) {
-                return {
-                    secret: conf.get('ACCESS_TOKEN_SECRET'),
-                    signOptions: {
-                        expiresIn: '60s',
-                    },
-                };
-            },
-            inject: [ConfigService],
-        }),
-    ],
-    controllers: [AuthController],
-    providers: [
-        ConfigService,
-        AuthService,
-        PrismaService,
-        {
-            provide: APP_GUARD,
-            useClass: AuthGuard,
-        },
-        {
-            provide: APP_GUARD,
-            useClass: PermissionsGuard,
-        },
-        {
-            provide: USER_REPOSITORY,
-            useClass: PrismaUserRepository,
-        },
-        {
-            provide: ROLE_REPOSITORY,
-            useClass: PrismaRoleRepository,
-        },
-        {
-            provide: PERMISSION_REPOSITORY,
-            useClass: PrismaPermissionRepository,
-        },
-        SignInHandler,
-    ],
+  imports: [
+    JwtModule.registerAsync({
+      global: true,
+      useFactory(conf: ConfigService) {
+        return {
+          secret: conf.get('ACCESS_TOKEN_SECRET'),
+          signOptions: {
+            expiresIn: '60s',
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [
+    ConfigService,
+    AuthService,
+    PrismaService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard,
+    },
+    {
+      provide: USER_REPOSITORY,
+      useClass: PrismaUserRepository,
+    },
+    {
+      provide: ROLE_REPOSITORY,
+      useClass: PrismaRoleRepository,
+    },
+    {
+      provide: PERMISSION_REPOSITORY,
+      useClass: PrismaPermissionRepository,
+    },
+    SignInHandler,
+  ],
 })
-export class AuthModule { }
+export class AuthModule {}

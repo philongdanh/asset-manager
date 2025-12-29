@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import {
-    CreateUserHandler,
-    UpdateUserHandler,
-    GetUsersHandler,
-    GetUserDetailsHandler,
+  CreateUserHandler,
+  UpdateUserHandler,
+  GetUsersHandler,
+  GetUserDetailsHandler,
 } from './application';
 import { ID_GENERATOR } from 'src/domain/core/interfaces';
 import { USER_REPOSITORY } from './domain';
@@ -13,22 +13,22 @@ import { PrismaUserRepository } from './infrastructure';
 import { UserController } from './presentation';
 
 @Module({
-    controllers: [UserController],
-    providers: [
-        PrismaService,
-        {
-            provide: ID_GENERATOR,
-            useClass: UuidGeneratorService,
-        },
-        {
-            provide: USER_REPOSITORY,
-            useClass: PrismaUserRepository,
-        },
-        CreateUserHandler,
-        GetUsersHandler,
-        GetUserDetailsHandler,
-        UpdateUserHandler,
-    ],
-    exports: [USER_REPOSITORY],
+  controllers: [UserController],
+  providers: [
+    PrismaService,
+    {
+      provide: ID_GENERATOR,
+      useClass: UuidGeneratorService,
+    },
+    {
+      provide: USER_REPOSITORY,
+      useClass: PrismaUserRepository,
+    },
+    CreateUserHandler,
+    GetUsersHandler,
+    GetUserDetailsHandler,
+    UpdateUserHandler,
+  ],
+  exports: [USER_REPOSITORY],
 })
-export class UserModule { }
+export class UserModule {}

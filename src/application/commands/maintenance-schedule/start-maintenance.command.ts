@@ -1,6 +1,6 @@
 export class StartMaintenanceCommand {
-    constructor(
-        public readonly id: string,
-        public readonly performedByUserId: string,
-    ) { }
+  constructor(
+    public readonly id: string,
+    public readonly performedByUserId: string,
+  ) {}
 }

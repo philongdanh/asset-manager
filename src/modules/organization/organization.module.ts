@@ -5,29 +5,29 @@ import { PrismaService } from 'src/infrastructure/persistence/prisma';
 import { ORGANIZATION_REPOSITORY } from './domain';
 import { PrismaOrganizationRepository } from './infrastructure';
 import {
-    CreateOrganizationHandler,
-    UpdateOrganizationHandler,
-    GetOrganizationsHandler,
-    GetOrganizationDetailsHandler,
+  CreateOrganizationHandler,
+  UpdateOrganizationHandler,
+  GetOrganizationsHandler,
+  GetOrganizationDetailsHandler,
 } from './application';
 import { OrganizationController } from './presentation';
 
 @Module({
-    controllers: [OrganizationController],
-    providers: [
-        PrismaService,
-        {
-            provide: ID_GENERATOR,
-            useClass: UuidGeneratorService,
-        },
-        {
-            provide: ORGANIZATION_REPOSITORY,
-            useClass: PrismaOrganizationRepository,
-        },
-        CreateOrganizationHandler,
-        UpdateOrganizationHandler,
-        GetOrganizationsHandler,
-        GetOrganizationDetailsHandler,
-    ],
+  controllers: [OrganizationController],
+  providers: [
+    PrismaService,
+    {
+      provide: ID_GENERATOR,
+      useClass: UuidGeneratorService,
+    },
+    {
+      provide: ORGANIZATION_REPOSITORY,
+      useClass: PrismaOrganizationRepository,
+    },
+    CreateOrganizationHandler,
+    UpdateOrganizationHandler,
+    GetOrganizationsHandler,
+    GetOrganizationDetailsHandler,
+  ],
 })
-export class OrganizationModule { }
+export class OrganizationModule {}

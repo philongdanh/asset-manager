@@ -1,211 +1,211 @@
 import { BaseEntity, BusinessRuleViolationException } from 'src/domain/core';
 
 export enum OrganizationStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
 }
 
 export class Organization extends BaseEntity {
-    private _name: string;
-    private _status: OrganizationStatus;
+  private _name: string;
+  private _status: OrganizationStatus;
 
-    private _phone: string | null;
-    private _email: string | null;
-    private _taxCode: string | null;
-    private _website: string | null;
-    private _address: string | null;
+  private _phone: string | null;
+  private _email: string | null;
+  private _taxCode: string | null;
+  private _website: string | null;
+  private _address: string | null;
 
-    protected constructor(builder: OrganizationBuilder) {
-        super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
-        this._name = builder.name;
-        this._status = builder.status;
-        this._phone = builder.phone;
-        this._email = builder.email;
-        this._taxCode = builder.taxCode;
-        this._website = builder.website;
-        this._address = builder.address;
+  protected constructor(builder: OrganizationBuilder) {
+    super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
+    this._name = builder.name;
+    this._status = builder.status;
+    this._phone = builder.phone;
+    this._email = builder.email;
+    this._taxCode = builder.taxCode;
+    this._website = builder.website;
+    this._address = builder.address;
+  }
+
+  // --- Getters ---
+  public get name(): string {
+    return this._name;
+  }
+
+  public get status(): OrganizationStatus {
+    return this._status;
+  }
+
+  public get phone(): string | null {
+    return this._phone;
+  }
+
+  public get email(): string | null {
+    return this._email;
+  }
+
+  public get taxCode(): string | null {
+    return this._taxCode;
+  }
+
+  public get website(): string | null {
+    return this._website;
+  }
+
+  public get address(): string | null {
+    return this._address;
+  }
+
+  // --- Business Methods ---
+  public withStatus(status: OrganizationStatus) {
+    if (this._status !== status) {
+      this._status = status;
+      this.markAsUpdated();
+    }
+  }
+
+  public updateInfo(
+    name?: string,
+    phone?: string | null,
+    email?: string | null,
+    taxCode?: string | null,
+    website?: string | null,
+    address?: string | null,
+  ): void {
+    if (name !== undefined) {
+      if (!name || name.trim().length === 0) {
+        throw new BusinessRuleViolationException(
+          'ORGANIZATION_NAME_REQUIRED',
+          'Organization name cannot be empty.',
+        );
+      }
+      this._name = name;
     }
 
-    // --- Getters ---
-    public get name(): string {
-        return this._name;
+    if (phone !== undefined) {
+      this._phone = phone;
     }
 
-    public get status(): OrganizationStatus {
-        return this._status;
+    if (email !== undefined) {
+      this._email = email;
     }
 
-    public get phone(): string | null {
-        return this._phone;
+    if (taxCode !== undefined) {
+      this._taxCode = taxCode;
     }
 
-    public get email(): string | null {
-        return this._email;
+    if (website !== undefined) {
+      this._website = website;
     }
 
-    public get taxCode(): string | null {
-        return this._taxCode;
+    if (address !== undefined) {
+      this._address = address;
     }
 
-    public get website(): string | null {
-        return this._website;
-    }
+    this.markAsUpdated();
+  }
 
-    public get address(): string | null {
-        return this._address;
-    }
+  public markAsDeleted(): void {
+    this._status = OrganizationStatus.INACTIVE;
+    super.markAsDeleted();
+  }
 
-    // --- Business Methods ---
-    public withStatus(status: OrganizationStatus) {
-        if (this._status !== status) {
-            this._status = status;
-            this.markAsUpdated();
-        }
-    }
+  public restore(): void {
+    super.restore();
+    this._status = OrganizationStatus.ACTIVE;
+  }
 
-    public updateInfo(
-        name?: string,
-        phone?: string | null,
-        email?: string | null,
-        taxCode?: string | null,
-        website?: string | null,
-        address?: string | null,
-    ): void {
-        if (name !== undefined) {
-            if (!name || name.trim().length === 0) {
-                throw new BusinessRuleViolationException(
-                    'ORGANIZATION_NAME_REQUIRED',
-                    'Organization name cannot be empty.',
-                );
-            }
-            this._name = name;
-        }
+  // --- Helper Methods ---
+  public isActive(): boolean {
+    return this._status === OrganizationStatus.ACTIVE;
+  }
 
-        if (phone !== undefined) {
-            this._phone = phone;
-        }
+  // --- Static Factory ---
+  public static builder(id: string, name: string): OrganizationBuilder {
+    return new OrganizationBuilder(id, name);
+  }
 
-        if (email !== undefined) {
-            this._email = email;
-        }
-
-        if (taxCode !== undefined) {
-            this._taxCode = taxCode;
-        }
-
-        if (website !== undefined) {
-            this._website = website;
-        }
-
-        if (address !== undefined) {
-            this._address = address;
-        }
-
-        this.markAsUpdated();
-    }
-
-    public markAsDeleted(): void {
-        this._status = OrganizationStatus.INACTIVE;
-        super.markAsDeleted();
-    }
-
-    public restore(): void {
-        super.restore();
-        this._status = OrganizationStatus.ACTIVE;
-    }
-
-    // --- Helper Methods ---
-    public isActive(): boolean {
-        return this._status === OrganizationStatus.ACTIVE;
-    }
-
-    // --- Static Factory ---
-    public static builder(id: string, name: string): OrganizationBuilder {
-        return new OrganizationBuilder(id, name);
-    }
-
-    public static createFromBuilder(builder: OrganizationBuilder): Organization {
-        return new Organization(builder);
-    }
+  public static createFromBuilder(builder: OrganizationBuilder): Organization {
+    return new Organization(builder);
+  }
 }
 
 // --- Builder Class ---
 export class OrganizationBuilder {
-    public status: OrganizationStatus = OrganizationStatus.ACTIVE;
+  public status: OrganizationStatus = OrganizationStatus.ACTIVE;
 
-    public phone: string | null = null;
-    public email: string | null = null;
-    public taxCode: string | null = null;
-    public website: string | null = null;
-    public address: string | null = null;
+  public phone: string | null = null;
+  public email: string | null = null;
+  public taxCode: string | null = null;
+  public website: string | null = null;
+  public address: string | null = null;
 
-    public createdAt: Date;
-    public updatedAt: Date;
+  public createdAt: Date;
+  public updatedAt: Date;
 
-    public deletedAt: Date | null = null;
+  public deletedAt: Date | null = null;
 
-    constructor(
-        public readonly id: string,
-        public readonly name: string,
-    ) {
-        this.createdAt = new Date();
-        this.updatedAt = new Date();
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+  ) {
+    this.createdAt = new Date();
+    this.updatedAt = new Date();
+  }
+
+  public withStatus(status: OrganizationStatus): this {
+    this.status = status;
+    return this;
+  }
+
+  public withTaxCode(taxCode: string | null): this {
+    this.taxCode = taxCode;
+    return this;
+  }
+
+  public withContactInfo(
+    phone: string | null,
+    email: string | null,
+    website: string | null,
+    address: string | null,
+  ): this {
+    this.phone = phone;
+    this.email = email;
+    this.website = website;
+    this.address = address;
+    return this;
+  }
+
+  public withTimestamps(
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt?: Date | null,
+  ): this {
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
+    this.deletedAt = deletedAt || null;
+    return this;
+  }
+
+  public build(): Organization {
+    if (!this.id) {
+      throw new BusinessRuleViolationException(
+        'ORGANIZATION_ID_REQUIRED',
+        'ID is mandatory for organization.',
+      );
+    }
+    if (!this.name || this.name.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'ORGANIZATION_NAME_INVALID',
+        'Organization name cannot be empty.',
+      );
+    }
+    if (this.email && this.email.trim().length === 0) {
+      throw new BusinessRuleViolationException(
+        'INVALID_EMAIL',
+        'Invalid email format.',
+      );
     }
 
-    public withStatus(status: OrganizationStatus): this {
-        this.status = status;
-        return this;
-    }
-
-    public withTaxCode(taxCode: string | null): this {
-        this.taxCode = taxCode;
-        return this;
-    }
-
-    public withContactInfo(
-        phone: string | null,
-        email: string | null,
-        website: string | null,
-        address: string | null,
-    ): this {
-        this.phone = phone;
-        this.email = email;
-        this.website = website;
-        this.address = address;
-        return this;
-    }
-
-    public withTimestamps(
-        createdAt: Date,
-        updatedAt: Date,
-        deletedAt?: Date | null,
-    ): this {
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.deletedAt = deletedAt || null;
-        return this;
-    }
-
-    public build(): Organization {
-        if (!this.id) {
-            throw new BusinessRuleViolationException(
-                'ORGANIZATION_ID_REQUIRED',
-                'ID is mandatory for organization.',
-            );
-        }
-        if (!this.name || this.name.trim().length === 0) {
-            throw new BusinessRuleViolationException(
-                'ORGANIZATION_NAME_INVALID',
-                'Organization name cannot be empty.',
-            );
-        }
-        if (this.email && this.email.trim().length === 0) {
-            throw new BusinessRuleViolationException(
-                'INVALID_EMAIL',
-                'Invalid email format.',
-            );
-        }
-
-        return Organization.createFromBuilder(this);
-    }
+    return Organization.createFromBuilder(this);
+  }
 }

@@ -5,24 +5,24 @@ import { Public } from '../decorators';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
-    @Public()
-    @Post('login')
-    @HttpCode(HttpStatus.OK)
-    async signIn(@Body() dto: SignInDto) {
-        const cmd = new SignInCommand(
-            dto.organizationId,
-            dto.username,
-            dto.password,
-        );
-        return this.authService.signIn(cmd);
-    }
+  @Public()
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async signIn(@Body() dto: SignInDto) {
+    const cmd = new SignInCommand(
+      dto.organizationId,
+      dto.username,
+      dto.password,
+    );
+    return this.authService.signIn(cmd);
+  }
 
-    @Public()
-    @Post('refresh')
-    @HttpCode(HttpStatus.OK)
-    async refresh(@Body() dto: RefreshTokenDto) {
-        return this.authService.refreshTokens(dto.refreshToken);
-    }
+  @Public()
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body() dto: RefreshTokenDto) {
+    return this.authService.refreshTokens(dto.refreshToken);
+  }
 }

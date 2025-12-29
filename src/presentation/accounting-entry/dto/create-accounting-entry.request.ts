@@ -1,38 +1,50 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, IsUUID, IsDateString } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUUID,
+  IsDateString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
-import { AccountingEntryType, ReferenceType } from 'src/domain/finance-accounting/accounting-entry';
+import {
+  AccountingEntryType,
+  ReferenceType,
+} from 'src/domain/finance-accounting/accounting-entry';
 
 export class CreateAccountingEntryRequest {
-    @IsNotEmpty()
-    @IsUUID()
-    organizationId: string;
+  @IsNotEmpty()
+  @IsUUID()
+  organizationId: string;
 
-    @IsNotEmpty()
-    @IsEnum(AccountingEntryType)
-    entryType: AccountingEntryType;
+  @IsNotEmpty()
+  @IsEnum(AccountingEntryType)
+  entryType: AccountingEntryType;
 
-    @IsNotEmpty()
-    @IsNumber()
-    @IsPositive()
-    amount: number;
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  amount: number;
 
-    @IsOptional()
-    @IsDateString()
-    entryDate?: Date;
+  @IsOptional()
+  @IsDateString()
+  entryDate?: Date;
 
-    @IsOptional()
-    @IsString()
-    description?: string;
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-    @IsOptional()
-    @IsUUID()
-    assetId?: string;
+  @IsOptional()
+  @IsUUID()
+  assetId?: string;
 
-    @IsOptional()
-    @IsEnum(ReferenceType)
-    referenceType?: ReferenceType;
+  @IsOptional()
+  @IsEnum(ReferenceType)
+  referenceType?: ReferenceType;
 
-    @IsOptional()
-    @IsString()
-    referenceId?: string;
+  @IsOptional()
+  @IsString()
+  referenceId?: string;
 }

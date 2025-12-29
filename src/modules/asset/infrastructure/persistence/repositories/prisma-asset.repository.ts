@@ -11,7 +11,7 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaAssetRepository implements IAssetRepository {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async findByStatus(
     organizationId: string,

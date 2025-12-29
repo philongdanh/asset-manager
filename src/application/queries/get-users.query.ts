@@ -12,5 +12,5 @@ export class GetUsersQuery {
       offset?: number;
       includeDeleted?: boolean;
     },
-  ) { }
+  ) {}
 }

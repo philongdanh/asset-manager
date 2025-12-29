@@ -1,5 +1,4 @@
 export * from '../../modules/asset/infrastructure/mappers/asset.mapper';
-export * from './asset-category.mapper';
 
 export * from './asset-transfer.mapper';
 export * from './asset-disposal.mapper';

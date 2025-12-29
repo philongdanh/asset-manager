@@ -1,92 +1,96 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import {
-    IInventoryDetailRepository,
-    InventoryDetail,
+  IInventoryDetailRepository,
+  InventoryDetail,
 } from 'src/domain/inventory-audit/inventory-detail';
 import { InventoryDetailMapper } from 'src/infrastructure/mappers';
 
 @Injectable()
 export class PrismaInventoryDetailRepository implements IInventoryDetailRepository {
-    constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
-    async findById(id: string): Promise<InventoryDetail | null> {
-        const raw = await this.prisma.inventoryDetail.findUnique({ where: { id } });
-        return raw ? InventoryDetailMapper.toDomain(raw) : null;
-    }
+  async findById(id: string): Promise<InventoryDetail | null> {
+    const raw = await this.prisma.inventoryDetail.findUnique({ where: { id } });
+    return raw ? InventoryDetailMapper.toDomain(raw) : null;
+  }
 
-    async findByCheckId(inventoryCheckId: string): Promise<InventoryDetail[]> {
-        const raws = await this.prisma.inventoryDetail.findMany({
-            where: { inventoryId: inventoryCheckId },
-        });
-        return raws.map(InventoryDetailMapper.toDomain);
-    }
+  async findByCheckId(inventoryCheckId: string): Promise<InventoryDetail[]> {
+    const raws = await this.prisma.inventoryDetail.findMany({
+      where: { inventoryId: inventoryCheckId },
+    });
+    return raws.map(InventoryDetailMapper.toDomain);
+  }
 
-    async findByCheckAndAsset(
-        inventoryCheckId: string,
-        assetId: string,
-    ): Promise<InventoryDetail | null> {
-        const raw = await this.prisma.inventoryDetail.findFirst({
-            where: { inventoryId: inventoryCheckId, assetId },
-        });
-        return raw ? InventoryDetailMapper.toDomain(raw) : null;
-    }
+  async findByCheckAndAsset(
+    inventoryCheckId: string,
+    assetId: string,
+  ): Promise<InventoryDetail | null> {
+    const raw = await this.prisma.inventoryDetail.findFirst({
+      where: { inventoryId: inventoryCheckId, assetId },
+    });
+    return raw ? InventoryDetailMapper.toDomain(raw) : null;
+  }
 
-    async findMissingAssets(inventoryCheckId: string): Promise<InventoryDetail[]> {
-        const raws = await this.prisma.inventoryDetail.findMany({
-            where: { inventoryId: inventoryCheckId, physicalStatus: 'MISSING' },
-        });
-        return raws.map(InventoryDetailMapper.toDomain);
-    }
+  async findMissingAssets(
+    inventoryCheckId: string,
+  ): Promise<InventoryDetail[]> {
+    const raws = await this.prisma.inventoryDetail.findMany({
+      where: { inventoryId: inventoryCheckId, physicalStatus: 'MISSING' },
+    });
+    return raws.map(InventoryDetailMapper.toDomain);
+  }
 
-    async findStatusDiscrepancies(inventoryCheckId: string): Promise<InventoryDetail[]> {
-        const raws = await this.prisma.inventoryDetail.findMany({
-            where: { inventoryId: inventoryCheckId, isMatched: false },
-        });
-        return raws.map(InventoryDetailMapper.toDomain);
-    }
+  async findStatusDiscrepancies(
+    inventoryCheckId: string,
+  ): Promise<InventoryDetail[]> {
+    const raws = await this.prisma.inventoryDetail.findMany({
+      where: { inventoryId: inventoryCheckId, isMatched: false },
+    });
+    return raws.map(InventoryDetailMapper.toDomain);
+  }
 
-    async save(detail: InventoryDetail): Promise<InventoryDetail> {
-        const { data } = InventoryDetailMapper.toPersistence(detail);
-        const raw = await this.prisma.inventoryDetail.upsert({
-            where: { id: detail.id },
-            update: {
-                physicalStatus: data.physicalStatus,
-                isMatched: data.isMatched,
-                notes: data.notes,
-                checkedDate: data.checkedDate,
-                updatedAt: new Date(),
-            },
-            create: data,
-        });
-        return InventoryDetailMapper.toDomain(raw);
-    }
+  async save(detail: InventoryDetail): Promise<InventoryDetail> {
+    const { data } = InventoryDetailMapper.toPersistence(detail);
+    const raw = await this.prisma.inventoryDetail.upsert({
+      where: { id: detail.id },
+      update: {
+        physicalStatus: data.physicalStatus,
+        isMatched: data.isMatched,
+        notes: data.notes,
+        checkedDate: data.checkedDate,
+        updatedAt: new Date(),
+      },
+      create: data,
+    });
+    return InventoryDetailMapper.toDomain(raw);
+  }
 
-    async saveMany(details: InventoryDetail[]): Promise<void> {
-        // Transactional save/update
-        // As mentioned, no unique index, so iterate
-        for (const d of details) {
-            await this.save(d);
-        }
+  async saveMany(details: InventoryDetail[]): Promise<void> {
+    // Transactional save/update
+    // As mentioned, no unique index, so iterate
+    for (const d of details) {
+      await this.save(d);
     }
+  }
 
-    async delete(id: string): Promise<void> {
-        await this.prisma.inventoryDetail.delete({ where: { id } });
-    }
+  async delete(id: string): Promise<void> {
+    await this.prisma.inventoryDetail.delete({ where: { id } });
+  }
 
-    async createInitialDetails(
-        inventoryCheckId: string,
-        assetIds: string[],
-    ): Promise<void> {
-        await this.prisma.inventoryDetail.createMany({
-            data: assetIds.map(assetId => ({
-                inventoryId: inventoryCheckId,
-                assetId,
-                physicalStatus: 'PENDING',
-                isMatched: false,
-                checkedByUserId: '00000000-0000-0000-0000-000000000000', // Default
-                checkedDate: new Date(),
-            }))
-        });
-    }
+  async createInitialDetails(
+    inventoryCheckId: string,
+    assetIds: string[],
+  ): Promise<void> {
+    await this.prisma.inventoryDetail.createMany({
+      data: assetIds.map((assetId) => ({
+        inventoryId: inventoryCheckId,
+        assetId,
+        physicalStatus: 'PENDING',
+        isMatched: false,
+        checkedByUserId: '00000000-0000-0000-0000-000000000000', // Default
+        checkedDate: new Date(),
+      })),
+    });
+  }
 }

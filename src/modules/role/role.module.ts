@@ -8,18 +8,18 @@ import { CreateRoleHandler } from './application';
 import { RoleController } from './presentation';
 
 @Module({
-    controllers: [RoleController],
-    providers: [
-        PrismaService,
-        {
-            provide: ID_GENERATOR,
-            useClass: UuidGeneratorService,
-        },
-        {
-            provide: ROLE_REPOSITORY,
-            useClass: PrismaRoleRepository,
-        },
-        CreateRoleHandler,
-    ],
+  controllers: [RoleController],
+  providers: [
+    PrismaService,
+    {
+      provide: ID_GENERATOR,
+      useClass: UuidGeneratorService,
+    },
+    {
+      provide: ROLE_REPOSITORY,
+      useClass: PrismaRoleRepository,
+    },
+    CreateRoleHandler,
+  ],
 })
-export class RoleModule { }
+export class RoleModule {}

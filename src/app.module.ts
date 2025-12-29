@@ -12,7 +12,7 @@ import { PermissionModule } from './modules/permission';
 import { UserModule } from './modules/user';
 import { AuthModule } from './modules/auth';
 // Other modules
-import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
+import { AssetCategoryModule } from './modules/asset-category';
 import { AssetModule } from './modules/asset/asset.module';
 import { AssetTransferModule } from './presentation/asset-transfer/asset-transfer.module';
 import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposal.module';
@@ -56,5 +56,4 @@ import { AuditLogModule } from './presentation/audit-log/audit-log.module';
     },
   ],
 })
-export class AppModule { }
-
+export class AppModule {}

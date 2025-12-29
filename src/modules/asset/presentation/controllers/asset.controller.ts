@@ -23,12 +23,11 @@ import { GetAssetDetailsHandler } from '../../application/queries/get-asset-deta
 import { GetAssetsHandler } from '../../application/queries/get-assets/get-assets.handler';
 import { Permissions } from 'src/modules/auth/presentation';
 import {
-
   AssetResponse,
   CreateAssetRequest,
   GetAssetsRequest,
   UpdateAssetRequest,
-} from '../dtos';
+} from '../dto';
 
 @Controller('assets')
 export class AssetController {
@@ -38,22 +37,16 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')
   @Post()
   async create(
     @Body() dto: CreateAssetRequest,
-    @Query('userId') createdByUserId?: string, // Assuming userId comes from auth context or query for now since auth not fully visible
+    @Query('userId') createdByUserId?: string,
   ): Promise<AssetResponse> {
-
-    // In a real app with AuthGuard, we extract user from Request.
-    // For now, if not passed in query, fallback to DTO if available or strictly require it.
-    // DTO doesn't have createdByUserId as it is usually system/context field.
-    // I will use a dummy if not present to ensure it works for now, or just assume it is passed.
-
-    const userId = createdByUserId || '00000000-0000-0000-0000-000000000000'; // Placeholder if not provided
+    const userId = createdByUserId || '00000000-0000-0000-0000-000000000000';
 
     const cmd = new CreateAssetCommand(
       dto.organizationId,
@@ -99,7 +92,7 @@ export class AssetController {
       dto.condition || null,
       dto.location || null,
       dto.specifications || null,
-      dto.status,
+      dto.status || '',
     );
     const result = await this.updateHandler.execute(cmd);
     return this.toResponse(result);
@@ -153,7 +146,7 @@ export class AssetController {
   }
 
   private toResponse(asset: any): AssetResponse {
-    return <AssetResponse>{
+    return new AssetResponse({
       id: asset.id,
       organizationId: asset.organizationId,
       assetCode: asset.assetCode,
@@ -174,8 +167,8 @@ export class AssetController {
       location: asset.location,
       specifications: asset.specifications,
       condition: asset.condition,
-      createdAt: asset.createdAt || new Date(),
-      updatedAt: asset.updatedAt || new Date(),
-    };
+      createdAt: asset.createdAt,
+      updatedAt: asset.updatedAt,
+    });
   }
 }

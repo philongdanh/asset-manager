@@ -1,24 +1,21 @@
 import { Injectable, Inject } from '@nestjs/common';
 import {
-    ASSET_TRANSFER_REPOSITORY,
-    type IAssetTransferRepository,
-    AssetTransfer,
+  ASSET_TRANSFER_REPOSITORY,
+  type IAssetTransferRepository,
+  AssetTransfer,
 } from 'src/domain/asset-lifecycle/asset-transfer';
 import { GetAssetTransfersQuery } from '../get-asset-transfers.query';
 
 @Injectable()
 export class GetAssetTransfersHandler {
-    constructor(
-        @Inject(ASSET_TRANSFER_REPOSITORY)
-        private readonly transferRepo: IAssetTransferRepository,
-    ) { }
+  constructor(
+    @Inject(ASSET_TRANSFER_REPOSITORY)
+    private readonly transferRepo: IAssetTransferRepository,
+  ) {}
 
-    async execute(
-        query: GetAssetTransfersQuery,
-    ): Promise<{ data: AssetTransfer[]; total: number }> {
-        return await this.transferRepo.findAll(
-            query.organizationId,
-            query.options,
-        );
-    }
+  async execute(
+    query: GetAssetTransfersQuery,
+  ): Promise<{ data: AssetTransfer[]; total: number }> {
+    return await this.transferRepo.findAll(query.organizationId, query.options);
+  }
 }

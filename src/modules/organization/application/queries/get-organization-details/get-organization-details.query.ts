@@ -1,3 +1,3 @@
 export class GetOrganizationDetailsQuery {
-    constructor(public readonly organizationId: string) { }
+  constructor(public readonly organizationId: string) {}
 }

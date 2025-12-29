@@ -8,19 +8,19 @@ import { CreatePermissionHandler, GetPermissionsHandler } from './application';
 import { PermissionController } from './presentation';
 
 @Module({
-    controllers: [PermissionController],
-    providers: [
-        PrismaService,
-        {
-            provide: ID_GENERATOR,
-            useClass: UuidGeneratorService,
-        },
-        {
-            provide: PERMISSION_REPOSITORY,
-            useClass: PrismaPermissionRepository,
-        },
-        CreatePermissionHandler,
-        GetPermissionsHandler,
-    ],
+  controllers: [PermissionController],
+  providers: [
+    PrismaService,
+    {
+      provide: ID_GENERATOR,
+      useClass: UuidGeneratorService,
+    },
+    {
+      provide: PERMISSION_REPOSITORY,
+      useClass: PrismaPermissionRepository,
+    },
+    CreatePermissionHandler,
+    GetPermissionsHandler,
+  ],
 })
-export class PermissionModule { }
+export class PermissionModule {}

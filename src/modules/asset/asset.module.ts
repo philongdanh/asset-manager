@@ -9,7 +9,7 @@ import { ID_GENERATOR } from 'src/domain/core/interfaces';
 import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';
 import { PrismaService } from 'src/infrastructure/persistence/prisma';
 import { PrismaAssetRepository } from './infrastructure/persistence/repositories/prisma-asset.repository';
-import { AssetController } from './presentation/controllers/asset.controller';
+import { AssetController } from './presentation';
 
 @Module({
   controllers: [AssetController],
@@ -30,4 +30,4 @@ import { AssetController } from './presentation/controllers/asset.controller';
     GetAssetDetailsHandler,
   ],
 })
-export class AssetModule { }
+export class AssetModule {}

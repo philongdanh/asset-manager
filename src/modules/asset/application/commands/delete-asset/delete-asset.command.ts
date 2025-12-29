@@ -1,3 +1,3 @@
 export class DeleteAssetCommand {
-    constructor(public readonly assetId: string) { }
+  constructor(public readonly assetId: string) {}
 }

@@ -8,18 +8,18 @@ import { CreateDepartmentHandler } from './application';
 import { DepartmentController } from './presentation';
 
 @Module({
-    controllers: [DepartmentController],
-    providers: [
-        PrismaService,
-        {
-            provide: ID_GENERATOR,
-            useClass: UuidGeneratorService,
-        },
-        {
-            provide: DEPARTMENT_REPOSITORY,
-            useClass: PrismaDepartmentRepository,
-        },
-        CreateDepartmentHandler,
-    ],
+  controllers: [DepartmentController],
+  providers: [
+    PrismaService,
+    {
+      provide: ID_GENERATOR,
+      useClass: UuidGeneratorService,
+    },
+    {
+      provide: DEPARTMENT_REPOSITORY,
+      useClass: PrismaDepartmentRepository,
+    },
+    CreateDepartmentHandler,
+  ],
 })
-export class DepartmentModule { }
+export class DepartmentModule {}

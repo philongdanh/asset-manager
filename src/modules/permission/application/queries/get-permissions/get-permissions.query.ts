@@ -1,1 +1,1 @@
-export class GetPermissionsQuery { }
+export class GetPermissionsQuery {}

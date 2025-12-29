@@ -3,37 +3,37 @@ import { OrganizationStatus } from '../../../domain';
 
 @Exclude()
 export class OrganizationResponse {
-    @Expose()
-    id: string;
+  @Expose()
+  id: string;
 
-    @Expose()
-    name: string;
+  @Expose()
+  name: string;
 
-    @Expose({ name: 'tax_code' })
-    taxCode: string | null;
+  @Expose({ name: 'tax_code' })
+  taxCode: string | null;
 
-    @Expose()
-    status: OrganizationStatus;
+  @Expose()
+  status: OrganizationStatus;
 
-    @Expose()
-    phone: string | null;
+  @Expose()
+  phone: string | null;
 
-    @Expose()
-    email: string | null;
+  @Expose()
+  email: string | null;
 
-    @Expose()
-    website: string | null;
+  @Expose()
+  website: string | null;
 
-    @Expose()
-    address: string | null;
+  @Expose()
+  address: string | null;
 
-    @Expose({ name: 'created_at' })
-    createdAt: Date;
+  @Expose({ name: 'created_at' })
+  createdAt: Date;
 
-    @Expose({ name: 'updated_at' })
-    updatedAt: Date;
+  @Expose({ name: 'updated_at' })
+  updatedAt: Date;
 
-    constructor(partial: Partial<OrganizationResponse>) {
-        Object.assign(this, partial);
-    }
+  constructor(partial: Partial<OrganizationResponse>) {
+    Object.assign(this, partial);
+  }
 }
