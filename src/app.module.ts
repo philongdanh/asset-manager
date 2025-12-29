@@ -7,6 +7,9 @@ import { APP_FILTER } from '@nestjs/core';
 import { GlobalExceptionFilter } from './presentation/interfaces';
 import { AuthModule } from './presentation/auth';
 import { UserModule } from './presentation/user';
+import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
+import { AssetModule } from './presentation/asset/asset.module';
+import { AssetTransferModule } from './presentation/asset-transfer/asset-transfer.module';
 
 @Module({
   imports: [
@@ -14,6 +17,9 @@ import { UserModule } from './presentation/user';
     AuthModule,
     OrganizationModule,
     UserModule,
+    AssetCategoryModule,
+    AssetModule,
+    AssetTransferModule,
   ],
   controllers: [AppController],
   providers: [
@@ -24,4 +30,4 @@ import { UserModule } from './presentation/user';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

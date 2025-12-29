@@ -7,3 +7,5 @@ export * from './get-asset-categories.handler';
 export * from './get-asset-category-details.handler';
 export * from './get-assets.handler';
 export * from './get-asset-details.handler';
+export * from './get-asset-transfers.handler';
+export * from './get-asset-transfer-details.handler';
