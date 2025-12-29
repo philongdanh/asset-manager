@@ -6,3 +6,4 @@ export * from './permission.mapper';
 export * from './role.mapper';
 export * from './user.mapper';
 export * from './asset-transfer.mapper';
+export * from './asset-disposal.mapper';

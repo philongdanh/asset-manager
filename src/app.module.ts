@@ -10,6 +10,7 @@ import { UserModule } from './presentation/user';
 import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
 import { AssetModule } from './presentation/asset/asset.module';
 import { AssetTransferModule } from './presentation/asset-transfer/asset-transfer.module';
+import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposal.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AssetTransferModule } from './presentation/asset-transfer/asset-transfe
     AssetCategoryModule,
     AssetModule,
     AssetTransferModule,
+    AssetDisposalModule,
   ],
   controllers: [AppController],
   providers: [

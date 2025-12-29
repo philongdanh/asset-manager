@@ -6,3 +6,4 @@ export * from './prisma-role.repository';
 export * from './prisma-permission.repository';
 export * from './prisma-asset.repository';
 export * from './prisma-asset-transfer.repository';
+export * from './prisma-asset-disposal.repository';
