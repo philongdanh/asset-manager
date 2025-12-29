@@ -15,7 +15,7 @@ import { AuthModule } from './modules/auth';
 import { AssetCategoryModule } from './modules/asset-category';
 import { AssetModule } from './modules/asset/asset.module';
 import { AssetTransferModule } from './modules/asset-transfer';
-import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposal.module';
+import { AssetDisposalModule } from './modules/asset-disposal';
 import { MaintenanceScheduleModule } from './presentation/maintenance-schedule/maintenance-schedule.module';
 import { AssetDocumentModule } from './presentation/asset-document/asset-document.module';
 import { AssetDepreciationModule } from './presentation/asset-depreciation/asset-depreciation.module';

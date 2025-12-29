@@ -3,7 +3,8 @@ export * from './get-organizations.query';
 export * from './get-users.query';
 export * from './get-user-details.query';
 
-export * from './asset-disposal';
+
+export * from './maintenance-schedule';
 export * from './maintenance-schedule';
 export * from './asset-document';
 export * from './asset-depreciation';
