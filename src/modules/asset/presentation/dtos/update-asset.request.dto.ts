@@ -9,19 +9,9 @@ import {
     IsUUID,
     Min,
 } from 'class-validator';
-import { AssetCondition, AssetStatus } from 'src/domain/asset-lifecycle/asset';
+import { AssetCondition, AssetStatus } from '../../domain/entities/asset.entity';
 
-export class CreateAssetRequest {
-    @Expose({ name: 'organization_id' })
-    @IsUUID('4')
-    @IsNotEmpty()
-    organizationId: string;
-
-    @Expose({ name: 'asset_code' })
-    @IsString()
-    @IsNotEmpty()
-    assetCode: string;
-
+export class UpdateAssetRequest {
     @Expose({ name: 'asset_name' })
     @IsString()
     @IsNotEmpty()
@@ -31,6 +21,21 @@ export class CreateAssetRequest {
     @IsUUID('4')
     @IsNotEmpty()
     categoryId: string;
+
+    @Expose()
+    @IsString()
+    @IsOptional()
+    model: string | null;
+
+    @Expose({ name: 'serial_number' })
+    @IsString()
+    @IsOptional()
+    serialNumber: string | null;
+
+    @Expose()
+    @IsString()
+    @IsOptional()
+    manufacturer: string | null;
 
     @Expose({ name: 'purchase_price' })
     @IsNumber()
@@ -50,21 +55,6 @@ export class CreateAssetRequest {
     @Type(() => Number)
     currentValue: number;
 
-    @Expose()
-    @IsString()
-    @IsOptional()
-    model: string | null;
-
-    @Expose({ name: 'serial_number' })
-    @IsString()
-    @IsOptional()
-    serialNumber: string | null;
-
-    @Expose()
-    @IsString()
-    @IsOptional()
-    manufacturer: string | null;
-
     @Expose({ name: 'purchase_date' })
     @IsDate()
     @IsOptional()
@@ -78,6 +68,11 @@ export class CreateAssetRequest {
     warrantyExpiryDate: Date | null;
 
     @Expose()
+    @IsEnum(AssetCondition)
+    @IsOptional()
+    condition: AssetCondition | null;
+
+    @Expose()
     @IsString()
     @IsOptional()
     location: string | null;
@@ -88,12 +83,7 @@ export class CreateAssetRequest {
     specifications: string | null;
 
     @Expose()
-    @IsEnum(AssetCondition)
-    @IsOptional()
-    condition: AssetCondition | null;
-
-    @Expose()
     @IsEnum(AssetStatus)
-    @IsOptional()
-    status: AssetStatus | null;
+    @IsNotEmpty()
+    status: AssetStatus;
 }

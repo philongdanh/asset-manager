@@ -4,8 +4,7 @@ export * from './get-users.query';
 export * from './get-user-details.query';
 export * from './get-asset-categories.query';
 export * from './get-asset-category-details.query';
-export * from './get-assets.query';
-export * from './get-asset-details.query';
+
 export * from './get-asset-transfers.query';
 export * from './get-asset-transfer-details.query';
 export * from './asset-disposal';

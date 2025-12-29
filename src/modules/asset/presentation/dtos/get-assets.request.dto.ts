@@ -8,7 +8,7 @@ import {
     IsUUID,
     Min,
 } from 'class-validator';
-import { AssetStatus } from 'src/domain/asset-lifecycle/asset';
+import { AssetStatus } from '../../domain/entities/asset.entity';
 
 export class GetAssetsRequest {
     @IsEnum(AssetStatus)

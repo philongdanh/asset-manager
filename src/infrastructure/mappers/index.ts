@@ -1,4 +1,4 @@
-export * from './asset.mapper';
+export * from '../../modules/asset/infrastructure/mappers/asset.mapper';
 export * from './asset-category.mapper';
 export * from './department.mapper';
 export * from './organization.mapper';

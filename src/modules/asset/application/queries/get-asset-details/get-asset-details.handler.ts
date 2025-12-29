@@ -3,9 +3,9 @@ import { UseCaseException } from 'src/application/core/exceptions';
 import {
     ASSET_REPOSITORY,
     type IAssetRepository,
-    Asset,
-} from 'src/domain/asset-lifecycle/asset';
-import { GetAssetDetailsQuery } from '../get-asset-details.query';
+} from '../../../domain/repositories/asset.repository.interface';
+import { Asset } from '../../../domain/entities/asset.entity';
+import { GetAssetDetailsQuery } from './get-asset-details.query';
 
 @Injectable()
 export class GetAssetDetailsHandler {

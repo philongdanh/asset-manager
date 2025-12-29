@@ -8,7 +8,7 @@ import { GlobalExceptionFilter } from './presentation/interfaces';
 import { AuthModule } from './presentation/auth';
 import { UserModule } from './presentation/user';
 import { AssetCategoryModule } from './presentation/asset-category/asset-category.module';
-import { AssetModule } from './presentation/asset/asset.module';
+import { AssetModule } from './modules/asset/asset.module';
 import { AssetTransferModule } from './presentation/asset-transfer/asset-transfer.module';
 import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposal.module';
 import { MaintenanceScheduleModule } from './presentation/maintenance-schedule/maintenance-schedule.module';

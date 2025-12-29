@@ -6,9 +6,7 @@ export * from './update-user.handler';
 export * from './create-asset-category.handler';
 export * from './update-asset-category.handler';
 export * from './delete-asset-category.handler';
-export * from './create-asset.handler';
-export * from './update-asset.handler';
-export * from './delete-asset.handler';
+
 export * from './create-asset-transfer.handler';
 export * from './approve-asset-transfer.handler';
 export * from './reject-asset-transfer.handler';

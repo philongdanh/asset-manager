@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { IAssetRepository } from 'src/domain/asset-lifecycle/asset/asset.repository.interface';
+import { IAssetRepository } from '../../../domain/repositories/asset.repository.interface';
 import {
   Asset,
   AssetStatus,
   AssetCondition,
-} from 'src/domain/asset-lifecycle/asset/asset.entity';
-import { AssetMapper } from '../../../mappers/asset.mapper';
+} from '../../../domain/entities/asset.entity';
+import { AssetMapper } from '../../mappers/asset.mapper';
 import { PrismaService } from 'src/infrastructure/persistence/prisma/prisma.service';
 import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaAssetRepository implements IAssetRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findByStatus(
     organizationId: string,

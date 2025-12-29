@@ -2,9 +2,9 @@ import { Injectable, Inject } from '@nestjs/common';
 import {
     ASSET_REPOSITORY,
     type IAssetRepository,
-    Asset,
-} from 'src/domain/asset-lifecycle/asset';
-import { GetAssetsQuery } from '../get-assets.query';
+} from '../../../domain/repositories/asset.repository.interface';
+import { Asset } from '../../../domain/entities/asset.entity';
+import { GetAssetsQuery } from './get-assets.query';
 
 @Injectable()
 export class GetAssetsHandler {

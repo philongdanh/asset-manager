@@ -3,11 +3,13 @@ import { UseCaseException } from 'src/application/core/exceptions';
 import {
     ASSET_REPOSITORY,
     type IAssetRepository,
+} from '../../../domain/repositories/asset.repository.interface';
+import {
     Asset,
     AssetCondition,
     AssetStatus,
-} from 'src/domain/asset-lifecycle/asset';
-import { UpdateAssetCommand } from '../update-asset.command';
+} from '../../../domain/entities/asset.entity';
+import { UpdateAssetCommand } from './update-asset.command';
 
 @Injectable()
 export class UpdateAssetHandler {

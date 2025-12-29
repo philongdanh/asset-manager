@@ -3,7 +3,7 @@ import {
   Asset,
   AssetCondition,
   AssetStatus,
-} from 'src/domain/asset-lifecycle/asset';
+} from '../../domain/entities/asset.entity';
 
 export class AssetMapper {
   static toDomain(raw: PrismaAsset): Asset {

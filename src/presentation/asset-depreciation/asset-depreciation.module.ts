@@ -4,7 +4,7 @@ import {
     GetAssetDepreciationsHandler,
     GetAssetDepreciationDetailsHandler,
 } from 'src/application/queries/handlers';
-import { ASSET_REPOSITORY } from 'src/domain/asset-lifecycle/asset';
+import { ASSET_REPOSITORY } from 'src/modules/asset/domain';
 import { ASSET_DEPRECIATION_REPOSITORY } from 'src/domain/finance-accounting/asset-depreciation';
 import { ID_GENERATOR } from 'src/domain/core/interfaces';
 import { UuidGeneratorService } from 'src/infrastructure/common/id-generator';

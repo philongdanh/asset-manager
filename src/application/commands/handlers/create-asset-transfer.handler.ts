@@ -9,7 +9,7 @@ import {
 import {
     ASSET_REPOSITORY,
     type IAssetRepository,
-} from 'src/domain/asset-lifecycle/asset';
+} from 'src/modules/asset/domain';
 import { CreateAssetTransferCommand } from '../create-asset-transfer.command';
 
 @Injectable()

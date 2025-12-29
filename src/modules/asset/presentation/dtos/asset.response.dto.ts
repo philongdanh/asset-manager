@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { AssetCondition, AssetStatus } from 'src/domain/asset-lifecycle/asset';
+import { AssetCondition, AssetStatus } from '../../domain/entities/asset.entity';
 
 @Exclude()
 export class AssetResponse {

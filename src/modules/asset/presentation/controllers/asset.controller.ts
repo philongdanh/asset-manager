@@ -11,31 +11,24 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { CreateAssetCommand } from '../../application/commands/create-asset/create-asset.command';
+import { DeleteAssetCommand } from '../../application/commands/delete-asset/delete-asset.command';
+import { UpdateAssetCommand } from '../../application/commands/update-asset/update-asset.command';
+import { CreateAssetHandler } from '../../application/commands/create-asset/create-asset.handler';
+import { DeleteAssetHandler } from '../../application/commands/delete-asset/delete-asset.handler';
+import { UpdateAssetHandler } from '../../application/commands/update-asset/update-asset.handler';
+import { GetAssetDetailsQuery } from '../../application/queries/get-asset-details/get-asset-details.query';
+import { GetAssetsQuery } from '../../application/queries/get-assets/get-assets.query';
+import { GetAssetDetailsHandler } from '../../application/queries/get-asset-details/get-asset-details.handler';
+import { GetAssetsHandler } from '../../application/queries/get-assets/get-assets.handler';
+import { Permissions } from '../../../../presentation/auth/decorators';
 import {
-  CreateAssetCommand,
-  DeleteAssetCommand,
-  UpdateAssetCommand,
-} from 'src/application/commands';
-import {
-  CreateAssetHandler,
-  DeleteAssetHandler,
-  UpdateAssetHandler,
-} from 'src/application/commands/handlers';
-import {
-  GetAssetDetailsQuery,
-  GetAssetsQuery,
-} from 'src/application/queries';
-import {
-  GetAssetDetailsHandler,
-  GetAssetsHandler,
-} from 'src/application/queries/handlers';
-import { Permissions } from '../auth/decorators';
-import {
+
   AssetResponse,
   CreateAssetRequest,
   GetAssetsRequest,
   UpdateAssetRequest,
-} from './dto';
+} from '../dtos';
 
 @Controller('assets')
 export class AssetController {

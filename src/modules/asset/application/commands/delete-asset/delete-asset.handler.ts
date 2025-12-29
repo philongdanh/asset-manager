@@ -3,8 +3,8 @@ import { UseCaseException } from 'src/application/core/exceptions';
 import {
     ASSET_REPOSITORY,
     type IAssetRepository,
-} from 'src/domain/asset-lifecycle/asset';
-import { DeleteAssetCommand } from '../delete-asset.command';
+} from '../../../domain/repositories/asset.repository.interface';
+import { DeleteAssetCommand } from './delete-asset.command';
 
 @Injectable()
 export class DeleteAssetHandler {

@@ -1,4 +1,4 @@
-import { Asset, AssetStatus } from './asset.entity';
+import { Asset, AssetStatus } from '../entities/asset.entity';
 
 export const ASSET_REPOSITORY = Symbol('ASSET_REPOSITORY');
 
