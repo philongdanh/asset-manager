@@ -14,7 +14,7 @@ import { AuthModule } from './modules/auth';
 // Other modules
 import { AssetCategoryModule } from './modules/asset-category';
 import { AssetModule } from './modules/asset/asset.module';
-import { AssetTransferModule } from './presentation/asset-transfer/asset-transfer.module';
+import { AssetTransferModule } from './modules/asset-transfer';
 import { AssetDisposalModule } from './presentation/asset-disposal/asset-disposal.module';
 import { MaintenanceScheduleModule } from './presentation/maintenance-schedule/maintenance-schedule.module';
 import { AssetDocumentModule } from './presentation/asset-document/asset-document.module';
@@ -56,4 +56,4 @@ import { AuditLogModule } from './presentation/audit-log/audit-log.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }

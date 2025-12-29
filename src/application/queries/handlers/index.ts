@@ -1,5 +1,3 @@
-export * from './get-asset-transfers.handler';
-export * from './get-asset-transfer-details.handler';
 export * from './get-asset-disposals.handler';
 export * from './get-asset-disposal-details.handler';
 export * from './get-maintenance-schedules.handler';

@@ -1,5 +1,4 @@
 export * from '../../../../modules/asset/infrastructure/persistence/repositories/prisma-asset.repository';
-export * from './prisma-asset-transfer.repository';
 export * from './prisma-asset-disposal.repository';
 export * from './prisma-maintenance-schedule.repository';
 export * from './prisma-asset-depreciation.repository';

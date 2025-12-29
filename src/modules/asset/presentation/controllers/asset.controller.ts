@@ -22,6 +22,7 @@ import { GetAssetsQuery } from '../../application/queries/get-assets/get-assets.
 import { GetAssetDetailsHandler } from '../../application/queries/get-asset-details/get-asset-details.handler';
 import { GetAssetsHandler } from '../../application/queries/get-assets/get-assets.handler';
 import { Permissions } from 'src/modules/auth/presentation';
+import { Asset } from '../../domain';
 import {
   AssetResponse,
   CreateAssetRequest,
@@ -37,7 +38,7 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')
@@ -145,7 +146,7 @@ export class AssetController {
     return this.toResponse(result);
   }
 
-  private toResponse(asset: any): AssetResponse {
+  private toResponse(asset: Asset): AssetResponse {
     return new AssetResponse({
       id: asset.id,
       organizationId: asset.organizationId,
