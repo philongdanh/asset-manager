@@ -21,7 +21,7 @@ import {
   GetUserDetailsHandler,
   GetUsersHandler,
 } from 'src/application/queries/handlers';
-import { Public } from '../auth/decorators';
+import { Permissions } from '../auth/decorators';
 import {
   CreateUserRequest,
   GetUsersRequest,
@@ -41,6 +41,7 @@ export class UserController {
   ) { }
 
   @HttpCode(HttpStatus.CREATED)
+  @Permissions('USER_CREATE')
   @Post()
   async create(@Body() dto: CreateUserRequest): Promise<UserResponse> {
     const cmd = new CreateUserCommand(
@@ -55,7 +56,7 @@ export class UserController {
     return new UserResponse(result);
   }
 
-  @Public()
+  @Permissions('USER_VIEW')
   @Get()
   async getList(@Query() query: GetUsersRequest): Promise<{ data: UserResponse[], total: number }> {
     const result = await this.getUsersHandler.execute({
@@ -76,7 +77,7 @@ export class UserController {
     };
   }
 
-  @Public()
+  @Permissions('USER_VIEW')
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -85,7 +86,7 @@ export class UserController {
     return new UserResponse(user);
   }
 
-  @Public()
+  @Permissions('USER_UPDATE')
   @Patch(':id')
   async updateInfo(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

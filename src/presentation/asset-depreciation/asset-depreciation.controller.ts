@@ -16,6 +16,7 @@ import {
     GetAssetDepreciationsHandler,
     GetAssetDepreciationDetailsHandler,
 } from 'src/application/queries/handlers';
+import { Permissions } from '../auth/decorators';
 import { AssetDepreciationResponse, RecordDepreciationRequest } from './dto';
 
 @Controller('asset-depreciations')
@@ -27,6 +28,7 @@ export class AssetDepreciationController {
     ) { }
 
     @HttpCode(HttpStatus.CREATED)
+    @Permissions('DEPRECIATION_CREATE')
     @Post()
     async record(
         @Body() dto: RecordDepreciationRequest,
@@ -44,6 +46,7 @@ export class AssetDepreciationController {
         return this.toResponse(result);
     }
 
+    @Permissions('DEPRECIATION_VIEW')
     @Get()
     async getList(
         @Query('organizationId') organizationId: string,
@@ -59,6 +62,7 @@ export class AssetDepreciationController {
         };
     }
 
+    @Permissions('DEPRECIATION_VIEW')
     @Get(':id')
     async getDetails(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

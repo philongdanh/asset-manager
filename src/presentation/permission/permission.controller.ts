@@ -3,6 +3,7 @@ import { CreatePermissionRequest, PermissionResponse } from './dto';
 import { GetPermissionsHandler } from 'src/application/queries/handlers/get-permissions.handler';
 import { CreatePermissionHandler } from 'src/application/commands/handlers/create-permission.handler';
 import { CreatePermissionCommand } from 'src/application/commands/create-permission.command';
+import { Permissions } from '../auth/decorators';
 
 @Controller('permissions')
 export class PermissionController {
@@ -11,6 +12,7 @@ export class PermissionController {
     private readonly createPermissionHandler: CreatePermissionHandler,
   ) { }
 
+  @Permissions('PERMISSION_VIEW')
   @Get()
   async find(): Promise<PermissionResponse[]> {
     const result = await this.getPermissionsHandler.execute();

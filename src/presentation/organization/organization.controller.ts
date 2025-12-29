@@ -20,7 +20,7 @@ import {
   GetOrganizationsHandler,
   GetOrganizationDetails,
 } from 'src/application/queries/handlers';
-import { Public } from '../auth/decorators';
+import { Permissions } from '../auth/decorators';
 import {
   CreateOrganizationRequest,
   GetOrganizationsRequest,
@@ -38,6 +38,7 @@ export class OrganizationController {
   ) { }
 
   @HttpCode(HttpStatus.CREATED)
+  @Permissions('ORGANIZATION_CREATE')
   @Post()
   async create(
     @Body() dto: CreateOrganizationRequest,
@@ -55,7 +56,7 @@ export class OrganizationController {
     return new OrganizationResponse(org);
   }
 
-  @Public()
+  @Permissions('ORGANIZATION_VIEW')
   @Get()
   async getList(
     @Query() query: GetOrganizationsRequest,
@@ -67,7 +68,7 @@ export class OrganizationController {
     return orgs.map((org) => new OrganizationResponse(org));
   }
 
-  @Public()
+  @Permissions('ORGANIZATION_VIEW')
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -78,7 +79,7 @@ export class OrganizationController {
     return new OrganizationResponse(org);
   }
 
-  @Public()
+  @Permissions('ORGANIZATION_UPDATE')
   @Patch(':id')
   async updateInfo(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

@@ -29,7 +29,7 @@ import {
   GetAssetCategoriesHandler,
   GetAssetCategoryDetailsHandler,
 } from 'src/application/queries/handlers';
-import { Public } from '../auth/decorators'; // Assuming Public decorator exists like in User
+import { Permissions } from '../auth/decorators';
 import {
   AssetCategoryResponse,
   CreateAssetCategoryRequest,
@@ -48,6 +48,7 @@ export class AssetCategoryController {
   ) { }
 
   @HttpCode(HttpStatus.CREATED)
+  @Permissions('ASSET_CATEGORY_CREATE')
   @Post()
   async create(
     @Body() dto: CreateAssetCategoryRequest,
@@ -70,6 +71,7 @@ export class AssetCategoryController {
     };
   }
 
+  @Permissions('ASSET_CATEGORY_UPDATE')
   @Patch(':id')
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -94,6 +96,7 @@ export class AssetCategoryController {
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Permissions('ASSET_CATEGORY_DELETE')
   @Delete(':id')
   async delete(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -102,6 +105,7 @@ export class AssetCategoryController {
     await this.deleteHandler.execute(cmd);
   }
 
+  @Permissions('ASSET_CATEGORY_VIEW')
   @Get()
   async getList(
     @Query() query: GetAssetCategoriesRequest,
@@ -151,6 +155,7 @@ export class AssetCategoryController {
     };
   }
 
+  @Permissions('ASSET_CATEGORY_VIEW')
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

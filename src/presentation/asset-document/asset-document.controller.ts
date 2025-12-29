@@ -23,6 +23,7 @@ import {
     GetAssetDocumentsHandler,
     GetAssetDocumentDetailsHandler,
 } from 'src/application/queries/handlers';
+import { Permissions } from '../auth/decorators';
 import { AssetDocumentResponse, UploadAssetDocumentRequest } from './dto';
 
 @Controller('asset-documents')
@@ -35,6 +36,7 @@ export class AssetDocumentController {
     ) { }
 
     @HttpCode(HttpStatus.CREATED)
+    @Permissions('DOCUMENT_CREATE')
     @Post()
     async upload(
         @Body() dto: UploadAssetDocumentRequest,
@@ -55,6 +57,7 @@ export class AssetDocumentController {
         return this.toResponse(result);
     }
 
+    @Permissions('DOCUMENT_DELETE')
     @Delete(':id')
     async delete(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -63,6 +66,7 @@ export class AssetDocumentController {
         await this.deleteHandler.execute(cmd);
     }
 
+    @Permissions('DOCUMENT_VIEW')
     @Get()
     async getList(
         @Query('organizationId') organizationId: string,
@@ -78,6 +82,7 @@ export class AssetDocumentController {
         };
     }
 
+    @Permissions('DOCUMENT_VIEW')
     @Get(':id')
     async getDetails(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

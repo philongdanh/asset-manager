@@ -4,6 +4,8 @@ import { SignInHandler } from 'src/application/commands/handlers';
 import { SignInCommand } from 'src/application/commands';
 import type { IUserRepository } from 'src/domain/identity/user'; // Type only? No, we need injection token.
 import { USER_REPOSITORY } from 'src/domain/identity/user/user.repository.interface';
+import { ROLE_REPOSITORY, type IRoleRepository } from 'src/domain/identity/role';
+import { PERMISSION_REPOSITORY, type IPermissionRepository } from 'src/domain/identity/permission';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -12,11 +14,19 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly signInHandler: SignInHandler,
         @Inject(USER_REPOSITORY) private readonly userRepo: IUserRepository,
+        @Inject(ROLE_REPOSITORY) private readonly roleRepo: IRoleRepository,
+        @Inject(PERMISSION_REPOSITORY) private readonly permRepo: IPermissionRepository,
     ) { }
 
     async signIn(command: SignInCommand) {
         const result = await this.signInHandler.execute(command);
-        const tokens = await this.getTokens(result.id, result.username);
+
+        // Fetch permission names
+        const roles = await this.roleRepo.findByUserId(result.id);
+        const permissions = await this.permRepo.findByRoles(roles.map(r => r.id));
+        const permissionNames = permissions.map(p => p.name);
+
+        const tokens = await this.getTokens(result.id, result.username, permissionNames);
         await this.updateRefreshToken(result.id, tokens.refresh_token);
         return {
             access_token: tokens.access_token,
@@ -54,7 +64,11 @@ export class AuthService {
         );
         if (!refreshTokenMatches) throw new UnauthorizedException('Access Denied');
 
-        const tokens = await this.getTokens(user.id, user.username);
+        const roles = await this.roleRepo.findByUserId(user.id);
+        const permissions = await this.permRepo.findByRoles(roles.map(r => r.id));
+        const permissionNames = permissions.map(p => p.name);
+
+        const tokens = await this.getTokens(user.id, user.username, permissionNames);
         await this.updateRefreshToken(user.id, tokens.refresh_token);
         return tokens;
     }
@@ -68,12 +82,13 @@ export class AuthService {
         }
     }
 
-    private async getTokens(userId: string, username: string) {
+    private async getTokens(userId: string, username: string, permissions: string[]) {
         const [at, rt] = await Promise.all([
             this.jwtService.signAsync(
                 {
                     id: userId,
                     username,
+                    permissions,
                 },
                 {
                     expiresIn: '15m',
@@ -83,6 +98,7 @@ export class AuthService {
                 {
                     id: userId,
                     username,
+                    permissions,
                 },
                 {
                     expiresIn: '7d',

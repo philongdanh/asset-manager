@@ -27,6 +27,7 @@ import {
     GetMaintenanceSchedulesHandler,
     GetMaintenanceScheduleDetailsHandler,
 } from 'src/application/queries/handlers';
+import { Permissions } from '../auth/decorators';
 import {
     MaintenanceScheduleResponse,
     CreateMaintenanceScheduleRequest,
@@ -47,6 +48,7 @@ export class MaintenanceScheduleController {
     ) { }
 
     @HttpCode(HttpStatus.CREATED)
+    @Permissions('MAINTENANCE_CREATE')
     @Post()
     async create(
         @Body() dto: CreateMaintenanceScheduleRequest,
@@ -63,6 +65,7 @@ export class MaintenanceScheduleController {
         return this.toResponse(result);
     }
 
+    @Permissions('MAINTENANCE_UPDATE')
     @Patch(':id/start')
     async start(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -74,6 +77,7 @@ export class MaintenanceScheduleController {
         return this.toResponse(result);
     }
 
+    @Permissions('MAINTENANCE_UPDATE')
     @Patch(':id/complete')
     async complete(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -84,6 +88,7 @@ export class MaintenanceScheduleController {
         return this.toResponse(result);
     }
 
+    @Permissions('MAINTENANCE_UPDATE')
     @Patch(':id/cancel')
     async cancel(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -94,6 +99,7 @@ export class MaintenanceScheduleController {
         return this.toResponse(result);
     }
 
+    @Permissions('MAINTENANCE_VIEW')
     @Get()
     async getList(
         @Query() query: GetMaintenanceSchedulesRequest,
@@ -119,6 +125,7 @@ export class MaintenanceScheduleController {
         };
     }
 
+    @Permissions('MAINTENANCE_VIEW')
     @Get(':id')
     async getDetails(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

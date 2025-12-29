@@ -29,6 +29,7 @@ import {
   GetAssetDetailsHandler,
   GetAssetsHandler,
 } from 'src/application/queries/handlers';
+import { Permissions } from '../auth/decorators';
 import {
   AssetResponse,
   CreateAssetRequest,
@@ -47,6 +48,7 @@ export class AssetController {
   ) { }
 
   @HttpCode(HttpStatus.CREATED)
+  @Permissions('ASSET_CREATE')
   @Post()
   async create(
     @Body() dto: CreateAssetRequest,
@@ -83,6 +85,7 @@ export class AssetController {
     return this.toResponse(result);
   }
 
+  @Permissions('ASSET_UPDATE')
   @Patch(':id')
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -110,6 +113,7 @@ export class AssetController {
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
+  @Permissions('ASSET_DELETE')
   @Delete(':id')
   async delete(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -118,6 +122,7 @@ export class AssetController {
     await this.deleteHandler.execute(cmd);
   }
 
+  @Permissions('ASSET_VIEW')
   @Get()
   async getList(
     @Query() query: GetAssetsRequest,
@@ -144,6 +149,7 @@ export class AssetController {
     };
   }
 
+  @Permissions('ASSET_VIEW')
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

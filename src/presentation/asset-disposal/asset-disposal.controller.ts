@@ -27,6 +27,7 @@ import {
     GetAssetDisposalsHandler,
     GetAssetDisposalDetailsHandler,
 } from 'src/application/queries/handlers';
+import { Permissions } from '../auth/decorators';
 import {
     AssetDisposalResponse,
     CreateAssetDisposalRequest,
@@ -46,6 +47,7 @@ export class AssetDisposalController {
     ) { }
 
     @HttpCode(HttpStatus.CREATED)
+    @Permissions('DISPOSAL_CREATE')
     @Post()
     async create(
         @Body() dto: CreateAssetDisposalRequest,
@@ -62,6 +64,7 @@ export class AssetDisposalController {
         return this.toResponse(result);
     }
 
+    @Permissions('DISPOSAL_APPROVE')
     @Patch(':id/approve')
     async approve(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -73,6 +76,7 @@ export class AssetDisposalController {
         return this.toResponse(result);
     }
 
+    @Permissions('DISPOSAL_APPROVE')
     @Patch(':id/reject')
     async reject(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -85,6 +89,7 @@ export class AssetDisposalController {
         return this.toResponse(result);
     }
 
+    @Permissions('DISPOSAL_UPDATE')
     @Patch(':id/cancel')
     async cancel(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -94,6 +99,7 @@ export class AssetDisposalController {
         return this.toResponse(result);
     }
 
+    @Permissions('DISPOSAL_VIEW')
     @Get()
     async getList(
         @Query() query: GetAssetDisposalsRequest,
@@ -118,6 +124,7 @@ export class AssetDisposalController {
         };
     }
 
+    @Permissions('DISPOSAL_VIEW')
     @Get(':id')
     async getDetails(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

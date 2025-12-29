@@ -32,6 +32,7 @@ import {
     GetAssetTransferDetailsHandler,
     GetAssetTransfersHandler,
 } from 'src/application/queries/handlers';
+import { Permissions } from '../auth/decorators';
 import {
     AssetTransferResponse,
     CancelAssetTransferRequest,
@@ -53,6 +54,7 @@ export class AssetTransferController {
     ) { }
 
     @HttpCode(HttpStatus.CREATED)
+    @Permissions('TRANSFER_CREATE')
     @Post()
     async create(
         @Body() dto: CreateAssetTransferRequest,
@@ -72,6 +74,7 @@ export class AssetTransferController {
         return this.toResponse(result);
     }
 
+    @Permissions('TRANSFER_APPROVE')
     @Patch(':id/approve')
     async approve(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -84,6 +87,7 @@ export class AssetTransferController {
         return this.toResponse(result);
     }
 
+    @Permissions('TRANSFER_APPROVE')
     @Patch(':id/reject')
     async reject(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -96,6 +100,7 @@ export class AssetTransferController {
         return this.toResponse(result);
     }
 
+    @Permissions('TRANSFER_UPDATE')
     @Patch(':id/complete')
     async complete(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -105,6 +110,7 @@ export class AssetTransferController {
         return this.toResponse(result);
     }
 
+    @Permissions('TRANSFER_UPDATE')
     @Patch(':id/cancel')
     async cancel(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
@@ -115,6 +121,7 @@ export class AssetTransferController {
         return this.toResponse(result);
     }
 
+    @Permissions('TRANSFER_VIEW')
     @Get()
     async getList(
         @Query() query: GetAssetTransfersRequest,
@@ -141,6 +148,7 @@ export class AssetTransferController {
         };
     }
 
+    @Permissions('TRANSFER_VIEW')
     @Get(':id')
     async getDetails(
         @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
