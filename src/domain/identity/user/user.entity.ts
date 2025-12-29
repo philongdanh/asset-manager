@@ -11,6 +11,7 @@ export class User extends BaseEntity {
   private _username: string;
   private _email: string;
   private _password: string;
+  private _hashedRefreshToken: string | null;
   private _status: UserStatus;
 
   protected constructor(builder: UserBuilder) {
@@ -20,6 +21,7 @@ export class User extends BaseEntity {
     this._username = builder.username;
     this._email = builder.email;
     this._password = builder.password;
+    this._hashedRefreshToken = builder.hashedRefreshToken;
     this._status = builder.status;
   }
 
@@ -42,6 +44,14 @@ export class User extends BaseEntity {
 
   public get password(): string {
     return this._password;
+  }
+
+  public get hashedRefreshToken(): string | null {
+    return this._hashedRefreshToken;
+  }
+
+  public setHashedRefreshToken(hash: string | null): void {
+    this._hashedRefreshToken = hash;
   }
 
   public get status(): UserStatus {
@@ -160,6 +170,7 @@ export class User extends BaseEntity {
 export class UserBuilder {
   public departmentId: string | null = null;
   public status: UserStatus = UserStatus.ACTIVE;
+  public hashedRefreshToken: string | null = null;
   public createdAt: Date;
   public updatedAt: Date;
   public deletedAt: Date | null = null;
@@ -173,6 +184,11 @@ export class UserBuilder {
   ) {
     this.createdAt = new Date();
     this.updatedAt = new Date();
+  }
+
+  public withRefreshToken(hash: string | null): this {
+    this.hashedRefreshToken = hash;
+    return this;
   }
 
   public inDepartment(departmentId: string | null): this {

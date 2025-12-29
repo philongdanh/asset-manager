@@ -33,6 +33,7 @@ export interface IUserRepository {
 
   // --- Persistence Methods ---
   save(user: User): Promise<User>;
+  update(user: User): Promise<User>;
   saveMany(users: User[]): Promise<void>;
   delete(userId: string): Promise<void>; // Soft delete
   deleteMany(userIds: string[]): Promise<void>; // Soft delete

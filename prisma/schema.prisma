@@ -81,6 +81,7 @@ model User {
   password       String
   email          String  @unique
   status         String  @default("ACTIVE")
+  hashedRefreshToken String? @map("hashed_refresh_token")
 
   // Timestamps
   createdAt DateTime  @default(now()) @map("created_at")
