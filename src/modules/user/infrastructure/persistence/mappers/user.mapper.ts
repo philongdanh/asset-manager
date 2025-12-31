@@ -12,6 +12,8 @@ export class UserMapper {
       userRoles?: (PrismaUserRole & { role?: PrismaRole })[];
     },
   ): User {
+    // toDomain update
+    /* ... inside builder ... */
     const builder = User.builder(
       prismaUser.id,
       prismaUser.organizationId,
@@ -26,7 +28,8 @@ export class UserMapper {
         prismaUser.updatedAt,
         prismaUser.deletedAt,
       )
-      .asRoot(prismaUser.isRoot);
+      .asRoot(prismaUser.isRoot)
+      .withRefreshToken(prismaUser.hashedRefreshToken);
 
     return builder.build();
   }
@@ -45,6 +48,7 @@ export class UserMapper {
       email: user.email,
       status: user.status,
       isRoot: user.isRoot,
+      hashedRefreshToken: user.hashedRefreshToken,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       deletedAt: user.deletedAt,
@@ -57,6 +61,7 @@ export class UserMapper {
       email: user.email,
       status: user.status,
       isRoot: user.isRoot,
+      hashedRefreshToken: user.hashedRefreshToken,
       updatedAt: user.updatedAt,
     };
 
