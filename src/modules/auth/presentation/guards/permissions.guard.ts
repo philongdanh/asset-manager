@@ -4,7 +4,7 @@ import { PERMISSIONS_KEY, IS_PUBLIC_KEY } from '../decorators';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -26,11 +26,19 @@ export class PermissionsGuard implements CanActivate {
     }
 
     const request = context.switchToHttp().getRequest<{
-      user?: { permissions?: string[] };
+      user?: { permissions?: string[]; isRoot?: boolean };
     }>();
     const user = request.user;
 
-    if (!user || !user.permissions) {
+    if (!user) {
+      return false;
+    }
+
+    if (user.isRoot) {
+      return true;
+    }
+
+    if (!user.permissions) {
       return false;
     }
 

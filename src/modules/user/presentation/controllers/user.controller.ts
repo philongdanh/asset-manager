@@ -20,6 +20,7 @@ import {
   GetUserDetailsQuery,
 } from '../../application';
 import { Permissions } from 'src/modules/auth/presentation';
+import { User } from '../../domain';
 import {
   CreateUserRequest,
   GetUsersRequest,
@@ -33,7 +34,7 @@ export class UserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('USER_CREATE')
@@ -47,7 +48,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const result: UserResponse = await this.commandBus.execute(cmd);
+    const result: User = await this.commandBus.execute(cmd);
     return new UserResponse(result);
   }
 
@@ -67,7 +68,7 @@ export class UserController {
       includeDeleted: query.includeDeleted,
     });
 
-    const result: { data: UserResponse[]; total: number } =
+    const result: { data: User[]; total: number } =
       await this.queryBus.execute(qry);
     return {
       data: result.data.map((u) => new UserResponse(u)),
@@ -81,7 +82,7 @@ export class UserController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserResponse> {
     const query = new GetUserDetailsQuery(id);
-    const user: UserResponse = await this.queryBus.execute(query);
+    const user: User = await this.queryBus.execute(query);
     return new UserResponse(user);
   }
 
@@ -97,7 +98,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const user: UserResponse = await this.commandBus.execute(cmd);
+    const user: User = await this.commandBus.execute(cmd);
     return new UserResponse(user);
   }
 }

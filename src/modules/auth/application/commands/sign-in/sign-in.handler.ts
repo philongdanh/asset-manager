@@ -21,10 +21,13 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: SignInCommand) {
-    const user = await this.userRepo.findByUsername(cmd.orgId, cmd.username);
+    const user = await this.userRepo.findByUsername(
+      cmd.orgId || null,
+      cmd.username,
+    );
     if (!user) {
       throw new UseCaseException(
         `Invalid username or password`,
@@ -53,6 +56,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     const tokens = await this.getTokens(
       user.id,
       user.username,
+      user.isRoot,
       permissionNames,
     );
     await this.updateRefreshToken(user.id, tokens.refreshToken);
@@ -87,6 +91,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
   private async getTokens(
     userId: string,
     username: string,
+    isRoot: boolean,
     permissions: string[],
   ) {
     const [at, rt] = await Promise.all([
@@ -95,6 +100,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
           id: userId,
           username,
           permissions,
+          isRoot,
         },
         {
           expiresIn: '15m',
@@ -104,6 +110,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
         {
           id: userId,
           username,
+          isRoot,
           permissions,
         },
         {

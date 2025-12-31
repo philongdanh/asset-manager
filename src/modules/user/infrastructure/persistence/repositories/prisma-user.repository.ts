@@ -40,25 +40,43 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async findByUsername(
-    organizationId: string,
+    organizationId: string | null,
     username: string,
   ): Promise<User | null> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        organizationId_username: {
-          organizationId,
-          username,
-        },
-      },
-      include: {
-        userRoles: {
-          include: {
-            role: true,
+    if (organizationId) {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          organizationId_username: {
+            organizationId,
+            username,
           },
         },
-      },
-    });
-    return user ? UserMapper.toDomain(user) : null;
+        include: {
+          userRoles: {
+            include: {
+              role: true,
+            },
+          },
+        },
+      });
+      return user ? UserMapper.toDomain(user) : null;
+    } else {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          username,
+          organizationId: null,
+          deletedAt: null, // Good practice to include deletedAt check finding by non-unique
+        },
+        include: {
+          userRoles: {
+            include: {
+              role: true,
+            },
+          },
+        },
+      });
+      return user ? UserMapper.toDomain(user) : null;
+    }
   }
 
   async find(

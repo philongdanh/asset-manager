@@ -6,7 +6,7 @@ export enum UserStatus {
 }
 
 export class User extends BaseEntity {
-  private _organizationId: string;
+  private _organizationId: string | null;
   private _departmentId: string | null;
   private _username: string;
   private _email: string;
@@ -14,6 +14,7 @@ export class User extends BaseEntity {
   private _hashedRefreshToken: string | null;
   private _status: UserStatus;
   private _avatarUrl: string | null;
+  private _isRoot: boolean;
 
   protected constructor(builder: UserBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
@@ -25,10 +26,11 @@ export class User extends BaseEntity {
     this._hashedRefreshToken = builder.hashedRefreshToken;
     this._status = builder.status;
     this._avatarUrl = builder.avatarUrl;
+    this._isRoot = builder.isRoot;
   }
 
   // --- Getters ---
-  public get organizationId(): string {
+  public get organizationId(): string | null {
     return this._organizationId;
   }
 
@@ -62,6 +64,10 @@ export class User extends BaseEntity {
 
   public get avatarUrl(): string | null {
     return this._avatarUrl;
+  }
+
+  public get isRoot(): boolean {
+    return this._isRoot;
   }
 
   // --- Business Methods ---
@@ -164,7 +170,7 @@ export class User extends BaseEntity {
   // --- Static Factory ---
   public static builder(
     id: string,
-    organizationId: string,
+    organizationId: string | null,
     username: string,
     email: string,
     password: string,
@@ -182,6 +188,7 @@ export class UserBuilder {
   public departmentId: string | null = null;
   public status: UserStatus = UserStatus.ACTIVE;
   public avatarUrl: string | null = null;
+  public isRoot: boolean = false;
   public hashedRefreshToken: string | null = null;
   public createdAt: Date;
   public updatedAt: Date;
@@ -189,7 +196,7 @@ export class UserBuilder {
 
   constructor(
     public readonly id: string,
-    public readonly organizationId: string,
+    public readonly organizationId: string | null,
     public readonly username: string,
     public readonly email: string,
     public password: string,
@@ -234,6 +241,11 @@ export class UserBuilder {
     return this;
   }
 
+  public asRoot(isRoot: boolean = true): this {
+    this.isRoot = isRoot;
+    return this;
+  }
+
   public build(): User {
     if (!this.id) {
       throw new BusinessRuleViolationException(
@@ -241,12 +253,12 @@ export class UserBuilder {
         'User ID is mandatory.',
       );
     }
-    if (!this.organizationId) {
+    /* if (!this.organizationId) {
       throw new BusinessRuleViolationException(
         'ORGANIZATION_ID_REQUIRED',
         'Organization ID is mandatory for user.',
       );
-    }
+    } */
     if (!this.username || this.username.trim().length === 0) {
       throw new BusinessRuleViolationException(
         'USERNAME_REQUIRED',

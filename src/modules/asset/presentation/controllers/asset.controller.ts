@@ -38,7 +38,7 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')
@@ -149,29 +149,6 @@ export class AssetController {
   }
 
   private toResponse(asset: Asset): AssetResponse {
-    return new AssetResponse({
-      id: asset.id,
-      organizationId: asset.organizationId,
-      assetCode: asset.assetCode,
-      assetName: asset.assetName,
-      categoryId: asset.categoryId,
-      createdByUserId: asset.createdByUserId,
-      purchasePrice: asset.purchasePrice,
-      originalCost: asset.originalCost,
-      currentValue: asset.currentValue,
-      status: asset.status,
-      currentDepartmentId: asset.currentDepartmentId,
-      currentUserId: asset.currentUserId,
-      model: asset.model,
-      serialNumber: asset.serialNumber,
-      manufacturer: asset.manufacturer,
-      purchaseDate: asset.purchaseDate || null,
-      warrantyExpiryDate: asset.warrantyExpiryDate || null,
-      location: asset.location,
-      specifications: asset.specifications,
-      condition: asset.condition,
-      createdAt: asset.createdAt,
-      updatedAt: asset.updatedAt,
-    });
+    return new AssetResponse(asset);
   }
 }

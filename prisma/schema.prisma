@@ -76,13 +76,14 @@ model Department {
 
 model User {
   id                 String  @id @default(uuid()) @map("user_id")
-  organizationId     String  @map("organization_id")
+  organizationId     String? @map("organization_id")
   departmentId       String? @map("department_id")
   username           String
   password           String
   email              String  @unique
   status             String  @default("ACTIVE")
   avatarUrl          String? @map("avatar_url")
+  isRoot             Boolean @default(false) @map("is_root")
   hashedRefreshToken String? @map("hashed_refresh_token")
 
   // Timestamps
@@ -91,8 +92,8 @@ model User {
   deletedAt DateTime? @map("deleted_at")
 
   // Relations
-  organization Organization @relation(fields: [organizationId], references: [id])
-  department   Department?  @relation(fields: [departmentId], references: [id])
+  organization Organization? @relation(fields: [organizationId], references: [id])
+  department   Department?   @relation(fields: [departmentId], references: [id])
 
   userRoles UserRole[]
 

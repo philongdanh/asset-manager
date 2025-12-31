@@ -1,5 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import {
+  Asset,
   AssetCondition,
   AssetStatus,
 } from '../../../domain/entities/asset.entity';
@@ -75,7 +76,29 @@ export class AssetResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(partial: Partial<AssetResponse>) {
-    Object.assign(this, partial);
+  constructor(asset: Asset) {
+    this.id = asset.id;
+    this.organizationId = asset.organizationId;
+    this.assetCode = asset.assetCode;
+    this.assetName = asset.assetName;
+    this.categoryId = asset.categoryId;
+    this.createdByUserId = asset.createdByUserId;
+    this.purchasePrice = asset.purchasePrice;
+    this.originalCost = asset.originalCost;
+    this.currentValue = asset.currentValue;
+    this.status = asset.status;
+    this.currentDepartmentId = asset.currentDepartmentId;
+    this.currentUserId = asset.currentUserId;
+    this.model = asset.model;
+    this.serialNumber = asset.serialNumber;
+    this.manufacturer = asset.manufacturer;
+    this.purchaseDate = asset.purchaseDate;
+    this.warrantyExpiryDate = asset.warrantyExpiryDate;
+    this.location = asset.location;
+    this.specifications = asset.specifications;
+    this.condition = asset.condition;
+    this.imageUrl = asset.imageUrl;
+    this.createdAt = asset.createdAt!;
+    this.updatedAt = asset.updatedAt!;
   }
 }

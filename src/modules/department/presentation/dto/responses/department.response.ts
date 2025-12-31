@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { Department } from '../../../domain';
 
 @Exclude()
 export class DepartmentResponse {
@@ -20,7 +21,12 @@ export class DepartmentResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(partial: Partial<DepartmentResponse>) {
-    Object.assign(this, partial);
+  constructor(dept: Department) {
+    this.id = dept.id;
+    this.name = dept.name;
+    this.organizationId = dept.organizationId;
+    this.parentId = dept.parentId;
+    this.createdAt = dept.createdAt!;
+    this.updatedAt = dept.updatedAt!;
   }
 }

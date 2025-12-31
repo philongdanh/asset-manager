@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { Permission } from '../../../domain';
 
 @Exclude()
 export class PermissionResponse {
@@ -17,7 +18,11 @@ export class PermissionResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(partial: Partial<PermissionResponse>) {
-    Object.assign(this, partial);
+  constructor(permission: Permission) {
+    this.id = permission.id;
+    this.name = permission.name;
+    this.description = permission.description;
+    this.createdAt = permission.createdAt!;
+    this.updatedAt = permission.updatedAt!;
   }
 }

@@ -17,9 +17,9 @@ async function main() {
     update: {},
     create: {
       id: orgId,
-      orgName: 'Hệ thống Quản trị Tài sản G3',
+      orgName: 'demo',
       status: 'ACTIVE',
-      email: 'admin@system.com',
+      email: 'admin@demo.com',
     },
   });
   console.log(`Created Organization: ${org.orgName}`);
@@ -182,7 +182,7 @@ async function main() {
     ),
   );
 
-  // 5. Create Root User with UUID
+  // 5. Create Root User (No Organization)
   const rootUserId = randomUUID();
   const hashedPassword = await bcrypt.hash('123456', await bcrypt.genSalt(10));
   const rootUser = await prisma.user.upsert({
@@ -190,26 +190,43 @@ async function main() {
     update: {},
     create: {
       id: rootUserId,
-      organizationId: org.id,
+      organizationId: null, // Root admin has no organization
       username: 'root_admin',
       password: hashedPassword,
       email: 'root@system.local',
       status: 'ACTIVE',
+      isRoot: true,
     },
   });
-  console.log(`Created Root User: ${rootUser.username}`);
+  console.log(`Created Root User: ${rootUser.username} (No Org)`);
 
-  // 6. Assign Admin Role to Root User
+  // 6. Create Demo Admin User (For Demo Organization)
+  const demoAdminId = randomUUID();
+  const demoAdminUser = await prisma.user.upsert({
+    where: { email: 'admin@demo.local' },
+    update: {},
+    create: {
+      id: demoAdminId,
+      organizationId: org.id,
+      username: 'demo_admin',
+      password: hashedPassword,
+      email: 'admin@demo.local',
+      status: 'ACTIVE',
+    },
+  });
+  console.log(`Created Demo Admin User: ${demoAdminUser.username}`);
+
+  // 7. Assign Admin Role to Demo Admin User
   await prisma.userRole.upsert({
     where: {
       userId_roleId: {
-        userId: rootUser.id,
+        userId: demoAdminUser.id,
         roleId: adminRole.id,
       },
     },
     update: {},
     create: {
-      userId: rootUser.id,
+      userId: demoAdminUser.id,
       roleId: adminRole.id,
     },
   });

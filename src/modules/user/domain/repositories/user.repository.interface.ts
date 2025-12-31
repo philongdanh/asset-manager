@@ -18,7 +18,7 @@ export interface IUserRepository {
   ): Promise<{ data: User[]; total: number }>;
   findById(userId: string): Promise<User | null>;
   findByUsername(
-    organizationId: string,
+    organizationId: string | null,
     username: string,
   ): Promise<User | null>;
   findByEmail(email: string): Promise<User | null>;

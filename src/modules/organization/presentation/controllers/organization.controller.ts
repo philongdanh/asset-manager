@@ -8,9 +8,10 @@ import {
   Query,
   Param,
   ParseUUIDPipe,
-  Patch,
+  Put,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Permissions, Public } from '../../../auth/presentation/decorators';
 import {
   CreateOrganizationCommand,
   UpdateOrganizationCommand,
@@ -19,20 +20,20 @@ import {
   GetOrganizationsQuery,
   GetOrganizationDetailsQuery,
 } from '../../application/queries';
-import { Permissions } from 'src/modules/auth/presentation';
 import {
   CreateOrganizationRequest,
   GetOrganizationsRequest,
   UpdateOrganizationRequest,
   OrganizationResponse,
 } from '../dto';
+import { Organization } from '../../domain';
 
 @Controller('organizations')
 export class OrganizationController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ORGANIZATION_CREATE')
@@ -50,35 +51,36 @@ export class OrganizationController {
       dto.address || null,
       dto.logoUrl || null,
     );
-    const org: OrganizationResponse = await this.commandBus.execute(cmd);
+    const org: Organization = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
   }
 
-  @Permissions('ORGANIZATION_VIEW')
+  @Public()
   @Get()
   async getList(
     @Query() query: GetOrganizationsRequest,
   ): Promise<OrganizationResponse[]> {
-    const orgs: OrganizationResponse[] = await this.queryBus.execute(
+    const orgs: Organization[] = await this.queryBus.execute(
       new GetOrganizationsQuery(query.status, query.includeDeleted),
     );
     return orgs.map((org) => new OrganizationResponse(org));
   }
 
-  @Permissions('ORGANIZATION_VIEW')
+  @Public()
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<OrganizationResponse> {
-    const org: OrganizationResponse = await this.queryBus.execute(
+    const org: Organization = await this.queryBus.execute(
       new GetOrganizationDetailsQuery(id),
     );
     return new OrganizationResponse(org);
   }
 
   @Permissions('ORGANIZATION_UPDATE')
-  @Patch(':id')
-  async updateInfo(
+  @Put(':id')
+  @HttpCode(HttpStatus.OK)
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateOrganizationRequest,
   ): Promise<OrganizationResponse> {
@@ -93,7 +95,7 @@ export class OrganizationController {
       dto.address,
       dto.logoUrl,
     );
-    const org: OrganizationResponse = await this.commandBus.execute(cmd);
+    const org: Organization = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
   }
 }

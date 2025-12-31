@@ -25,7 +25,8 @@ export class UserMapper {
         prismaUser.createdAt,
         prismaUser.updatedAt,
         prismaUser.deletedAt,
-      );
+      )
+      .asRoot(prismaUser.isRoot);
 
     return builder.build();
   }
@@ -33,9 +34,9 @@ export class UserMapper {
   static toPersistence(user: User): Prisma.UserCreateInput {
     return {
       id: user.id,
-      organization: {
-        connect: { id: user.organizationId },
-      },
+      organization: user.organizationId
+        ? { connect: { id: user.organizationId } }
+        : undefined,
       department: user.departmentId
         ? { connect: { id: user.departmentId } }
         : undefined,
@@ -43,6 +44,7 @@ export class UserMapper {
       password: user.password,
       email: user.email,
       status: user.status,
+      isRoot: user.isRoot,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       deletedAt: user.deletedAt,
@@ -54,6 +56,7 @@ export class UserMapper {
       username: user.username,
       email: user.email,
       status: user.status,
+      isRoot: user.isRoot,
       updatedAt: user.updatedAt,
     };
 
