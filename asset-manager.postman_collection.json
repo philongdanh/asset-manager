@@ -1380,6 +1380,30 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Budget Plan",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/budget-plans/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"budget-plans",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1407,6 +1431,153 @@
 							],
 							"path": [
 								"departments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Department List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/departments?organization_id={{organization_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"departments"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "{{organization_id}}"
+								},
+								{
+									"key": "parent_id",
+									"value": "{{uuid}}",
+									"disabled": true
+								},
+								{
+									"key": "include_deleted",
+									"value": "false",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Department Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/departments/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"departments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Department",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/departments/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"departments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Department",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/departments/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"departments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{uuid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "File",
+			"item": [
+				{
+					"name": "Upload File",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/files/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"files",
+								"upload"
 							]
 						}
 					},
@@ -1627,6 +1798,30 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Inventory Check",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory-checks/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1809,6 +2004,30 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete Maintenance Schedule",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/maintenance-schedules/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"maintenance-schedules",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1902,13 +2121,37 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{}",
+							"raw": "{\n  \"name\": \"text\",\n  \"status\": \"ACTIVE | INACTIVE\",\n  \"phone\": \"text\",\n  \"email\": \"user@example.com\",\n  \"tax_code\": \"text\",\n  \"address\": \"text\",\n  \"logo_url\": \"https://example.com/file.jpg\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
+						"url": {
+							"raw": "{{base_url}}/organizations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Organization",
+					"request": {
+						"method": "DELETE",
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/organizations/:id",
 							"host": [
@@ -1951,6 +2194,30 @@
 					"response": []
 				},
 				{
+					"name": "Get Permission Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/permissions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Permission",
 					"request": {
 						"method": "POST",
@@ -1971,6 +2238,63 @@
 							],
 							"path": [
 								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Permission",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"text\",\n  \"description\": \"Description here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/permissions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Permission",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/permissions/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
 							]
 						}
 					},
@@ -2005,6 +2329,30 @@
 					"response": []
 				},
 				{
+					"name": "Get Role Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create Role",
 					"request": {
 						"method": "POST",
@@ -2025,6 +2373,63 @@
 							],
 							"path": [
 								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Role",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"text\",\n  \"permission_ids\": [\n    \"uuid\"\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/roles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Role",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
 							]
 						}
 					},
@@ -2146,13 +2551,37 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{}",
+							"raw": "{\n  \"username\": \"text\",\n  \"email\": \"user@example.com\",\n  \"department_id\": \"{{department_id}}\",\n  \"status\": \"ACTIVE | INACTIVE\",\n  \"avatar_url\": \"https://example.com/file.jpg\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
+						"url": {
+							"raw": "{{base_url}}/users/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
 						"url": {
 							"raw": "{{base_url}}/users/:id",
 							"host": [
