@@ -27,7 +27,7 @@ export class AssetDepreciationController {
     private readonly recordHandler: RecordDepreciationHandler,
     private readonly getListHandler: GetAssetDepreciationsHandler,
     private readonly getDetailsHandler: GetAssetDepreciationDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DEPRECIATION_CREATE')
@@ -79,18 +79,6 @@ export class AssetDepreciationController {
   }
 
   private toResponse(entity: AssetDepreciation): AssetDepreciationResponse {
-    return new AssetDepreciationResponse({
-      id: entity.id,
-      assetId: entity.assetId,
-      organizationId: entity.organizationId,
-      depreciationDate: entity.depreciationDate,
-      method: entity.method,
-      depreciationValue: entity.depreciationValue,
-      accumulatedDepreciation: entity.accumulatedDepreciation,
-      remainingValue: entity.remainingValue,
-      accountingEntryId: entity.accountingEntryId,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    });
+    return new AssetDepreciationResponse(entity);
   }
 }

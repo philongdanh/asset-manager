@@ -31,7 +31,7 @@ export class AccountingEntryController {
     private readonly createHandler: CreateAccountingEntryHandler,
     private readonly getListHandler: GetAccountingEntriesHandler,
     private readonly getDetailsHandler: GetAccountingEntryDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ACCOUNTING_CREATE')
@@ -90,19 +90,6 @@ export class AccountingEntryController {
   }
 
   private toResponse(entry: AccountingEntry): AccountingEntryResponse {
-    return new AccountingEntryResponse({
-      id: entry.id,
-      organizationId: entry.organizationId,
-      entryType: entry.entryType,
-      entryDate: entry.entryDate,
-      amount: entry.amount,
-      description: entry.description,
-      assetId: entry.assetId,
-      referenceId: entry.referenceId,
-      referenceType: entry.referenceType,
-      createdByUserId: entry.createdByUserId,
-      createdAt: entry.createdAt,
-      updatedAt: entry.updatedAt,
-    });
+    return new AccountingEntryResponse(entry);
   }
 }

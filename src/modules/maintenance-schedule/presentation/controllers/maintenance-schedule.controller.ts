@@ -43,7 +43,7 @@ export class MaintenanceScheduleController {
     private readonly cancelHandler: CancelMaintenanceHandler,
     private readonly getListHandler: GetMaintenanceSchedulesHandler,
     private readonly getDetailsHandler: GetMaintenanceScheduleDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('MAINTENANCE_CREATE')
@@ -135,21 +135,6 @@ export class MaintenanceScheduleController {
   }
 
   private toResponse(entity: MaintenanceSchedule): MaintenanceScheduleResponse {
-    return new MaintenanceScheduleResponse({
-      id: entity.id,
-      assetId: entity.assetId,
-      organizationId: entity.organizationId,
-      maintenanceType: entity.maintenanceType,
-      scheduledDate: entity.scheduledDate,
-      actualDate: entity.actualDate,
-      status: entity.status,
-      description: entity.description,
-      estimatedCost: entity.estimatedCost,
-      actualCost: entity.actualCost,
-      performedByUserId: entity.performedByUserId,
-      result: entity.result,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    });
+    return new MaintenanceScheduleResponse(entity);
   }
 }

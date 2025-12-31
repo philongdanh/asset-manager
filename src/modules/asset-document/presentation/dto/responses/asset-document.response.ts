@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { AssetDocumentType } from '../../../domain';
+import { AssetDocument, AssetDocumentType } from '../../../domain';
 
 @Exclude()
 export class AssetDocumentResponse {
@@ -39,7 +39,18 @@ export class AssetDocumentResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(partial: Partial<AssetDocumentResponse>) {
-    Object.assign(this, partial);
+  constructor(entity: AssetDocument) {
+    this.id = entity.id;
+    this.assetId = entity.assetId;
+    this.organizationId = entity.organizationId;
+    this.documentType = entity.documentType;
+    this.documentName = entity.documentName;
+    this.filePath = entity.filePath;
+    this.fileType = entity.fileType;
+    this.uploadDate = entity.uploadDate;
+    this.uploadedByUserId = entity.uploadedByUserId;
+    this.description = entity.description;
+    this.createdAt = entity.createdAt!;
+    this.updatedAt = entity.updatedAt!;
   }
 }

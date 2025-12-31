@@ -31,7 +31,7 @@ export class AssetDocumentController {
     private readonly deleteHandler: DeleteAssetDocumentHandler,
     private readonly getListHandler: GetAssetDocumentsHandler,
     private readonly getDetailsHandler: GetAssetDocumentDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DOCUMENT_CREATE')
@@ -95,19 +95,6 @@ export class AssetDocumentController {
   }
 
   private toResponse(entity: AssetDocument): AssetDocumentResponse {
-    return new AssetDocumentResponse({
-      id: entity.id,
-      assetId: entity.assetId,
-      organizationId: entity.organizationId,
-      documentType: entity.documentType,
-      documentName: entity.documentName,
-      filePath: entity.filePath,
-      fileType: entity.fileType,
-      uploadDate: entity.uploadDate,
-      uploadedByUserId: entity.uploadedByUserId,
-      description: entity.description,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    });
+    return new AssetDocumentResponse(entity);
   }
 }

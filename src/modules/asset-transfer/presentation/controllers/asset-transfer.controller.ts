@@ -46,7 +46,7 @@ export class AssetTransferController {
     private readonly cancelHandler: CancelAssetTransferHandler,
     private readonly getListHandler: GetAssetTransfersHandler,
     private readonly getDetailsHandler: GetAssetTransferDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('TRANSFER_CREATE')
@@ -153,21 +153,6 @@ export class AssetTransferController {
   }
 
   private toResponse(entity: AssetTransfer): AssetTransferResponse {
-    return new AssetTransferResponse({
-      id: entity.id,
-      assetId: entity.assetId,
-      organizationId: entity.organizationId,
-      transferDate: entity.transferDate,
-      transferType: entity.transferType,
-      fromDepartmentId: entity.fromDepartmentId,
-      toDepartmentId: entity.toDepartmentId,
-      fromUserId: entity.fromUserId,
-      toUserId: entity.toUserId,
-      approvedByUserId: entity.approvedByUserId,
-      reason: entity.reason,
-      status: entity.status,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    });
+    return new AssetTransferResponse(entity);
   }
 }

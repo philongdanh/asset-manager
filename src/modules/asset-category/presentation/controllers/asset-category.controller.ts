@@ -39,7 +39,7 @@ export class AssetCategoryController {
     private readonly deleteHandler: DeleteAssetCategoryHandler,
     private readonly getListHandler: GetAssetCategoriesHandler,
     private readonly getDetailsHandler: GetAssetCategoryDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CATEGORY_CREATE')
@@ -54,15 +54,7 @@ export class AssetCategoryController {
       dto.parentId || null,
     );
     const result = await this.createHandler.execute(cmd);
-    return new AssetCategoryResponse({
-      id: result.id,
-      organizationId: result.organizationId,
-      code: result.code,
-      categoryName: result.categoryName,
-      parentId: result.parentId,
-      createdAt: result.createdAt,
-      updatedAt: result.updatedAt,
-    });
+    return this.toResponse(result);
   }
 
   @Permissions('ASSET_CATEGORY_UPDATE')
@@ -78,15 +70,7 @@ export class AssetCategoryController {
       dto.parentId || null,
     );
     const result = await this.updateHandler.execute(cmd);
-    return new AssetCategoryResponse({
-      id: result.id,
-      organizationId: result.organizationId,
-      code: result.code,
-      categoryName: result.categoryName,
-      parentId: result.parentId,
-      createdAt: result.createdAt,
-      updatedAt: result.updatedAt,
-    });
+    return this.toResponse(result);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -116,18 +100,7 @@ export class AssetCategoryController {
 
     const result = await this.getListHandler.execute(q);
     return {
-      data: result.data.map(
-        (c) =>
-          new AssetCategoryResponse({
-            id: c.id,
-            organizationId: c.organizationId,
-            code: c.code,
-            categoryName: c.categoryName,
-            parentId: c.parentId,
-            createdAt: c.createdAt,
-            updatedAt: c.updatedAt,
-          }),
-      ),
+      data: result.data.map((c) => this.toResponse(c)),
       total: result.total,
     };
   }
@@ -139,14 +112,10 @@ export class AssetCategoryController {
   ): Promise<AssetCategoryResponse> {
     const query = new GetAssetCategoryDetailsQuery(id);
     const result = await this.getDetailsHandler.execute(query);
-    return new AssetCategoryResponse({
-      id: result.id,
-      organizationId: result.organizationId,
-      code: result.code,
-      categoryName: result.categoryName,
-      parentId: result.parentId,
-      createdAt: result.createdAt,
-      updatedAt: result.updatedAt,
-    });
+    return this.toResponse(result);
+  }
+
+  private toResponse(entity: any): AssetCategoryResponse {
+    return new AssetCategoryResponse(entity);
   }
 }

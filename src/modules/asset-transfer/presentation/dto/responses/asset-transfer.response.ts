@@ -1,5 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import { AssetTransferStatus, AssetTransferType } from '../../../domain';
+import { AssetTransfer, AssetTransferStatus, AssetTransferType } from '../../../domain';
 
 @Exclude()
 export class AssetTransferResponse {
@@ -45,7 +45,20 @@ export class AssetTransferResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(partial: Partial<AssetTransferResponse>) {
-    Object.assign(this, partial);
+  constructor(entity: AssetTransfer) {
+    this.id = entity.id;
+    this.assetId = entity.assetId;
+    this.organizationId = entity.organizationId;
+    this.transferDate = entity.transferDate;
+    this.transferType = entity.transferType;
+    this.fromDepartmentId = entity.fromDepartmentId;
+    this.toDepartmentId = entity.toDepartmentId;
+    this.fromUserId = entity.fromUserId;
+    this.toUserId = entity.toUserId;
+    this.approvedByUserId = entity.approvedByUserId;
+    this.reason = entity.reason;
+    this.status = entity.status;
+    this.createdAt = entity.createdAt!;
+    this.updatedAt = entity.updatedAt!;
   }
 }

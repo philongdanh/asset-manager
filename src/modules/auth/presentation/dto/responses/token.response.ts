@@ -7,7 +7,8 @@ export class TokenResponse {
   @Expose({ name: 'refresh_token' })
   refreshToken: string;
 
-  constructor(partial: Partial<TokenResponse>) {
-    Object.assign(this, partial);
+  constructor(accessToken: string, refreshToken: string) {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
   }
 }

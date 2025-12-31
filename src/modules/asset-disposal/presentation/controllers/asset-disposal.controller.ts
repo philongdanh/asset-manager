@@ -42,7 +42,7 @@ export class AssetDisposalController {
     private readonly cancelHandler: CancelAssetDisposalHandler,
     private readonly getListHandler: GetAssetDisposalsHandler,
     private readonly getDetailsHandler: GetAssetDisposalDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DISPOSAL_CREATE')
@@ -133,19 +133,6 @@ export class AssetDisposalController {
   }
 
   private toResponse(entity: AssetDisposal): AssetDisposalResponse {
-    return new AssetDisposalResponse({
-      id: entity.id,
-      assetId: entity.assetId,
-      organizationId: entity.organizationId,
-      disposalDate: entity.disposalDate,
-      disposalType: entity.disposalType,
-      disposalValue: entity.disposalValue,
-      reason: entity.reason,
-      approvedByUserId: entity.approvedByUserId,
-      status: entity.status,
-      accountingEntryId: entity.accountingEntryId,
-      createdAt: entity.createdAt,
-      updatedAt: entity.updatedAt,
-    });
+    return new AssetDisposalResponse(entity);
   }
 }

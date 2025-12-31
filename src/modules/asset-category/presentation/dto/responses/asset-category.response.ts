@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { AssetCategory } from '../../../domain';
 
 @Exclude()
 export class AssetCategoryResponse {
@@ -23,7 +24,13 @@ export class AssetCategoryResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(partial: Partial<AssetCategoryResponse>) {
-    Object.assign(this, partial);
+  constructor(entity: AssetCategory) {
+    this.id = entity.id;
+    this.organizationId = entity.organizationId;
+    this.code = entity.code;
+    this.categoryName = entity.categoryName;
+    this.parentId = entity.parentId;
+    this.createdAt = entity.createdAt!;
+    this.updatedAt = entity.updatedAt!;
   }
 }

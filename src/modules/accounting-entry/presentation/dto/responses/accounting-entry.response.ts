@@ -1,5 +1,5 @@
 import { Expose, Exclude } from 'class-transformer';
-import { AccountingEntryType, ReferenceType } from '../../../domain';
+import { AccountingEntry, AccountingEntryType, ReferenceType } from '../../../domain';
 
 @Exclude()
 export class AccountingEntryResponse {
@@ -39,7 +39,18 @@ export class AccountingEntryResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(partial: Partial<AccountingEntryResponse>) {
-    Object.assign(this, partial);
+  constructor(entity: AccountingEntry) {
+    this.id = entity.id;
+    this.organizationId = entity.organizationId;
+    this.entryType = entity.entryType;
+    this.entryDate = entity.entryDate;
+    this.amount = entity.amount;
+    this.description = entity.description;
+    this.assetId = entity.assetId;
+    this.referenceId = entity.referenceId;
+    this.referenceType = entity.referenceType;
+    this.createdByUserId = entity.createdByUserId;
+    this.createdAt = entity.createdAt!;
+    this.updatedAt = entity.updatedAt!;
   }
 }

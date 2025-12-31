@@ -23,7 +23,7 @@ import { CqrsModule } from '@nestjs/cqrs';
         return {
           secret: conf.get('ACCESS_TOKEN_SECRET'),
           signOptions: {
-            expiresIn: '60s',
+            expiresIn: '24h',
           },
         };
       },
@@ -58,4 +58,4 @@ import { CqrsModule } from '@nestjs/cqrs';
     },
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

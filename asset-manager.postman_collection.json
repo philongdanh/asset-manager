@@ -15,7 +15,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"username\": \"string\",\n  \"password\": \"string\"\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"username\": \"string\",\n  \"password\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -42,7 +42,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"refreshToken\": \"string\"\n}",
+                            "raw": "{\n  \"refresh_token\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -74,7 +74,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"assetCode\": \"string\",\n  \"assetName\": \"string\",\n  \"categoryId\": \"uuid\",\n  \"purchasePrice\": 0,\n  \"originalCost\": 0,\n  \"currentValue\": 0,\n  \"model\": \"string\",\n  \"serialNumber\": \"string\",\n  \"manufacturer\": \"string\",\n  \"purchaseDate\": \"2023-01-01T00:00:00Z\",\n  \"warrantyExpiryDate\": \"2024-01-01T00:00:00Z\",\n  \"location\": \"string\",\n  \"specifications\": {},\n  \"condition\": \"string\",\n  \"status\": \"string\",\n  \"imageUrl\": \"string\"\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"asset_code\": \"string\",\n  \"asset_name\": \"string\",\n  \"category_id\": \"uuid\",\n  \"purchase_price\": 0,\n  \"original_cost\": 0,\n  \"current_value\": 0,\n  \"model\": \"string\",\n  \"serial_number\": \"string\",\n  \"manufacturer\": \"string\",\n  \"purchase_date\": \"2023-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"location\": \"string\",\n  \"specifications\": {},\n  \"condition\": \"string\",\n  \"status\": \"string\",\n  \"image_url\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -107,7 +107,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"assetName\": \"string\",\n  \"categoryId\": \"uuid\",\n  \"model\": \"string\",\n  \"serialNumber\": \"string\",\n  \"manufacturer\": \"string\",\n  \"purchasePrice\": 0,\n  \"originalCost\": 0,\n  \"currentValue\": 0,\n  \"purchaseDate\": \"2023-01-01T00:00:00Z\",\n  \"warrantyExpiryDate\": \"2024-01-01T00:00:00Z\",\n  \"condition\": \"string\",\n  \"location\": \"string\",\n  \"specifications\": {},\n  \"status\": \"string\",\n  \"imageUrl\": \"string\"\n}",
+                            "raw": "{\n  \"asset_name\": \"string\",\n  \"category_id\": \"uuid\",\n  \"model\": \"string\",\n  \"serial_number\": \"string\",\n  \"manufacturer\": \"string\",\n  \"purchase_price\": 0,\n  \"original_cost\": 0,\n  \"current_value\": 0,\n  \"purchase_date\": \"2023-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"condition\": \"string\",\n  \"location\": \"string\",\n  \"specifications\": {},\n  \"status\": \"string\",\n  \"image_url\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -241,7 +241,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"entryType\": \"string\",\n  \"amount\": 0,\n  \"entryDate\": \"2023-01-01T00:00:00Z\",\n  \"description\": \"string\",\n  \"assetId\": \"uuid\",\n  \"referenceType\": \"string\",\n  \"referenceId\": \"uuid\"\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"entry_type\": \"string\",\n  \"amount\": 0,\n  \"entry_date\": \"2023-01-01T00:00:00Z\",\n  \"description\": \"string\",\n  \"asset_id\": \"uuid\",\n  \"reference_type\": \"string\",\n  \"reference_id\": \"uuid\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -336,7 +336,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"code\": \"string\",\n  \"categoryName\": \"string\",\n  \"parentId\": \"uuid\"\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"code\": \"string\",\n  \"category_name\": \"string\",\n  \"parent_id\": \"uuid\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -362,7 +362,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"categoryName\": \"string\",\n  \"code\": \"string\",\n  \"parentId\": \"uuid\"\n}",
+                            "raw": "{\n  \"category_name\": \"string\",\n  \"code\": \"string\",\n  \"parent_id\": \"uuid\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -471,7 +471,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"assetId\": \"uuid\",\n  \"organizationId\": \"uuid\",\n  \"method\": \"string\",\n  \"depreciationDate\": \"2023-01-01T00:00:00Z\",\n  \"depreciationValue\": 0,\n  \"accumulatedDepreciation\": 0,\n  \"remainingValue\": 0\n}",
+                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"method\": \"string\",\n  \"depreciation_date\": \"2023-01-01T00:00:00Z\",\n  \"depreciation_value\": 0,\n  \"accumulated_depreciation\": 0,\n  \"remaining_value\": 0\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -554,7 +554,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"assetId\": \"uuid\",\n  \"organizationId\": \"uuid\",\n  \"disposalType\": \"string\",\n  \"disposalDate\": \"2023-01-01T00:00:00Z\",\n  \"disposalValue\": 0,\n  \"reason\": \"string\"\n}",
+                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"disposal_type\": \"string\",\n  \"disposal_date\": \"2023-01-01T00:00:00Z\",\n  \"disposal_value\": 0,\n  \"reason\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -733,7 +733,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"assetId\": \"uuid\",\n  \"organizationId\": \"uuid\",\n  \"documentName\": \"string\",\n  \"filePath\": \"string\",\n  \"fileType\": \"string\",\n  \"documentType\": \"string\",\n  \"description\": \"string\"\n}",
+                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"document_name\": \"string\",\n  \"file_path\": \"string\",\n  \"file_type\": \"string\",\n  \"document_type\": \"string\",\n  \"description\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -846,7 +846,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"assetId\": \"uuid\",\n  \"organizationId\": \"uuid\",\n  \"transferType\": \"string\",\n  \"transferDate\": \"2023-01-01T00:00:00Z\",\n  \"reason\": \"string\",\n  \"fromDepartmentId\": \"uuid\",\n  \"toDepartmentId\": \"uuid\",\n  \"fromUserId\": \"uuid\",\n  \"toUserId\": \"uuid\"\n}",
+                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"transfer_type\": \"string\",\n  \"transfer_date\": \"2023-01-01T00:00:00Z\",\n  \"reason\": \"string\",\n  \"from_department_id\": \"uuid\",\n  \"to_department_id\": \"uuid\",\n  \"from_user_id\": \"uuid\",\n  \"to_user_id\": \"uuid\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1121,7 +1121,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"departmentId\": \"uuid\",\n  \"fiscalYear\": 2024,\n  \"budgetType\": \"string\",\n  \"allocatedAmount\": 0\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"department_id\": \"uuid\",\n  \"fiscal_year\": 2024,\n  \"budget_type\": \"string\",\n  \"allocated_amount\": 0\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1147,7 +1147,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"allocatedAmount\": 0,\n  \"budgetType\": \"string\",\n  \"fiscalYear\": 2024,\n  \"status\": \"string\"\n}",
+                            "raw": "{\n  \"allocated_amount\": 0,\n  \"budget_type\": \"string\",\n  \"fiscal_year\": 2024,\n  \"status\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1232,7 +1232,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"name\": \"string\",\n  \"parentId\": \"uuid\"\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"name\": \"string\",\n  \"parent_id\": \"uuid\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1263,7 +1263,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"inventoryDate\": \"2023-01-01T00:00:00Z\",\n  \"notes\": \"string\"\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"inventory_date\": \"2023-01-01T00:00:00Z\",\n  \"notes\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1289,7 +1289,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"notes\": \"string\",\n  \"status\": \"string\",\n  \"inventoryDate\": \"2023-01-01T00:00:00Z\"\n}",
+                            "raw": "{\n  \"notes\": \"string\",\n  \"status\": \"string\",\n  \"inventory_date\": \"2023-01-01T00:00:00Z\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1347,7 +1347,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"details\": [\n    {\n      \"assetId\": \"uuid\",\n      \"systemStock\": 0,\n      \"actualStock\": 0,\n      \"difference\": 0,\n      \"notes\": \"string\"\n    }\n  ]\n}",
+                            "raw": "{\n  \"details\": [\n    {\n      \"asset_id\": \"uuid\",\n      \"is_found\": true,\n      \"actual_status\": \"string\",\n      \"notes\": \"string\"\n    }\n  ]\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1463,7 +1463,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"assetId\": \"uuid\",\n  \"organizationId\": \"uuid\",\n  \"maintenanceType\": \"string\",\n  \"scheduledDate\": \"2023-01-01T00:00:00Z\",\n  \"description\": \"string\",\n  \"estimatedCost\": 0\n}",
+                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"maintenance_type\": \"string\",\n  \"scheduled_date\": \"2023-01-01T00:00:00Z\",\n  \"description\": \"string\",\n  \"estimated_cost\": 0\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1645,7 +1645,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"string\",\n  \"taxCode\": \"string\",\n  \"website\": \"string\",\n  \"address\": \"string\",\n  \"logoUrl\": \"string\"\n}",
+                            "raw": "{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"string\",\n  \"tax_code\": \"string\",\n  \"website\": \"string\",\n  \"address\": \"string\",\n  \"logo_url\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1719,7 +1719,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"string\",\n  \"taxCode\": \"string\",\n  \"website\": \"string\",\n  \"address\": \"string\",\n  \"logoUrl\": \"string\"\n}",
+                            "raw": "{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"string\",\n  \"tax_code\": \"string\",\n  \"website\": \"string\",\n  \"address\": \"string\",\n  \"logo_url\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1828,7 +1828,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"name\": \"string\",\n  \"permissionIds\": [\n    \"uuid\"\n  ]\n}",
+                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"name\": \"string\",\n  \"permission_ids\": [\n    \"uuid\"\n  ]\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1859,7 +1859,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"departmentId\": \"uuid\",\n  \"status\": \"string\",\n  \"avatarUrl\": \"string\"\n}",
+                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"departmentId\": \"uuid\",\n  \"status\": \"string\",\n  \"avatar_url\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1938,7 +1938,7 @@
                         "header": [],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"email\": \"string\",\n  \"departmentId\": \"uuid\",\n  \"status\": \"string\",\n  \"avatarUrl\": \"string\"\n}",
+                            "raw": "{\n  \"email\": \"string\",\n  \"departmentId\": \"uuid\",\n  \"status\": \"string\",\n  \"avatar_url\": \"string\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"

@@ -7,7 +7,7 @@ import { Public } from '../decorators';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly commandBus: CommandBus) { }
 
   @Public()
   @Post('login')
@@ -20,7 +20,7 @@ export class AuthController {
     );
 
     const result = await this.commandBus.execute(cmd);
-    return new AuthResponse(result as Partial<AuthResponse>);
+    return new AuthResponse(result.accessToken, result.refreshToken, result.user);
   }
 
   @Public()
@@ -30,6 +30,6 @@ export class AuthController {
     const cmd = new RefreshTokenCommand(dto.refreshToken);
 
     const result = await this.commandBus.execute(cmd);
-    return new TokenResponse(result as Partial<TokenResponse>);
+    return new TokenResponse(result.accessToken, result.refreshToken);
   }
 }

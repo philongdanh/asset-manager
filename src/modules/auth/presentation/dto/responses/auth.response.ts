@@ -30,6 +30,19 @@ export class UserDto {
 
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
+
+  constructor(user: any) {
+    this.id = user.id;
+    this.username = user.username;
+    this.email = user.email;
+    this.organizationId = user.organizationId;
+    this.departmentId = user.departmentId;
+    this.status = user.status;
+    this.roles = user.roles;
+    this.permissions = user.permissions;
+    this.createdAt = user.createdAt;
+    this.updatedAt = user.updatedAt;
+  }
 }
 
 export class AuthResponse {
@@ -43,7 +56,9 @@ export class AuthResponse {
   @Type(() => UserDto)
   user: UserDto;
 
-  constructor(partial: Partial<AuthResponse>) {
-    Object.assign(this, partial);
+  constructor(accessToken: string, refreshToken: string, user: any) {
+    this.accessToken = accessToken;
+    this.refreshToken = refreshToken;
+    this.user = new UserDto(user);
   }
 }
