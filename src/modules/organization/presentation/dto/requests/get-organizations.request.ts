@@ -8,7 +8,7 @@ export class GetOrganizationsRequest {
   @IsEnum(OrganizationStatus)
   status?: OrganizationStatus;
 
-  @Expose()
+  @Expose({ name: 'include_deleted' })
   @IsOptional()
   @IsBoolean()
   includeDeleted?: boolean;

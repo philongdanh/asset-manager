@@ -10,7 +10,7 @@ import {
 import { UserStatus } from '../../../domain';
 
 export class CreateUserRequest {
-  @Expose()
+  @Expose({ name: 'organization_id' })
   @IsNotEmpty()
   @IsUUID()
   organizationId: string;
@@ -30,7 +30,7 @@ export class CreateUserRequest {
   @IsEmail()
   email: string;
 
-  @Expose()
+  @Expose({ name: 'department_id' })
   @IsOptional()
   @IsUUID()
   departmentId?: string;

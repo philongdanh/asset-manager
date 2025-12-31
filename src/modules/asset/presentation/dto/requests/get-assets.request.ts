@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type, Expose } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
@@ -15,14 +15,17 @@ export class GetAssetsRequest {
   @IsOptional()
   status?: AssetStatus;
 
+  @Expose({ name: 'category_id' })
   @IsUUID('4')
   @IsOptional()
   categoryId?: string;
 
+  @Expose({ name: 'department_id' })
   @IsUUID('4')
   @IsOptional()
   departmentId?: string;
 
+  @Expose({ name: 'user_id' })
   @IsUUID('4')
   @IsOptional()
   userId?: string;
@@ -43,6 +46,7 @@ export class GetAssetsRequest {
   @Type(() => Number)
   offset?: number;
 
+  @Expose({ name: 'include_deleted' })
   @IsBoolean()
   @IsOptional()
   @Type(() => Boolean)

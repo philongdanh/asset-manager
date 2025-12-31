@@ -77,7 +77,6 @@ export class UpdateAssetRequest {
   specifications: string | null;
 
   @Expose()
-  @Expose()
   @IsEnum(AssetStatus)
   @IsOptional()
   status: AssetStatus | null;

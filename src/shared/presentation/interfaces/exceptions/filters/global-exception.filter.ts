@@ -63,8 +63,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       method: request.method,
-      errorType: 'DOMAIN_ERROR',
-      errorCode: exception.errorCode,
+      error_type: 'DOMAIN_ERROR',
+      error_code: exception.errorCode,
       message: exception.message,
       details: exception.details,
     };
@@ -79,11 +79,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       method: request.method,
-      errorType: exception.errorType,
+      error_type: exception.errorType,
       message: exception.message,
 
       ...((exception as any).validationErrors && {
-        validationErrors: (exception as any).validationErrors,
+        validation_errors: (exception as any).validationErrors,
       }),
 
       ...((exception as any).details && {
@@ -100,8 +100,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       method: request.method,
-      errorType: 'HTTP_ERROR',
-      statusCode: exception.getStatus(),
+      error_type: 'HTTP_ERROR',
+      status_code: exception.getStatus(),
 
       message:
         typeof response === 'string' ? response : (response as any).message,
@@ -117,13 +117,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       method: request.method,
-      errorType: 'INTERNAL_ERROR',
+      error_type: 'INTERNAL_ERROR',
       message: isProduction
         ? 'Internal server error'
         : (error as Error)?.message || 'Unknown error',
       ...(!isProduction && {
         stack: (error as Error)?.stack,
-        rawError: error,
+        raw_error: error,
       }),
     };
   }

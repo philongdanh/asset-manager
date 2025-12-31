@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Type, Expose } from 'class-transformer';
 import { IsBoolean, IsInt, IsOptional, Min } from 'class-validator';
 
 export class GetAssetCategoriesRequest {
@@ -14,6 +14,7 @@ export class GetAssetCategoriesRequest {
   @Type(() => Number)
   offset?: number;
 
+  @Expose({ name: 'include_deleted' })
   @IsBoolean()
   @IsOptional()
   @Type(() => Boolean)

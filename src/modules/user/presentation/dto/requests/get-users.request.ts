@@ -10,7 +10,7 @@ import {
 import { UserStatus } from '../../../domain';
 
 export class GetUsersRequest {
-  @Expose()
+  @Expose({ name: 'department_id' })
   @IsOptional()
   departmentId?: string;
 
@@ -19,7 +19,7 @@ export class GetUsersRequest {
   @IsEnum(UserStatus)
   status?: UserStatus;
 
-  @Expose()
+  @Expose({ name: 'role_id' })
   @IsOptional()
   @IsUUID()
   roleId?: string;
@@ -39,7 +39,7 @@ export class GetUsersRequest {
   @IsNumber()
   offset?: number;
 
-  @Expose()
+  @Expose({ name: 'include_deleted' })
   @IsOptional()
   @IsBoolean()
   includeDeleted?: boolean;

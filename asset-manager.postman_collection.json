@@ -1,1977 +1,2231 @@
 {
-    "info": {
-        "_postman_id": "asset-manager-api",
-        "name": "Asset Manager API",
-        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-    },
-    "item": [
-        {
-            "name": "Auth",
-            "item": [
-                {
-                    "name": "Login",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"username\": \"string\",\n  \"password\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/auth/login",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "auth",
-                                "login"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Refresh Token",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"refresh_token\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/auth/refresh",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "auth",
-                                "refresh"
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Asset",
-            "item": [
-                {
-                    "name": "Create Asset",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"asset_code\": \"string\",\n  \"asset_name\": \"string\",\n  \"category_id\": \"uuid\",\n  \"purchase_price\": 0,\n  \"original_cost\": 0,\n  \"current_value\": 0,\n  \"model\": \"string\",\n  \"serial_number\": \"string\",\n  \"manufacturer\": \"string\",\n  \"purchase_date\": \"2023-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"location\": \"string\",\n  \"specifications\": {},\n  \"condition\": \"string\",\n  \"status\": \"string\",\n  \"image_url\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/assets",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "assets"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update Asset",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"asset_name\": \"string\",\n  \"category_id\": \"uuid\",\n  \"model\": \"string\",\n  \"serial_number\": \"string\",\n  \"manufacturer\": \"string\",\n  \"purchase_price\": 0,\n  \"original_cost\": 0,\n  \"current_value\": 0,\n  \"purchase_date\": \"2023-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"condition\": \"string\",\n  \"location\": \"string\",\n  \"specifications\": {},\n  \"status\": \"string\",\n  \"image_url\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/assets/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "assets",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Delete Asset",
-                    "request": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/assets/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "assets",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Asset List",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/assets?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "assets"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "status",
-                                    "value": "string",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "categoryId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "departmentId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "limit",
-                                    "value": "10",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "offset",
-                                    "value": "0",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Asset Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/assets/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "assets",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Accounting Entry",
-            "item": [
-                {
-                    "name": "Create Entry",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"entry_type\": \"string\",\n  \"amount\": 0,\n  \"entry_date\": \"2023-01-01T00:00:00Z\",\n  \"description\": \"string\",\n  \"asset_id\": \"uuid\",\n  \"reference_type\": \"string\",\n  \"reference_id\": \"uuid\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/accounting-entries",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "accounting-entries"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Entries",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/accounting-entries?organization_id=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "accounting-entries"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organization_id",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "entryType",
-                                    "value": "string",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "assetId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Entry Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/accounting-entries/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "accounting-entries",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Asset Category",
-            "item": [
-                {
-                    "name": "Create Category",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"code\": \"string\",\n  \"category_name\": \"string\",\n  \"parent_id\": \"uuid\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-categories",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-categories"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update Category",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"category_name\": \"string\",\n  \"code\": \"string\",\n  \"parent_id\": \"uuid\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-categories/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-categories",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Delete Category",
-                    "request": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-categories/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-categories",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Categories",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-categories?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-categories"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Category Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-categories/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-categories",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Asset Depreciation",
-            "item": [
-                {
-                    "name": "Record Depreciation",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"method\": \"string\",\n  \"depreciation_date\": \"2023-01-01T00:00:00Z\",\n  \"depreciation_value\": 0,\n  \"accumulated_depreciation\": 0,\n  \"remaining_value\": 0\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-depreciations",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-depreciations"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Depreciations",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-depreciations?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-depreciations"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "assetId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Depreciation Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-depreciations/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-depreciations",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Asset Disposal",
-            "item": [
-                {
-                    "name": "Create Disposal",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"disposal_type\": \"string\",\n  \"disposal_date\": \"2023-01-01T00:00:00Z\",\n  \"disposal_value\": 0,\n  \"reason\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-disposals",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-disposals"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Approve Disposal",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-disposals/:id/approve?userId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-disposals",
-                                ":id",
-                                "approve"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid"
-                                }
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Reject Disposal",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"reason\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-disposals/:id/reject?userId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-disposals",
-                                ":id",
-                                "reject"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid"
-                                }
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Cancel Disposal",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-disposals/:id/cancel",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-disposals",
-                                ":id",
-                                "cancel"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Disposals",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-disposals?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-disposals"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "status",
-                                    "value": "string",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Disposal Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-disposals/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-disposals",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Asset Document",
-            "item": [
-                {
-                    "name": "Upload Document",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"document_name\": \"string\",\n  \"file_path\": \"string\",\n  \"file_type\": \"string\",\n  \"document_type\": \"string\",\n  \"description\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-documents?userId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-documents"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Delete Document",
-                    "request": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-documents/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-documents",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Documents",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-documents?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-documents"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "assetId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Document Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-documents/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-documents",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Asset Transfer",
-            "item": [
-                {
-                    "name": "Create Transfer",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"transfer_type\": \"string\",\n  \"transfer_date\": \"2023-01-01T00:00:00Z\",\n  \"reason\": \"string\",\n  \"from_department_id\": \"uuid\",\n  \"to_department_id\": \"uuid\",\n  \"from_user_id\": \"uuid\",\n  \"to_user_id\": \"uuid\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-transfers",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-transfers"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Approve Transfer",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-transfers/:id/approve?userId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-transfers",
-                                ":id",
-                                "approve"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid"
-                                }
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Reject Transfer",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"reason\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-transfers/:id/reject?userId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-transfers",
-                                ":id",
-                                "reject"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid"
-                                }
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Complete Transfer",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-transfers/:id/complete",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-transfers",
-                                ":id",
-                                "complete"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Cancel Transfer",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"reason\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-transfers/:id/cancel",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-transfers",
-                                ":id",
-                                "cancel"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Transfers",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-transfers?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-transfers"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "status",
-                                    "value": "string",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Transfer Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/asset-transfers/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "asset-transfers",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Audit Log",
-            "item": [
-                {
-                    "name": "Get Audit Logs",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/audit-logs?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "audit-logs"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "userId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "action",
-                                    "value": "string",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Audit Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/audit-logs/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "audit-logs",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Budget Plan",
-            "item": [
-                {
-                    "name": "Create Budget Plan",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"department_id\": \"uuid\",\n  \"fiscal_year\": 2024,\n  \"budget_type\": \"string\",\n  \"allocated_amount\": 0\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/budget-plans",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "budget-plans"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update Budget Plan",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"allocated_amount\": 0,\n  \"budget_type\": \"string\",\n  \"fiscal_year\": 2024,\n  \"status\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/budget-plans/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "budget-plans",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Budget Plans",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/budget-plans?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "budget-plans"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Budget Plan Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/budget-plans/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "budget-plans",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Department",
-            "item": [
-                {
-                    "name": "Create Department",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"name\": \"string\",\n  \"parent_id\": \"uuid\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/departments",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "departments"
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Inventory Check",
-            "item": [
-                {
-                    "name": "Create Inventory Check",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"inventory_date\": \"2023-01-01T00:00:00Z\",\n  \"notes\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/inventory-checks",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "inventory-checks"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update Inventory Check",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"notes\": \"string\",\n  \"status\": \"string\",\n  \"inventory_date\": \"2023-01-01T00:00:00Z\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/inventory-checks/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "inventory-checks",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Finish Inventory Check",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/inventory-checks/:id/finish",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "inventory-checks",
-                                ":id",
-                                "finish"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update Details",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"details\": [\n    {\n      \"asset_id\": \"uuid\",\n      \"is_found\": true,\n      \"actual_status\": \"string\",\n      \"notes\": \"string\"\n    }\n  ]\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/inventory-checks/:id/details",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "inventory-checks",
-                                ":id",
-                                "details"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Inventory Checks",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/inventory-checks?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "inventory-checks"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "status",
-                                    "value": "string",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Inventory Check",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/inventory-checks/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "inventory-checks",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Inventory Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/inventory-checks/:id/details",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "inventory-checks",
-                                ":id",
-                                "details"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Maintenance Schedule",
-            "item": [
-                {
-                    "name": "Create Schedule",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"asset_id\": \"uuid\",\n  \"organization_id\": \"uuid\",\n  \"maintenance_type\": \"string\",\n  \"scheduled_date\": \"2023-01-01T00:00:00Z\",\n  \"description\": \"string\",\n  \"estimated_cost\": 0\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/maintenance-schedules",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "maintenance-schedules"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Start Maintenance",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/maintenance-schedules/:id/start?userId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "maintenance-schedules",
-                                ":id",
-                                "start"
-                            ],
-                            "query": [
-                                {
-                                    "key": "userId",
-                                    "value": "uuid"
-                                }
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Complete Maintenance",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"result\": \"string\",\n  \"actualCost\": 0\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/maintenance-schedules/:id/complete",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "maintenance-schedules",
-                                ":id",
-                                "complete"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Cancel Maintenance",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"reason\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/maintenance-schedules/:id/cancel",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "maintenance-schedules",
-                                ":id",
-                                "cancel"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Schedules",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/maintenance-schedules?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "maintenance-schedules"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                },
-                                {
-                                    "key": "status",
-                                    "value": "string",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Schedule Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/maintenance-schedules/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "maintenance-schedules",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Organization",
-            "item": [
-                {
-                    "name": "Create Organization",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"string\",\n  \"tax_code\": \"string\",\n  \"website\": \"string\",\n  \"address\": \"string\",\n  \"logo_url\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/organizations",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "organizations"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Organizations",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/organizations?status=string",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "organizations"
-                            ],
-                            "query": [
-                                {
-                                    "key": "status",
-                                    "value": "string",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Organization Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/organizations/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "organizations",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update Organization",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"name\": \"string\",\n  \"status\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"string\",\n  \"tax_code\": \"string\",\n  \"website\": \"string\",\n  \"address\": \"string\",\n  \"logo_url\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/organizations/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "organizations",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Permission",
-            "item": [
-                {
-                    "name": "Get Permissions",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/permissions",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "permissions"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Create Permission",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"name\": \"string\",\n  \"description\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/permissions",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "permissions"
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "Role",
-            "item": [
-                {
-                    "name": "Get Roles",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/roles?organizationId=uuid",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "roles"
-                            ],
-                            "query": [
-                                {
-                                    "key": "organizationId",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Create Role",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organization_id\": \"uuid\",\n  \"name\": \"string\",\n  \"permission_ids\": [\n    \"uuid\"\n  ]\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/roles",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "roles"
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        },
-        {
-            "name": "User",
-            "item": [
-                {
-                    "name": "Create User",
-                    "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"organizationId\": \"uuid\",\n  \"username\": \"string\",\n  \"password\": \"string\",\n  \"email\": \"string\",\n  \"departmentId\": \"uuid\",\n  \"status\": \"string\",\n  \"avatar_url\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/users",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users"
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get Users",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/users",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users"
-                            ],
-                            "query": [
-                                {
-                                    "key": "departmentId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                },
-                                {
-                                    "key": "roleId",
-                                    "value": "uuid",
-                                    "disabled": true
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Get User Details",
-                    "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/users/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update User",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"email\": \"string\",\n  \"departmentId\": \"uuid\",\n  \"status\": \"string\",\n  \"avatar_url\": \"string\"\n}",
-                            "options": {
-                                "raw": {
-                                    "language": "json"
-                                }
-                            }
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/users/:id",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "users",
-                                ":id"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "uuid"
-                                }
-                            ]
-                        }
-                    },
-                    "response": []
-                }
-            ]
-        }
-    ],
-    "variable": [
-        {
-            "key": "baseUrl",
-            "value": "http://localhost:3000",
-            "type": "string"
-        }
-    ]
+	"info": {
+		"_postman_id": "c3d8a962-39f8-4f72-b650-12d75716f8d4",
+		"name": "Asset Manager API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45918773",
+		"_collection_link": "https://longgggwww.postman.co/workspace/6c6cfce9-3003-403a-885c-0dac3fb12b04/collection/45918773-c3d8a962-39f8-4f72-b650-12d75716f8d4?action=share&source=collection_link&creator=45918773"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Store tokens\", function () {\r",
+									"    pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);\r",
+									"    pm.collectionVariables.set(\"refresh_token\", pm.response.json().refresh_token);\r",
+									"});\r",
+									"\r",
+									"// store organization id\r",
+									"pm.test(\"Store organization id\", function () {\r",
+									"    pm.collectionVariables.set(\"organization_id\", pm.response.json().user.organization_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"username\": \"demo_admin\",\n  \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Store tokens\", function () {\r",
+									"    pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);\r",
+									"    pm.collectionVariables.set(\"refresh_token\", pm.response.json().refresh_token);\r",
+									"});\r",
+									"\r",
+									"// store organization id\r",
+									"pm.test(\"Store organization id\", function () {\r",
+									"    pm.collectionVariables.set(\"organization_id\", pm.response.json().user.organization_id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asset",
+			"item": [
+				{
+					"name": "Create Asset",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"asset_code\": \"text\",\n  \"asset_name\": \"text\",\n  \"category_id\": \"{{uuid}}\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"model\": \"text\",\n  \"serial_number\": \"text\",\n  \"manufacturer\": \"text\",\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"location\": \"text\",\n  \"image_url\": \"https://example.com/file.jpg\",\n  \"specifications\": {},\n  \"condition\": \"EXCELLENT | GOOD | FAIR | POOR | BROKEN | NEW | USED\",\n  \"status\": \"AVAILABLE | IN_USE | MAINTENANCE | DISPOSED\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/assets?organization_id=uuid&asset_code=uuid&asset_name=uuid&category_id=uuid&purchase_price=uuid&original_cost=uuid&current_value=uuid&model=uuid&serial_number=uuid&manufacturer=uuid&purchase_date=uuid&warranty_expiry_date=uuid&location=uuid&image_url=uuid&specifications=uuid&condition=uuid&status=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assets"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "asset_code",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "asset_name",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "category_id",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "purchase_price",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "original_cost",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "current_value",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "model",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "serial_number",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "manufacturer",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "purchase_date",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "warranty_expiry_date",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "location",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "image_url",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "specifications",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "condition",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "status",
+									"value": "uuid",
+									"disabled": false
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Asset",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset_name\": \"text\",\n  \"category_id\": \"{{uuid}}\",\n  \"model\": \"text\",\n  \"serial_number\": \"text\",\n  \"manufacturer\": \"text\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"condition\": \"EXCELLENT | GOOD | FAIR | POOR | BROKEN | NEW | USED\",\n  \"location\": \"text\",\n  \"specifications\": {},\n  \"status\": \"AVAILABLE | IN_USE | MAINTENANCE | DISPOSED\",\n  \"image_url\": \"https://example.com/file.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/assets/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Asset",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assets/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Asset List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assets?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assets"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								},
+								{
+									"key": "status",
+									"value": "string",
+									"disabled": true
+								},
+								{
+									"key": "category_id",
+									"value": "uuid",
+									"disabled": true
+								},
+								{
+									"key": "department_id",
+									"value": "uuid",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"disabled": true
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Asset Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/assets/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"assets",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Accounting Entry",
+			"item": [
+				{
+					"name": "Create Entry",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"entry_type\": \"text\",\n  \"amount\": 1000,\n  \"entry_date\": \"2024-01-01T00:00:00Z\",\n  \"description\": \"Description here\",\n  \"asset_id\": \"{{asset_id}}\",\n  \"reference_type\": \"text\",\n  \"reference_id\": \"{{uuid}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/accounting-entries",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounting-entries"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Entries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounting-entries?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounting-entries"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								},
+								{
+									"key": "entry_type",
+									"value": "string",
+									"disabled": true
+								},
+								{
+									"key": "asset_id",
+									"value": "uuid",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Entry Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/accounting-entries/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounting-entries",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asset Category",
+			"item": [
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"code\": \"text\",\n  \"category_name\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"category_name\": \"text\",\n  \"code\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-categories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-categories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-categories?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-categories"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Category Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-categories/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-categories",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asset Depreciation",
+			"item": [
+				{
+					"name": "Record Depreciation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"asset_id\": \"{{asset_id}}\",\n  \"method\": \"text\",\n  \"depreciation_date\": \"2024-01-01T00:00:00Z\",\n  \"depreciation_value\": 1000,\n  \"accumulated_depreciation\": 10,\n  \"remaining_value\": 1000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-depreciations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-depreciations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Depreciations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-depreciations?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-depreciations"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								},
+								{
+									"key": "asset_id",
+									"value": "uuid",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Depreciation Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-depreciations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-depreciations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asset Disposal",
+			"item": [
+				{
+					"name": "Create Disposal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset_id\": \"{{asset_id}}\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"disposal_type\": \"SALE | SCRAP | DONATION\",\n  \"disposal_date\": \"2024-01-01T00:00:00Z\",\n  \"disposal_value\": 1000,\n  \"reason\": \"Routine check\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-disposals",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-disposals"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Disposal",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-disposals/:id/approve?user_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-disposals",
+								":id",
+								"approve"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Disposal",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Routine check\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-disposals/:id/reject?user_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-disposals",
+								":id",
+								"reject"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Disposal",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-disposals/:id/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-disposals",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Disposals",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-disposals?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-disposals"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								},
+								{
+									"key": "status",
+									"value": "string",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Disposal Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-disposals/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-disposals",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asset Document",
+			"item": [
+				{
+					"name": "Upload Document",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset_id\": \"{{asset_id}}\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"document_name\": \"text\",\n  \"file_path\": \"https://example.com/file.jpg\",\n  \"file_type\": \"text\",\n  \"document_type\": \"text\",\n  \"description\": \"Description here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-documents?user_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-documents"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Document",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-documents/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-documents",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-documents?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-documents"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								},
+								{
+									"key": "asset_id",
+									"value": "uuid",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Document Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-documents/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-documents",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Asset Transfer",
+			"item": [
+				{
+					"name": "Create Transfer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset_id\": \"{{asset_id}}\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"transfer_type\": \"DEPARTMENT | USER | LOCATION\",\n  \"transfer_date\": \"2024-01-01T00:00:00Z\",\n  \"reason\": \"Routine check\",\n  \"from_department_id\": \"{{department_id}}\",\n  \"to_department_id\": \"{{department_id}}\",\n  \"from_user_id\": \"{{user_id}}\",\n  \"to_user_id\": \"{{user_id}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-transfers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-transfers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Transfer",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-transfers/:id/approve?user_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-transfers",
+								":id",
+								"approve"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Transfer",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Routine check\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-transfers/:id/reject?user_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-transfers",
+								":id",
+								"reject"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Transfer",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-transfers/:id/complete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-transfers",
+								":id",
+								"complete"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Transfer",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Routine check\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/asset-transfers/:id/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-transfers",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transfers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-transfers?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-transfers"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								},
+								{
+									"key": "status",
+									"value": "string",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transfer Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/asset-transfers/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"asset-transfers",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audit Log",
+			"item": [
+				{
+					"name": "Get Audit Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/audit-logs?user_id=uuid&action=string&entity_type=uuid&start_date=uuid&end_date=uuid&limit=uuid&offset=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit-logs"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid",
+									"disabled": true
+								},
+								{
+									"key": "action",
+									"value": "string",
+									"disabled": true
+								},
+								{
+									"key": "entity_type",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "start_date",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "end_date",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "limit",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "offset",
+									"value": "uuid",
+									"disabled": false
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Audit Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/audit-logs/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"audit-logs",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Budget Plan",
+			"item": [
+				{
+					"name": "Create Budget Plan",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"department_id\": \"{{department_id}}\",\n  \"fiscal_year\": 2024,\n  \"budget_type\": \"text\",\n  \"allocated_amount\": 1000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/budget-plans",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"budget-plans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Budget Plan",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"allocated_amount\": 1000,\n  \"budget_type\": \"text\",\n  \"fiscal_year\": 2024,\n  \"status\": \"ACTIVE | INACTIVE\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/budget-plans/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"budget-plans",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Budget Plans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/budget-plans?fiscal_year=uuid&department_id=uuid&status=uuid&budget_type=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"budget-plans"
+							],
+							"query": [
+								{
+									"key": "fiscal_year",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "department_id",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "status",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "budget_type",
+									"value": "uuid",
+									"disabled": false
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Budget Plan Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/budget-plans/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"budget-plans",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Department",
+			"item": [
+				{
+					"name": "Create Department",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"name\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/departments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"departments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inventory Check",
+			"item": [
+				{
+					"name": "Create Inventory Check",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"inventory_date\": \"2024-01-01T00:00:00Z\",\n  \"notes\": \"Description here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory-checks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Inventory Check",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset_id\": \"{{uuid}}\",\n  \"is_found\": \"text\",\n  \"actual_status\": \"text\",\n  \"notes\": \"Description here\",\n  \"details\": \"text\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory-checks/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finish Inventory Check",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory-checks/:id/finish",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks",
+								":id",
+								"finish"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Details",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"details\": [\n    {\n      \"asset_id\": \"{{asset_id}}\",\n      \"is_found\": true,\n      \"actual_status\": \"text\",\n      \"notes\": \"Description here\"\n    }\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/inventory-checks/:id/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks",
+								":id",
+								"details"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Inventory Checks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory-checks?status=string&start_date=uuid&end_date=uuid&limit=uuid&offset=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "string",
+									"disabled": true
+								},
+								{
+									"key": "start_date",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "end_date",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "limit",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "offset",
+									"value": "uuid",
+									"disabled": false
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Inventory Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory-checks/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Inventory Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inventory-checks/:id/details",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inventory-checks",
+								":id",
+								"details"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Maintenance Schedule",
+			"item": [
+				{
+					"name": "Create Schedule",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"asset_id\": \"{{asset_id}}\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"maintenance_type\": \"PREVENTIVE | CORRECTIVE | EMERGENCY\",\n  \"scheduled_date\": \"2024-01-01T00:00:00Z\",\n  \"description\": \"Description here\",\n  \"estimated_cost\": 1000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/maintenance-schedules",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"maintenance-schedules"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Maintenance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/maintenance-schedules/:id/start?user_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"maintenance-schedules",
+								":id",
+								"start"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "uuid"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Maintenance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"result\": \"text\",\n  \"actual_cost\": 1000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/maintenance-schedules/:id/complete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"maintenance-schedules",
+								":id",
+								"complete"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Maintenance",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Routine check\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/maintenance-schedules/:id/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"maintenance-schedules",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Schedules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/maintenance-schedules?organization_id=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"maintenance-schedules"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "uuid"
+								},
+								{
+									"key": "status",
+									"value": "string",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Schedule Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/maintenance-schedules/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"maintenance-schedules",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organization",
+			"item": [
+				{
+					"name": "Create Organization",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"text\",\n  \"status\": \"ACTIVE\",\n  \"phone\": \"text\",\n  \"email\": \"user@example.com\",\n  \"tax_code\": \"text\",\n  \"require_protocol\": \"text\",\n  \"address\": \"text\",\n  \"logo_url\": \"https://example.com/file.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/organizations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Organizations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/organizations?status=INACTIVE&include_deleted=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "INACTIVE",
+									"disabled": true
+								},
+								{
+									"key": "include_deleted",
+									"value": "uuid",
+									"disabled": false
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Organization Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/organizations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "550e8400-e29b-41d4-a716-446655440000"
+								}
+							]
+						},
+						"description": "# Get Organization Details\n\n## Overview\nThis endpoint retrieves detailed information about a specific organization using its unique identifier. Use this request to fetch comprehensive data about an organization, including its configuration, metadata, and associated properties.\n\n## Path Parameters\n\n| Parameter | Type | Required | Description |\n|-----------|------|----------|-------------|\n| `id` | string (UUID) | Yes | The unique identifier of the organization you want to retrieve. Must be a valid UUID format. |\n\n**Example:** `550e8400-e29b-41d4-a716-446655440000`\n\n## Authentication\n\nThis endpoint requires authentication using a **Bearer Token**. The token is automatically included via the `{{access_token}}` variable.\n\n- **Type:** Bearer Token\n- **Variable:** `{{access_token}}`\n- **Location:** Authorization header\n\nEnsure you have a valid access token before making this request. If the token is expired, you may need to refresh it using the refresh token endpoint.\n\n## Expected Response\n\nA successful request returns detailed information about the organization, including:\n- Organization ID and name\n- Creation and modification timestamps\n- Organization settings and configuration\n- Associated metadata\n- Status information\n\n**Status Code:** `200 OK` - Organization details retrieved successfully\n\n**Common Error Responses:**\n- `401 Unauthorized` - Invalid or missing access token\n- `403 Forbidden` - Insufficient permissions to access this organization\n- `404 Not Found` - Organization with the specified ID does not exist\n\n## Example Use Cases\n\n1. **Verify Organization Details**: Retrieve organization information to confirm settings and configuration before performing administrative actions.\n\n2. **Display Organization Profile**: Fetch organization data to display in a user interface or dashboard.\n\n3. **Audit and Compliance**: Retrieve organization details for audit logs or compliance reporting.\n\n4. **Integration Workflows**: Use this endpoint as part of an automated workflow to validate organization existence and retrieve necessary metadata before executing subsequent operations.\n\n5. **Multi-Organization Management**: When managing multiple organizations, use this endpoint to fetch specific details for each organization by its unique ID."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Organization",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/organizations/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"organizations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permission",
+			"item": [
+				{
+					"name": "Get Permissions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Permission",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"text\",\n  \"description\": \"Description here\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Get Roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/roles?organization_id={{organization_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles"
+							],
+							"query": [
+								{
+									"key": "organization_id",
+									"value": "{{organization_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"name\": \"text\",\n  \"permission_ids\": [\n    \"uuid\"\n  ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/roles",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"username\": \"text\",\n  \"password\": \"text\",\n  \"email\": \"user@example.com\",\n  \"department_id\": \"{{department_id}}\",\n  \"status\": \"ACTIVE\",\n  \"avatar_url\": \"https://example.com/file.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?department_id=uuid&status=uuid&role_id=uuid&search=uuid&limit=uuid&offset=uuid&include_deleted=uuid",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "department_id",
+									"value": "uuid",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "role_id",
+									"value": "uuid",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "limit",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "offset",
+									"value": "uuid",
+									"disabled": false
+								},
+								{
+									"key": "include_deleted",
+									"value": "uuid",
+									"disabled": false
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "uuid"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/v1",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "refresh_token",
+			"value": ""
+		},
+		{
+			"key": "organization_id",
+			"value": ""
+		}
+	]
 }
