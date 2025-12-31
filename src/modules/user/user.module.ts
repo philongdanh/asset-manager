@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import {
   CreateUserHandler,
   UpdateUserHandler,
+  DeleteUserHandler,
   GetUsersHandler,
   GetUserDetailsHandler,
 } from './application';
@@ -30,6 +31,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     GetUsersHandler,
     GetUserDetailsHandler,
     UpdateUserHandler,
+    DeleteUserHandler,
   ],
   exports: [USER_REPOSITORY],
 })

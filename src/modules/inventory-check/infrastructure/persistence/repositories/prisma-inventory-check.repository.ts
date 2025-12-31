@@ -84,6 +84,11 @@ export class PrismaInventoryCheckRepository implements IInventoryCheckRepository
     return count > 0;
   }
 
+  async existsById(id: string): Promise<boolean> {
+    const count = await this.prisma.inventoryCheck.count({ where: { id } });
+    return count > 0;
+  }
+
   async save(inventoryCheck: InventoryCheck): Promise<InventoryCheck> {
     const { data } = InventoryCheckMapper.toPersistence(inventoryCheck);
     const raw = await this.prisma.inventoryCheck.upsert({

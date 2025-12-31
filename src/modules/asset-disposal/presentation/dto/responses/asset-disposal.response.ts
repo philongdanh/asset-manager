@@ -1,5 +1,9 @@
 import { Exclude, Expose } from 'class-transformer';
-import { AssetDisposal, AssetDisposalStatus, AssetDisposalType } from '../../../domain';
+import {
+  AssetDisposal,
+  AssetDisposalStatus,
+  AssetDisposalType,
+} from '../../../domain';
 
 @Exclude()
 export class AssetDisposalResponse {

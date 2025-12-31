@@ -58,4 +58,4 @@ import { CqrsModule } from '@nestjs/cqrs';
     },
   ],
 })
-export class AuthModule { }
+export class AuthModule {}

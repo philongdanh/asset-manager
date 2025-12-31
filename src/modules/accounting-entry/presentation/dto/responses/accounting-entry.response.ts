@@ -1,5 +1,9 @@
 import { Expose, Exclude } from 'class-transformer';
-import { AccountingEntry, AccountingEntryType, ReferenceType } from '../../../domain';
+import {
+  AccountingEntry,
+  AccountingEntryType,
+  ReferenceType,
+} from '../../../domain';
 
 @Exclude()
 export class AccountingEntryResponse {

@@ -36,10 +36,10 @@ export class UserResponse {
   constructor(user: User) {
     this.id = user.id;
     this.organizationId = user.organizationId!; // optional in domain but DTO expects string. Root admin check might fail here if null.
-    // Wait, UserResponse defines organizationId as string (not nullable). 
+    // Wait, UserResponse defines organizationId as string (not nullable).
     // If I map root user (orgId=null), this will crash or type error.
     // I should probably make organizationId nullable in Response or handle it safely.
-    // Given previous context, root admin has null orgId. 
+    // Given previous context, root admin has null orgId.
     // I will check if DTO allows null.
     // Line 10: organizationId: string; -> It does NOT allow null.
     // I will update it to string | null.

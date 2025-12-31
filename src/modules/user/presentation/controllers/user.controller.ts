@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Delete,
   HttpCode,
   HttpStatus,
   Param,
@@ -16,6 +17,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateUserCommand,
   UpdateUserCommand,
+  DeleteUserCommand,
   GetUsersQuery,
   GetUserDetailsQuery,
 } from '../../application';
@@ -34,7 +36,7 @@ export class UserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('USER_CREATE')
@@ -100,5 +102,14 @@ export class UserController {
     );
     const user: User = await this.commandBus.execute(cmd);
     return new UserResponse(user);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Permissions('USER_DELETE')
+  @Delete(':id')
+  async delete(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<void> {
+    await this.commandBus.execute(new DeleteUserCommand(id));
   }
 }

@@ -130,8 +130,8 @@ export class PrismaBudgetPlanRepository implements IBudgetPlanRepository {
   }
 
   async save(budgetPlan: BudgetPlan): Promise<BudgetPlan> {
-    const { data } = BudgetPlanMapper.toPersistence(budgetPlan);
-    const raw = await this.prisma.budgetPlan.create({ data });
+    const upsertArgs = BudgetPlanMapper.toUpsertArgs(budgetPlan);
+    const raw = await this.prisma.budgetPlan.upsert(upsertArgs);
     return BudgetPlanMapper.toDomain(raw);
   }
 
@@ -147,8 +147,8 @@ export class PrismaBudgetPlanRepository implements IBudgetPlanRepository {
   async saveMany(budgetPlans: BudgetPlan[]): Promise<void> {
     await this.prisma.$transaction(
       budgetPlans.map((bp) => {
-        const { data } = BudgetPlanMapper.toPersistence(bp);
-        return this.prisma.budgetPlan.create({ data });
+        const upsertArgs = BudgetPlanMapper.toUpsertArgs(bp);
+        return this.prisma.budgetPlan.upsert(upsertArgs);
       }),
     );
   }

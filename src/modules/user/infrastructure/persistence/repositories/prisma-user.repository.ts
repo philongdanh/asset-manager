@@ -257,9 +257,9 @@ export class PrismaUserRepository implements IUserRepository {
 
   // --- Persistence Methods ---
   async save(user: User): Promise<User> {
-    const data = UserMapper.toPersistence(user);
-    const savedUser = await this.prisma.user.create({
-      data,
+    const upsertArgs = UserMapper.toUpsertArgs(user);
+    const savedUser = await this.prisma.user.upsert({
+      ...upsertArgs,
       include: {
         userRoles: {
           include: {
@@ -290,8 +290,8 @@ export class PrismaUserRepository implements IUserRepository {
   async saveMany(users: User[]): Promise<void> {
     await this.prisma.$transaction(
       users.map((user) => {
-        const data = UserMapper.toPersistence(user);
-        return this.prisma.user.create({ data });
+        const upsertArgs = UserMapper.toUpsertArgs(user);
+        return this.prisma.user.upsert(upsertArgs);
       }),
     );
   }

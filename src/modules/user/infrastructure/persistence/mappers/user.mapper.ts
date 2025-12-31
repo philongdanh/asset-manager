@@ -79,4 +79,12 @@ export class UserMapper {
 
     return updateData;
   }
+
+  static toUpsertArgs(user: User): Prisma.UserUpsertArgs {
+    return {
+      where: { id: user.id },
+      create: this.toPersistence(user),
+      update: this.toUpdatePersistence(user),
+    };
+  }
 }

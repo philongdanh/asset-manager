@@ -46,7 +46,7 @@ export class AssetTransferController {
     private readonly cancelHandler: CancelAssetTransferHandler,
     private readonly getListHandler: GetAssetTransfersHandler,
     private readonly getDetailsHandler: GetAssetTransferDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('TRANSFER_CREATE')

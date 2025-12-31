@@ -9,14 +9,17 @@ import {
   Patch,
   Post,
   Query,
+  Delete,
 } from '@nestjs/common';
 import {
   CreateBudgetPlanCommand,
   UpdateBudgetPlanCommand,
+  DeleteBudgetPlanCommand,
 } from '../../application/commands';
 import {
   CreateBudgetPlanHandler,
   UpdateBudgetPlanHandler,
+  DeleteBudgetPlanHandler,
 } from '../../application/commands';
 import {
   GetBudgetPlanDetailsQuery,
@@ -41,6 +44,7 @@ export class BudgetPlanController {
   constructor(
     private readonly createHandler: CreateBudgetPlanHandler,
     private readonly updateHandler: UpdateBudgetPlanHandler,
+    private readonly deleteHandler: DeleteBudgetPlanHandler,
     private readonly getListHandler: GetBudgetPlansHandler,
     private readonly getDetailsHandler: GetBudgetPlanDetailsHandler,
   ) {}
@@ -113,6 +117,15 @@ export class BudgetPlanController {
     const query = new GetBudgetPlanDetailsQuery(id);
     const result = await this.getDetailsHandler.execute(query);
     return this.toResponse(result);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Permissions('BUDGET_DELETE')
+  @Delete(':id')
+  async delete(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<void> {
+    await this.deleteHandler.execute(new DeleteBudgetPlanCommand(id));
   }
 
   private toResponse(plan: BudgetPlan): BudgetPlanResponse {

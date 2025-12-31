@@ -9,12 +9,14 @@ import {
   Param,
   ParseUUIDPipe,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Permissions, Public } from '../../../auth/presentation/decorators';
 import {
   CreateOrganizationCommand,
   UpdateOrganizationCommand,
+  DeleteOrganizationCommand,
 } from '../../application/commands';
 import {
   GetOrganizationsQuery,
@@ -33,7 +35,7 @@ export class OrganizationController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ORGANIZATION_CREATE')
@@ -97,5 +99,14 @@ export class OrganizationController {
     );
     const org: Organization = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Permissions('ORGANIZATION_DELETE')
+  @Delete(':id')
+  async delete(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<void> {
+    await this.commandBus.execute(new DeleteOrganizationCommand(id));
   }
 }

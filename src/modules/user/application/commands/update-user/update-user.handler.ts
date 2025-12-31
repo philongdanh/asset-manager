@@ -46,6 +46,6 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     if (cmd.avatarUrl !== undefined) {
       user.updateAvatar(cmd.avatarUrl);
     }
-    return await this.userRepo.save(user);
+    return await this.userRepo.update(user);
   }
 }

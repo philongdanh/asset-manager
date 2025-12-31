@@ -9,16 +9,19 @@ import {
   Patch,
   Post,
   Query,
+  Delete,
 } from '@nestjs/common';
 import {
   CreateMaintenanceScheduleCommand,
   StartMaintenanceCommand,
   CompleteMaintenanceCommand,
   CancelMaintenanceCommand,
+  DeleteMaintenanceScheduleCommand,
   CreateMaintenanceScheduleHandler,
   StartMaintenanceHandler,
   CompleteMaintenanceHandler,
   CancelMaintenanceHandler,
+  DeleteMaintenanceScheduleHandler,
   GetMaintenanceSchedulesQuery,
   GetMaintenanceScheduleDetailsQuery,
   GetMaintenanceSchedulesHandler,
@@ -41,9 +44,10 @@ export class MaintenanceScheduleController {
     private readonly startHandler: StartMaintenanceHandler,
     private readonly completeHandler: CompleteMaintenanceHandler,
     private readonly cancelHandler: CancelMaintenanceHandler,
+    private readonly deleteHandler: DeleteMaintenanceScheduleHandler,
     private readonly getListHandler: GetMaintenanceSchedulesHandler,
     private readonly getDetailsHandler: GetMaintenanceScheduleDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('MAINTENANCE_CREATE')
@@ -132,6 +136,15 @@ export class MaintenanceScheduleController {
     const query = new GetMaintenanceScheduleDetailsQuery(id);
     const result = await this.getDetailsHandler.execute(query);
     return this.toResponse(result);
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Permissions('MAINTENANCE_DELETE')
+  @Delete(':id')
+  async delete(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<void> {
+    await this.deleteHandler.execute(new DeleteMaintenanceScheduleCommand(id));
   }
 
   private toResponse(entity: MaintenanceSchedule): MaintenanceScheduleResponse {

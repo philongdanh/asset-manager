@@ -31,7 +31,7 @@ export class AssetDocumentController {
     private readonly deleteHandler: DeleteAssetDocumentHandler,
     private readonly getListHandler: GetAssetDocumentsHandler,
     private readonly getDetailsHandler: GetAssetDocumentDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DOCUMENT_CREATE')

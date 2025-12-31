@@ -97,9 +97,9 @@ export class PrismaRoleRepository implements IRoleRepository {
 
   // --- Persistence Methods ---
   async save(role: Role): Promise<Role> {
-    const data = RoleMapper.toPersistence(role);
-    const savedRole = await this.prisma.role.create({
-      data,
+    const upsertArgs = RoleMapper.toUpsertArgs(role);
+    const savedRole = await this.prisma.role.upsert({
+      ...upsertArgs,
       include: {
         rolePermissions: {
           include: {

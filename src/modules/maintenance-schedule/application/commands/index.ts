@@ -6,3 +6,4 @@ export * from './complete-maintenance/complete-maintenance.command';
 export * from './complete-maintenance/complete-maintenance.handler';
 export * from './cancel-maintenance/cancel-maintenance.command';
 export * from './cancel-maintenance/cancel-maintenance.handler';
+export * from './delete-maintenance-schedule';

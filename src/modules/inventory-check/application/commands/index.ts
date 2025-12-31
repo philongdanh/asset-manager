@@ -6,3 +6,4 @@ export * from './finish-inventory-check/finish-inventory-check.command';
 export * from './finish-inventory-check/finish-inventory-check.handler';
 export * from './update-inventory-check-details/update-inventory-check-details.command';
 export * from './update-inventory-check-details/update-inventory-check-details.handler';
+export * from './delete-inventory-check';

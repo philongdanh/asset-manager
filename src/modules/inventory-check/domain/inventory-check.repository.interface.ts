@@ -25,6 +25,7 @@ export interface IInventoryCheckRepository {
   // --- Validation Methods ---
 
   hasPendingCheck(departmentId: string): Promise<boolean>;
+  existsById(id: string): Promise<boolean>;
 
   // --- Persistence Methods ---
 

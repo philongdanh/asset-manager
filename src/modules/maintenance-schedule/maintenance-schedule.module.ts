@@ -6,6 +6,7 @@ import {
   StartMaintenanceHandler,
   CompleteMaintenanceHandler,
   CancelMaintenanceHandler,
+  DeleteMaintenanceScheduleHandler,
   GetMaintenanceSchedulesHandler,
   GetMaintenanceScheduleDetailsHandler,
 } from './application';
@@ -21,6 +22,7 @@ const handlers: Provider[] = [
   StartMaintenanceHandler,
   CompleteMaintenanceHandler,
   CancelMaintenanceHandler,
+  DeleteMaintenanceScheduleHandler,
   GetMaintenanceSchedulesHandler,
   GetMaintenanceScheduleDetailsHandler,
 ];

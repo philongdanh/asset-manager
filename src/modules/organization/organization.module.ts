@@ -7,6 +7,7 @@ import { PrismaOrganizationRepository } from './infrastructure';
 import {
   CreateOrganizationHandler,
   UpdateOrganizationHandler,
+  DeleteOrganizationHandler,
   GetOrganizationsHandler,
   GetOrganizationDetailsHandler,
 } from './application';
@@ -28,6 +29,7 @@ import { CqrsModule } from '@nestjs/cqrs';
     },
     CreateOrganizationHandler,
     UpdateOrganizationHandler,
+    DeleteOrganizationHandler,
     GetOrganizationsHandler,
     GetOrganizationDetailsHandler,
   ],

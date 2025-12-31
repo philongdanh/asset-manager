@@ -10,18 +10,21 @@ import {
   Post,
   Query,
   Request,
+  Delete,
 } from '@nestjs/common';
 import {
   CreateInventoryCheckCommand,
   FinishInventoryCheckCommand,
   UpdateInventoryCheckCommand,
   UpdateInventoryCheckDetailsCommand,
+  DeleteInventoryCheckCommand,
 } from '../../application/commands';
 import {
   CreateInventoryCheckHandler,
   FinishInventoryCheckHandler,
   UpdateInventoryCheckDetailsHandler,
   UpdateInventoryCheckHandler,
+  DeleteInventoryCheckHandler,
 } from '../../application/commands';
 import {
   GetInventoryCheckDetailsQuery,
@@ -52,6 +55,7 @@ export class InventoryCheckController {
     private readonly updateHandler: UpdateInventoryCheckHandler,
     private readonly finishHandler: FinishInventoryCheckHandler,
     private readonly updateDetailsHandler: UpdateInventoryCheckDetailsHandler,
+    private readonly deleteHandler: DeleteInventoryCheckHandler,
     private readonly getListHandler: GetInventoryChecksHandler,
     private readonly getHandler: GetInventoryCheckHandler,
     private readonly getDetailsHandler: GetInventoryCheckDetailsHandler,
@@ -150,6 +154,15 @@ export class InventoryCheckController {
     const query = new GetInventoryCheckDetailsQuery(id);
     const result = await this.getDetailsHandler.execute(query);
     return result.map((item) => this.toDetailResponse(item));
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Permissions('INVENTORY_DELETE')
+  @Delete(':id')
+  async delete(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): Promise<void> {
+    await this.deleteHandler.execute(new DeleteInventoryCheckCommand(id));
   }
 
   private toResponse(entity: InventoryCheck): InventoryCheckResponse {

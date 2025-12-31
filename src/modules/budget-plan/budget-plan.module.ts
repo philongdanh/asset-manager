@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import {
   CreateBudgetPlanHandler,
   UpdateBudgetPlanHandler,
+  DeleteBudgetPlanHandler,
   GetBudgetPlanDetailsHandler,
   GetBudgetPlansHandler,
 } from './application';
@@ -26,6 +27,7 @@ import { BudgetPlanController } from './presentation';
     },
     CreateBudgetPlanHandler,
     UpdateBudgetPlanHandler,
+    DeleteBudgetPlanHandler,
     GetBudgetPlansHandler,
     GetBudgetPlanDetailsHandler,
   ],

@@ -1,5 +1,9 @@
 import { Exclude, Expose } from 'class-transformer';
-import { MaintenanceSchedule, MaintenanceStatus, MaintenanceType } from '../../../domain';
+import {
+  MaintenanceSchedule,
+  MaintenanceStatus,
+  MaintenanceType,
+} from '../../../domain';
 
 @Exclude()
 export class MaintenanceScheduleResponse {

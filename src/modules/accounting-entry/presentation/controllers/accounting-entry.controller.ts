@@ -31,7 +31,7 @@ export class AccountingEntryController {
     private readonly createHandler: CreateAccountingEntryHandler,
     private readonly getListHandler: GetAccountingEntriesHandler,
     private readonly getDetailsHandler: GetAccountingEntryDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ACCOUNTING_CREATE')

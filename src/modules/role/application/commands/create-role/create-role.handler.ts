@@ -16,9 +16,9 @@ export class CreateRoleHandler implements ICommandHandler<CreateRoleCommand> {
   async execute(command: CreateRoleCommand): Promise<Role> {
     const id = this.idGenerator.generate();
     const role = Role.builder(id, command.orgId, command.name).build();
+    await this.roleRepository.save(role);
     if (command.permIds && command.permIds.length > 0)
       await this.roleRepository.assignPermissions(role.id, command.permIds);
-    await this.roleRepository.save(role);
     return role;
   }
 }

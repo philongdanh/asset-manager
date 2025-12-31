@@ -7,7 +7,7 @@ import { Public } from '../decorators';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) { }
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Public()
   @Post('login')
@@ -19,8 +19,12 @@ export class AuthController {
       dto.password,
     );
 
-    const result = await this.commandBus.execute(cmd);
-    return new AuthResponse(result.accessToken, result.refreshToken, result.user);
+    const result: any = await this.commandBus.execute(cmd);
+    return new AuthResponse(
+      result.accessToken as string,
+      result.refreshToken as string,
+      result.user,
+    );
   }
 
   @Public()
@@ -29,7 +33,10 @@ export class AuthController {
   async refresh(@Body() dto: RefreshTokenDto): Promise<TokenResponse> {
     const cmd = new RefreshTokenCommand(dto.refreshToken);
 
-    const result = await this.commandBus.execute(cmd);
-    return new TokenResponse(result.accessToken, result.refreshToken);
+    const result: any = await this.commandBus.execute(cmd);
+    return new TokenResponse(
+      result.accessToken as string,
+      result.refreshToken as string,
+    );
   }
 }

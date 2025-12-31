@@ -41,4 +41,26 @@ export class BudgetPlanMapper {
       },
     };
   }
+
+  static toUpdatePersistence(
+    budgetPlan: BudgetPlan,
+  ): Prisma.BudgetPlanUpdateInput {
+    return {
+      budgetType: budgetPlan.budgetType,
+      allocatedAmount: budgetPlan.allocatedAmount,
+      spentAmount: budgetPlan.spentAmount,
+      fiscalYear: budgetPlan.fiscalYear,
+      status: budgetPlan.status,
+      updatedAt: budgetPlan.updatedAt,
+    };
+  }
+
+  static toUpsertArgs(budgetPlan: BudgetPlan): Prisma.BudgetPlanUpsertArgs {
+    const { data } = this.toPersistence(budgetPlan);
+    return {
+      where: { id: budgetPlan.id },
+      create: data,
+      update: this.toUpdatePersistence(budgetPlan),
+    };
+  }
 }

@@ -30,6 +30,7 @@ import {
   GetAssetCategoriesRequest,
   UpdateAssetCategoryRequest,
 } from '../dto';
+import { AssetCategory } from '../../domain';
 
 @Controller('asset-categories')
 export class AssetCategoryController {
@@ -39,7 +40,7 @@ export class AssetCategoryController {
     private readonly deleteHandler: DeleteAssetCategoryHandler,
     private readonly getListHandler: GetAssetCategoriesHandler,
     private readonly getDetailsHandler: GetAssetCategoryDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CATEGORY_CREATE')
@@ -115,7 +116,7 @@ export class AssetCategoryController {
     return this.toResponse(result);
   }
 
-  private toResponse(entity: any): AssetCategoryResponse {
+  private toResponse(entity: AssetCategory): AssetCategoryResponse {
     return new AssetCategoryResponse(entity);
   }
 }
