@@ -21,7 +21,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: SignInCommand) {
     const user = await this.userRepo.findByUsername(
@@ -103,7 +103,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
           isRoot,
         },
         {
-          expiresIn: '15m',
+          expiresIn: '24h',
         },
       ),
       this.jwtService.signAsync(
@@ -114,7 +114,7 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
           permissions,
         },
         {
-          expiresIn: '7d',
+          expiresIn: '30d',
         },
       ),
     ]);

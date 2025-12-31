@@ -18,7 +18,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
     @Inject(ROLE_REPOSITORY) private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) {}
+  ) { }
 
   async execute(command: RefreshTokenCommand) {
     const { refreshToken } = command;
@@ -81,7 +81,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
           permissions,
         },
         {
-          expiresIn: '15m',
+          expiresIn: '24h',
         },
       ),
       this.jwtService.signAsync(
@@ -91,7 +91,7 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
           permissions,
         },
         {
-          expiresIn: '7d',
+          expiresIn: '30d',
         },
       ),
     ]);

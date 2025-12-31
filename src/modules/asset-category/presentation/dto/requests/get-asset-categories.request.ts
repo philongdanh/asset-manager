@@ -1,7 +1,12 @@
 import { Type, Expose } from 'class-transformer';
-import { IsBoolean, IsInt, IsOptional, Min } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsUUID, Min } from 'class-validator';
 
 export class GetAssetCategoriesRequest {
+  @Expose({ name: 'organization_id' })
+  @IsUUID()
+  @IsOptional()
+  organizationId?: string;
+
   @IsInt()
   @Min(1)
   @IsOptional()

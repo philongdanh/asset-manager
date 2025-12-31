@@ -40,7 +40,7 @@ export class AssetCategoryController {
     private readonly deleteHandler: DeleteAssetCategoryHandler,
     private readonly getListHandler: GetAssetCategoriesHandler,
     private readonly getDetailsHandler: GetAssetCategoryDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CATEGORY_CREATE')
@@ -88,10 +88,9 @@ export class AssetCategoryController {
   @Get()
   async getList(
     @Query() query: GetAssetCategoriesRequest,
-    @Query('organizationId') organizationId: string,
   ): Promise<{ data: AssetCategoryResponse[]; total: number }> {
     const q: GetAssetCategoriesQuery = {
-      organizationId: organizationId || '',
+      organizationId: query.organizationId || '',
       options: {
         limit: query.limit,
         offset: query.offset,
