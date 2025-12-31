@@ -18,8 +18,9 @@ export class AuthController {
       dto.username,
       dto.password,
     );
+
     const result = await this.commandBus.execute(cmd);
-    return new AuthResponse(result);
+    return new AuthResponse(result as Partial<AuthResponse>);
   }
 
   @Public()
@@ -27,7 +28,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async refresh(@Body() dto: RefreshTokenDto): Promise<TokenResponse> {
     const cmd = new RefreshTokenCommand(dto.refreshToken);
+
     const result = await this.commandBus.execute(cmd);
-    return new TokenResponse(result);
+    return new TokenResponse(result as Partial<TokenResponse>);
   }
 }

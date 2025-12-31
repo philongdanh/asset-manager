@@ -315,10 +315,13 @@ export class PrismaAssetDepreciationRepository implements IAssetDepreciationRepo
     return raws.map((r) => AssetDepreciationMapper.toDomain(r));
   }
 
+  /* eslint-disable @typescript-eslint/require-await */
   async getMonthlyDepreciationReport(
-    organizationId: string,
-    year: number,
-    month: number,
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    _organizationId: string,
+    _year: number,
+    _month: number,
+    /* eslint-enable @typescript-eslint/no-unused-vars */
   ): Promise<{
     totalDepreciation: number;
     byAssetCategory: Record<string, number>;

@@ -1,4 +1,4 @@
-import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
+import { Inject, UnauthorizedException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -26,8 +26,9 @@ export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand>
 
     try {
       const payload = await this.jwtService.verifyAsync(refreshToken);
+
       userId = payload.sub || payload.id;
-    } catch (e) {
+    } catch {
       throw new UnauthorizedException('Invalid Refresh Token');
     }
 

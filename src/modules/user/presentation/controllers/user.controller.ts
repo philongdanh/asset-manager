@@ -26,7 +26,6 @@ import {
   UpdateUserRequest,
   UserResponse,
 } from '../dto';
-import { User } from '../../domain';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -48,7 +47,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const result = await this.commandBus.execute(cmd);
+    const result: UserResponse = await this.commandBus.execute(cmd);
     return new UserResponse(result);
   }
 
@@ -68,7 +67,8 @@ export class UserController {
       includeDeleted: query.includeDeleted,
     });
 
-    const result = await this.queryBus.execute(qry);
+    const result: { data: UserResponse[]; total: number } =
+      await this.queryBus.execute(qry);
     return {
       data: result.data.map((u) => new UserResponse(u)),
       total: result.total,
@@ -81,7 +81,7 @@ export class UserController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<UserResponse> {
     const query = new GetUserDetailsQuery(id);
-    const user = await this.queryBus.execute(query);
+    const user: UserResponse = await this.queryBus.execute(query);
     return new UserResponse(user);
   }
 
@@ -97,7 +97,7 @@ export class UserController {
       dto.departmentId,
       dto.status,
     );
-    const user = await this.commandBus.execute(cmd);
+    const user: UserResponse = await this.commandBus.execute(cmd);
     return new UserResponse(user);
   }
 }

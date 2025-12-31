@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/require-await */
+
 import { PrismaService } from 'src/shared/infrastructure/prisma/prisma.service';
 import {
   IAuditLogRepository,

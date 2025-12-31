@@ -252,7 +252,7 @@ export class PrismaAssetDocumentRepository implements IAssetDocumentRepository {
             ORDER BY date ASC
         `;
     return raws.map((r) => ({
-      date: new Date(r.date).toISOString().split('T')[0],
+      date: new Date(r.date as string).toISOString().split('T')[0],
       count: Number(r.count),
     }));
   }

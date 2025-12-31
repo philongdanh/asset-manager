@@ -33,14 +33,14 @@ export class GetMaintenanceSchedulesRequest {
   @Expose()
   @IsNumber()
   @Type(() => Number)
-  @Transform(({ value }) => value ?? 10)
+  @Transform(({ value }) => (value as number) ?? 10)
   @IsOptional()
   limit?: number;
 
   @Expose()
   @IsNumber()
   @Type(() => Number)
-  @Transform(({ value }) => value ?? 0)
+  @Transform(({ value }) => (value as number) ?? 0)
   @IsOptional()
   offset?: number;
 }

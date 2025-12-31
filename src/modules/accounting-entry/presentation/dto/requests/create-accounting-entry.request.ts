@@ -8,7 +8,7 @@ import {
   IsUUID,
   IsDateString,
 } from 'class-validator';
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { AccountingEntryType, ReferenceType } from '../../../domain';
 
 export class CreateAccountingEntryRequest {

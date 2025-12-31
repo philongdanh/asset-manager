@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { type IUserRepository, User, USER_REPOSITORY } from '../../../domain';
 import { GetUserDetailsQuery } from './get-user-details.query';
 import { EntityNotFoundException } from 'src/shared/domain';

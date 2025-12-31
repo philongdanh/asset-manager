@@ -26,7 +26,6 @@ import {
   UpdateOrganizationRequest,
   OrganizationResponse,
 } from '../dto';
-import { Organization } from '../../domain';
 
 @Controller('organizations')
 export class OrganizationController {
@@ -51,7 +50,7 @@ export class OrganizationController {
       dto.address || null,
       dto.logoUrl || null,
     );
-    const org = await this.commandBus.execute(cmd);
+    const org: OrganizationResponse = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
   }
 
@@ -60,7 +59,7 @@ export class OrganizationController {
   async getList(
     @Query() query: GetOrganizationsRequest,
   ): Promise<OrganizationResponse[]> {
-    const orgs = await this.queryBus.execute(
+    const orgs: OrganizationResponse[] = await this.queryBus.execute(
       new GetOrganizationsQuery(query.status, query.includeDeleted),
     );
     return orgs.map((org) => new OrganizationResponse(org));
@@ -71,7 +70,7 @@ export class OrganizationController {
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<OrganizationResponse> {
-    const org = await this.queryBus.execute(
+    const org: OrganizationResponse = await this.queryBus.execute(
       new GetOrganizationDetailsQuery(id),
     );
     return new OrganizationResponse(org);
@@ -94,7 +93,7 @@ export class OrganizationController {
       dto.address,
       dto.logoUrl,
     );
-    const org = await this.commandBus.execute(cmd);
+    const org: OrganizationResponse = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
   }
 }

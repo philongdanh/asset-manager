@@ -3,7 +3,6 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateRoleRequest, RoleResponse } from '../dto';
 import { CreateRoleCommand } from '../../application';
 import { Permissions } from 'src/modules/auth/presentation';
-import { Role } from '../../domain';
 
 @Controller('roles')
 export class RoleController {
@@ -23,7 +22,7 @@ export class RoleController {
       dto.name,
       dto.permissionIds,
     );
-    const role = await this.commandBus.execute(cmd);
+    const role: RoleResponse = await this.commandBus.execute(cmd);
     return new RoleResponse(role);
   }
 }

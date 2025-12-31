@@ -1,11 +1,4 @@
-import {
-  IsEnum,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsUUID, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Expose } from 'class-transformer';
 import { BudgetType } from 'src/modules/budget-plan/domain';

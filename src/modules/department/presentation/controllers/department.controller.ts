@@ -3,7 +3,6 @@ import { CommandBus } from '@nestjs/cqrs';
 import { CreateDepartmentRequest, DepartmentResponse } from '../dto';
 import { CreateDepartmentCommand } from '../../application';
 import { Permissions } from 'src/modules/auth/presentation';
-import { Department } from '../../domain';
 
 @Controller('departments')
 export class DepartmentController {
@@ -19,7 +18,7 @@ export class DepartmentController {
       dto.name,
       dto.parentId,
     );
-    const dept = await this.commandBus.execute(cmd);
+    const dept: DepartmentResponse = await this.commandBus.execute(cmd);
     return new DepartmentResponse(dept);
   }
 }

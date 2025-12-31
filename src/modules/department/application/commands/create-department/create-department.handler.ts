@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { UseCaseException } from 'src/shared/application/exceptions';
 import {
   DEPARTMENT_REPOSITORY,

@@ -25,25 +25,25 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Handle Domain Exceptions
     if (exception instanceof DomainException) {
       status = HttpStatus.BAD_REQUEST;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       errorResponse = this.formatDomainException(exception, request);
     }
     // Handle Application Exceptions
     else if (exception instanceof ApplicationException) {
       status = exception.httpStatus;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       errorResponse = this.formatApplicationException(exception, request);
     }
     // Handle NestJS HttpExceptions
     else if (exception instanceof HttpException) {
       status = exception.getStatus();
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       errorResponse = this.formatHttpException(exception, request);
     }
     // Handle all other errors
     else {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       errorResponse = this.formatUnknownError(exception, request);
     }
 
@@ -81,14 +81,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       method: request.method,
       errorType: exception.errorType,
       message: exception.message,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       ...((exception as any).validationErrors && {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         validationErrors: (exception as any).validationErrors,
       }),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
       ...((exception as any).details && {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         details: (exception as any).details,
       }),
     };
@@ -104,9 +102,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       method: request.method,
       errorType: 'HTTP_ERROR',
       statusCode: exception.getStatus(),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       message:
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         typeof response === 'string' ? response : (response as any).message,
       ...(typeof response === 'object' && response),
     };
@@ -136,11 +133,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const context = {
       url: request.url,
       method: request.method,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
       body: request.body,
       params: request.params,
       query: request.query,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+
       user: (request as any).user,
     };
 

@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,

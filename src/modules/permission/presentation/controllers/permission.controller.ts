@@ -6,7 +6,6 @@ import {
   GetPermissionsQuery,
 } from '../../application';
 import { Permissions } from 'src/modules/auth/presentation';
-import { Permission } from '../../domain';
 
 @Controller('permissions')
 export class PermissionController {
@@ -18,7 +17,8 @@ export class PermissionController {
   @Permissions('PERMISSION_VIEW')
   @Get()
   async find(): Promise<PermissionResponse[]> {
-    const result = await this.queryBus.execute(new GetPermissionsQuery());
+    const result: { data: PermissionResponse[]; total: number } =
+      await this.queryBus.execute(new GetPermissionsQuery());
     return result.data.map((p) => new PermissionResponse(p));
   }
 
@@ -27,7 +27,7 @@ export class PermissionController {
     @Body() dto: CreatePermissionRequest,
   ): Promise<PermissionResponse> {
     const cmd = new CreatePermissionCommand(dto.name, dto.description);
-    const permission = await this.commandBus.execute(cmd);
+    const permission: PermissionResponse = await this.commandBus.execute(cmd);
     return new PermissionResponse(permission);
   }
 }

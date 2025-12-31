@@ -218,9 +218,25 @@ export class PrismaBudgetPlanRepository implements IBudgetPlanRepository {
       totalAllocated: 0,
       totalSpent: 0,
       totalRemaining: 0,
-      byDepartment: {} as any,
-      byType: {} as any,
-      byStatus: {} as any,
+      byDepartment: {} as Record<
+        string,
+        {
+          allocated: number;
+          spent: number;
+          remaining: number;
+          utilizationRate: number;
+        }
+      >,
+      byType: {} as Record<
+        BudgetType,
+        {
+          allocated: number;
+          spent: number;
+          remaining: number;
+          planCount: number;
+        }
+      >,
+      byStatus: {} as Record<BudgetStatus, number>,
     };
 
     for (const plan of plans) {

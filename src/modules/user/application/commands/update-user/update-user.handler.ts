@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { UseCaseException } from 'src/shared/application/exceptions';
 import { EntityNotFoundException } from 'src/shared/domain';
 import {

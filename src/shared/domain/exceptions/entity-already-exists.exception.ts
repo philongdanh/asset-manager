@@ -15,7 +15,7 @@ export class EntityAlreadyExistsException extends DomainException {
       {
         entityName,
         field,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
         value,
         suggestion: `Please use a different ${field}`,
         ...additionalDetails,

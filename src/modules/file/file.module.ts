@@ -4,8 +4,8 @@ import { FileService } from './application/services/file.service';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-    imports: [AuthModule],
-    controllers: [FileController],
-    providers: [FileService],
+  imports: [AuthModule],
+  controllers: [FileController],
+  providers: [FileService],
 })
-export class FileModule { }
+export class FileModule {}

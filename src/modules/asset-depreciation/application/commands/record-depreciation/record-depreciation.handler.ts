@@ -5,7 +5,6 @@ import {
   ASSET_DEPRECIATION_REPOSITORY,
   type IAssetDepreciationRepository,
   AssetDepreciation,
-  DepreciationMethod,
 } from 'src/modules/asset-depreciation/domain';
 import {
   ASSET_REPOSITORY,

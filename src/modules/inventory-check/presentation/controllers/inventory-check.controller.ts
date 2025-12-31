@@ -62,7 +62,7 @@ export class InventoryCheckController {
   @Post()
   async create(
     @Body() dto: CreateInventoryCheckRequest,
-    @Request() req: any,
+    @Request() req: { user: { id: string } },
   ): Promise<InventoryCheckResponse> {
     const cmd = new CreateInventoryCheckCommand(
       dto.organizationId,

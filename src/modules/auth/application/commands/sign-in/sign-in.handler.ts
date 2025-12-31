@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UseCaseException } from 'src/shared/application/exceptions';

@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { type IUserRepository, USER_REPOSITORY, User } from '../../../domain';
 import { GetUsersQuery } from './get-users.query';
 

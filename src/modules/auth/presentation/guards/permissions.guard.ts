@@ -6,7 +6,7 @@ import { PERMISSIONS_KEY, IS_PUBLIC_KEY } from '../decorators';
 export class PermissionsGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -25,7 +25,9 @@ export class PermissionsGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<{
+      user?: { permissions?: string[] };
+    }>();
     const user = request.user;
 
     if (!user || !user.permissions) {

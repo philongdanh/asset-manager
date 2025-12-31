@@ -321,7 +321,7 @@ export class PrismaAssetTransferRepository implements IAssetTransferRepository {
     `;
 
     return raws.map((r) => ({
-      date: new Date(r.date).toISOString().split('T')[0],
+      date: new Date(r.date as string).toISOString().split('T')[0],
       count: Number(r.count),
       completed: Number(r.completed),
       pending: Number(r.pending),

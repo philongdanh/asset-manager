@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CreateRoleCommand } from './create-role.command';
 import { ROLE_REPOSITORY, type IRoleRepository, Role } from '../../../domain';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';

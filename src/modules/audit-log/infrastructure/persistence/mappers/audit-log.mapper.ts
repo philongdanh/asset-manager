@@ -17,8 +17,12 @@ export class AuditLogMapper {
     );
 
     builder.withChanges(
-      raw.oldValue ? JSON.parse(raw.oldValue) : null,
-      raw.newValue ? JSON.parse(raw.newValue) : null,
+      raw.oldValue
+        ? (JSON.parse(raw.oldValue) as Record<string, unknown>)
+        : null,
+      raw.newValue
+        ? (JSON.parse(raw.newValue) as Record<string, unknown>)
+        : null,
     );
     builder.withIpAddress(raw.ipAddress);
     builder.withActionTime(raw.actionTime);
