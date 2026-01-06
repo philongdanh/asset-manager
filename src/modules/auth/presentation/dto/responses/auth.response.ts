@@ -11,7 +11,7 @@ export class UserDto {
   email: string;
 
   @Expose({ name: 'organization_id' })
-  organizationId: string;
+  organizationId: string | null;
 
   @Expose({ name: 'department_id' })
   departmentId: string | null;

@@ -7,7 +7,7 @@ import { PrismaService } from 'src/shared/infrastructure/prisma';
 
 @Injectable()
 export class PrismaUserRepository implements IUserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   // --- Query Methods ---
   async findById(id: string): Promise<User | null> {
@@ -64,7 +64,10 @@ export class PrismaUserRepository implements IUserRepository {
       const user = await this.prisma.user.findFirst({
         where: {
           username,
-          organizationId: null,
+          OR: [
+            { organizationId: null },
+            { isRoot: true },
+          ],
           deletedAt: null, // Good practice to include deletedAt check finding by non-unique
         },
         include: {
@@ -424,10 +427,10 @@ export class PrismaUserRepository implements IUserRepository {
       // Add new roles if any
       ...(roleIds.length > 0
         ? [
-            this.prisma.userRole.createMany({
-              data: roleIds.map((roleId) => ({ userId, roleId })),
-            }),
-          ]
+          this.prisma.userRole.createMany({
+            data: roleIds.map((roleId) => ({ userId, roleId })),
+          }),
+        ]
         : []),
     ]);
   }

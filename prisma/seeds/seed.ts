@@ -187,7 +187,11 @@ async function main() {
   const hashedPassword = await bcrypt.hash('123456', await bcrypt.genSalt(10));
   const rootUser = await prisma.user.upsert({
     where: { email: 'root@system.local' },
-    update: {},
+    update: {
+      isRoot: true,
+      organizationId: null,
+      password: hashedPassword, // Ensure password is also reset if needed
+    },
     create: {
       id: rootUserId,
       organizationId: null, // Root admin has no organization
@@ -234,7 +238,12 @@ async function main() {
   // 7. Create default department
   const defaultDeptId = randomUUID();
   await prisma.department.upsert({
-    where: { id: defaultDeptId },
+    where: {
+      organizationId_name: {
+        organizationId: org.id,
+        name: 'Quản trị hệ thống',
+      },
+    },
     update: {},
     create: {
       id: defaultDeptId,
