@@ -10,12 +10,12 @@ import { CreateOrganizationCommand } from './create-organization.command';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(CreateOrganizationCommand)
-export class CreateOrganizationHandler implements ICommandHandler<CreateOrganizationCommand> {
+export class CreateOrganizationHandler implements ICommandHandler<CreateOrganizationCommand, Organization> {
   constructor(
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepo: IOrganizationRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: CreateOrganizationCommand): Promise<Organization> {
     const id = this.idGenerator.generate();

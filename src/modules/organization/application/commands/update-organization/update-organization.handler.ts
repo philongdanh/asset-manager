@@ -14,7 +14,7 @@ export class UpdateOrganizationHandler implements ICommandHandler<UpdateOrganiza
   constructor(
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepo: IOrganizationRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: UpdateOrganizationCommand): Promise<Organization> {
     const org = await this.orgRepo.findById(cmd.id);

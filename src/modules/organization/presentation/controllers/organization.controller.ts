@@ -12,7 +12,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Permissions, Public } from '../../../auth/presentation/decorators';
+import { CurrentUser, Permissions, Public } from '../../../auth/presentation/decorators';
+import type { JwtPayload } from '../../../auth/presentation/interfaces/jwt-payload.interface';
 import {
   CreateOrganizationCommand,
   UpdateOrganizationCommand,
@@ -35,13 +36,14 @@ export class OrganizationController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ORGANIZATION_CREATE')
   @Post()
   async create(
     @Body() dto: CreateOrganizationRequest,
+    @CurrentUser() user: JwtPayload,
   ): Promise<OrganizationResponse> {
     const cmd = new CreateOrganizationCommand(
       dto.name,
@@ -53,7 +55,10 @@ export class OrganizationController {
       dto.address || null,
       dto.logoUrl || null,
     );
-    const org: Organization = await this.commandBus.execute(cmd);
+    // Example usage of user
+    console.log('User creating organization:', user);
+
+    const org = await this.commandBus.execute<CreateOrganizationCommand, Organization>(cmd);
     return new OrganizationResponse(org);
   }
 
@@ -85,6 +90,7 @@ export class OrganizationController {
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateOrganizationRequest,
+    @CurrentUser() user: JwtPayload,
   ): Promise<OrganizationResponse> {
     const cmd = new UpdateOrganizationCommand(
       id,
@@ -97,6 +103,9 @@ export class OrganizationController {
       dto.address,
       dto.logoUrl,
     );
+    // Example usage of user
+    console.log('User updating organization:', user);
+
     const org: Organization = await this.commandBus.execute(cmd);
     return new OrganizationResponse(org);
   }
