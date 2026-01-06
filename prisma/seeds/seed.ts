@@ -1,8 +1,11 @@
 import 'dotenv/config';
-import * as bcrypt from 'bcrypt';
-import { PrismaClient } from 'generated/prisma/client'; // Adjust path if necessary
+import { PrismaClient } from 'generated/prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { randomUUID } from 'crypto';
+import { seedOrganizations } from './organizations';
+import { seedPermissions } from './permissions';
+import { seedRoles } from './roles';
+import { seedUsers } from './users';
+import { seedDepartments } from './departments';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -10,248 +13,20 @@ const prisma = new PrismaClient({ adapter });
 async function main() {
   console.log('--- Start Seeding ---');
 
-  // 1. Create Organization with UUID
-  const orgId = '550e8400-e29b-41d4-a716-446655440000'; // Fixed UUID for consistency
-  const org = await prisma.organization.upsert({
-    where: { id: orgId },
-    update: {},
-    create: {
-      id: orgId,
-      orgName: 'demo',
-      status: 'ACTIVE',
-      email: 'admin@demo.com',
-    },
-  });
-  console.log(`Created Organization: ${org.orgName}`);
+  // 1. Create Organization
+  const org = await seedOrganizations(prisma);
 
-  // 2. Create System Permissions for all resources
-  const resourcePermissions = [
-    // Organization permissions
-    { name: 'ORGANIZATION_VIEW', description: 'View organization details' },
-    { name: 'ORGANIZATION_CREATE', description: 'Create organization' },
-    { name: 'ORGANIZATION_UPDATE', description: 'Update organization' },
-    { name: 'ORGANIZATION_DELETE', description: 'Delete organization' },
+  // 2. Create Permissions
+  const permissions = await seedPermissions(prisma);
 
-    // Department permissions
-    { name: 'DEPARTMENT_VIEW', description: 'View departments' },
-    { name: 'DEPARTMENT_CREATE', description: 'Create department' },
-    { name: 'DEPARTMENT_UPDATE', description: 'Update department' },
-    { name: 'DEPARTMENT_DELETE', description: 'Delete department' },
+  // 3. Create Key Roles (and link permissions)
+  const adminRole = await seedRoles(prisma, org.id, permissions);
 
-    // User permissions
-    { name: 'USER_VIEW', description: 'View users' },
-    { name: 'USER_CREATE', description: 'Create user' },
-    { name: 'USER_UPDATE', description: 'Update user' },
-    { name: 'USER_DELETE', description: 'Delete user' },
+  // 4. Create Users (Root & Store Admin)
+  await seedUsers(prisma, org.id, adminRole.id);
 
-    // Asset Category permissions
-    { name: 'ASSET_CATEGORY_VIEW', description: 'View asset categories' },
-    { name: 'ASSET_CATEGORY_CREATE', description: 'Create asset category' },
-    { name: 'ASSET_CATEGORY_UPDATE', description: 'Update asset category' },
-    { name: 'ASSET_CATEGORY_DELETE', description: 'Delete asset category' },
-
-    // Asset permissions
-    { name: 'ASSET_VIEW', description: 'View assets' },
-    { name: 'ASSET_CREATE', description: 'Create asset' },
-    { name: 'ASSET_UPDATE', description: 'Update asset' },
-    { name: 'ASSET_DELETE', description: 'Delete asset' },
-
-    // Asset Depreciation permissions
-    { name: 'DEPRECIATION_VIEW', description: 'View depreciations' },
-    { name: 'DEPRECIATION_CREATE', description: 'Create depreciation' },
-    { name: 'DEPRECIATION_UPDATE', description: 'Update depreciation' },
-    { name: 'DEPRECIATION_DELETE', description: 'Delete depreciation' },
-
-    // Maintenance Schedule permissions
-    { name: 'MAINTENANCE_VIEW', description: 'View maintenance schedules' },
-    { name: 'MAINTENANCE_CREATE', description: 'Create maintenance schedule' },
-    { name: 'MAINTENANCE_UPDATE', description: 'Update maintenance schedule' },
-    { name: 'MAINTENANCE_DELETE', description: 'Delete maintenance schedule' },
-
-    // Asset Transfer permissions
-    { name: 'TRANSFER_VIEW', description: 'View asset transfers' },
-    { name: 'TRANSFER_CREATE', description: 'Create asset transfer' },
-    { name: 'TRANSFER_UPDATE', description: 'Update asset transfer' },
-    { name: 'TRANSFER_DELETE', description: 'Delete asset transfer' },
-    { name: 'TRANSFER_APPROVE', description: 'Approve asset transfer' },
-
-    // Asset Disposal permissions
-    { name: 'DISPOSAL_VIEW', description: 'View asset disposals' },
-    { name: 'DISPOSAL_CREATE', description: 'Create asset disposal' },
-    { name: 'DISPOSAL_UPDATE', description: 'Update asset disposal' },
-    { name: 'DISPOSAL_DELETE', description: 'Delete asset disposal' },
-    { name: 'DISPOSAL_APPROVE', description: 'Approve asset disposal' },
-
-    // Asset Document permissions
-    { name: 'DOCUMENT_VIEW', description: 'View asset documents' },
-    { name: 'DOCUMENT_CREATE', description: 'Create asset document' },
-    { name: 'DOCUMENT_UPDATE', description: 'Update asset document' },
-    { name: 'DOCUMENT_DELETE', description: 'Delete asset document' },
-
-    // Inventory Check permissions
-    { name: 'INVENTORY_VIEW', description: 'View inventory checks' },
-    { name: 'INVENTORY_CREATE', description: 'Create inventory check' },
-    { name: 'INVENTORY_UPDATE', description: 'Update inventory check' },
-    { name: 'INVENTORY_DELETE', description: 'Delete inventory check' },
-
-    // Inventory Detail permissions
-    { name: 'INVENTORY_DETAIL_VIEW', description: 'View inventory details' },
-    { name: 'INVENTORY_DETAIL_CREATE', description: 'Create inventory detail' },
-    { name: 'INVENTORY_DETAIL_UPDATE', description: 'Update inventory detail' },
-    { name: 'INVENTORY_DETAIL_DELETE', description: 'Delete inventory detail' },
-
-    // Audit Log permissions
-    { name: 'AUDIT_LOG_VIEW', description: 'View audit logs' },
-
-    // Accounting Entry permissions
-    { name: 'ACCOUNTING_VIEW', description: 'View accounting entries' },
-    { name: 'ACCOUNTING_CREATE', description: 'Create accounting entry' },
-    { name: 'ACCOUNTING_UPDATE', description: 'Update accounting entry' },
-    { name: 'ACCOUNTING_DELETE', description: 'Delete accounting entry' },
-
-    // Budget Plan permissions
-    { name: 'BUDGET_VIEW', description: 'View budget plans' },
-    { name: 'BUDGET_CREATE', description: 'Create budget plan' },
-    { name: 'BUDGET_UPDATE', description: 'Update budget plan' },
-    { name: 'BUDGET_DELETE', description: 'Delete budget plan' },
-
-    // Role permissions
-    { name: 'ROLE_VIEW', description: 'View roles' },
-    { name: 'ROLE_CREATE', description: 'Create role' },
-    { name: 'ROLE_UPDATE', description: 'Update role' },
-    { name: 'ROLE_DELETE', description: 'Delete role' },
-
-    // Permission management
-    { name: 'PERMISSION_VIEW', description: 'View permissions' },
-
-    // System permissions
-    { name: 'SYSTEM_SETTINGS', description: 'Manage system settings' },
-    { name: 'REPORT_VIEW', description: 'View all reports' },
-    { name: 'DASHBOARD_VIEW', description: 'View dashboard' },
-  ];
-
-  const permissions = await Promise.all(
-    resourcePermissions.map((p) =>
-      prisma.permission.upsert({
-        where: { name: p.name },
-        update: {},
-        create: {
-          id: randomUUID(),
-          name: p.name,
-          description: p.description,
-        },
-      }),
-    ),
-  );
-  console.log(`Seeded ${permissions.length} permissions.`);
-
-  // 3. Create Admin Role for this Organization
-  const adminRoleId = randomUUID();
-  const adminRole = await prisma.role.upsert({
-    where: {
-      organizationId_roleName: {
-        organizationId: org.id,
-        roleName: 'SUPER_ADMIN',
-      },
-    },
-    update: {},
-    create: {
-      id: adminRoleId,
-      organizationId: org.id,
-      roleName: 'SUPER_ADMIN',
-    },
-  });
-  console.log(`Created Role: ${adminRole.roleName}`);
-
-  // 4. Link all permissions to Admin Role
-  await Promise.all(
-    permissions.map((p) =>
-      prisma.rolePermission.upsert({
-        where: {
-          roleId_permissionId: {
-            roleId: adminRole.id,
-            permissionId: p.id,
-          },
-        },
-        update: {},
-        create: {
-          roleId: adminRole.id,
-          permissionId: p.id,
-        },
-      }),
-    ),
-  );
-
-  // 5. Create Root User (No Organization)
-  const rootUserId = randomUUID();
-  const hashedPassword = await bcrypt.hash('123456', await bcrypt.genSalt(10));
-  const rootUser = await prisma.user.upsert({
-    where: { email: 'root@system.local' },
-    update: {
-      isRoot: true,
-      organizationId: null,
-      password: hashedPassword, // Ensure password is also reset if needed
-    },
-    create: {
-      id: rootUserId,
-      organizationId: null, // Root admin has no organization
-      username: 'root_admin',
-      password: hashedPassword,
-      email: 'root@system.local',
-      status: 'ACTIVE',
-      isRoot: true,
-    },
-  });
-  console.log(`Created Root User: ${rootUser.username} (No Org)`);
-
-  // 6. Create Demo Admin User (For Demo Organization)
-  const demoAdminId = randomUUID();
-  const demoAdminUser = await prisma.user.upsert({
-    where: { email: 'admin@demo.local' },
-    update: {},
-    create: {
-      id: demoAdminId,
-      organizationId: org.id,
-      username: 'demo_admin',
-      password: hashedPassword,
-      email: 'admin@demo.local',
-      status: 'ACTIVE',
-    },
-  });
-  console.log(`Created Demo Admin User: ${demoAdminUser.username}`);
-
-  // 7. Assign Admin Role to Demo Admin User
-  await prisma.userRole.upsert({
-    where: {
-      userId_roleId: {
-        userId: demoAdminUser.id,
-        roleId: adminRole.id,
-      },
-    },
-    update: {},
-    create: {
-      userId: demoAdminUser.id,
-      roleId: adminRole.id,
-    },
-  });
-
-  // 7. Create default department
-  const defaultDeptId = randomUUID();
-  await prisma.department.upsert({
-    where: {
-      organizationId_name: {
-        organizationId: org.id,
-        name: 'Quản trị hệ thống',
-      },
-    },
-    update: {},
-    create: {
-      id: defaultDeptId,
-      organizationId: org.id,
-      name: 'Quản trị hệ thống',
-    },
-  });
-  console.log('Created default department');
+  // 5. Create Departments
+  await seedDepartments(prisma, org.id);
 
   console.log('--- Seeding Completed Successfully ---');
 }
