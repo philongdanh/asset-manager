@@ -10,17 +10,27 @@ import {
   type IPermissionRepository,
 } from 'src/modules/permission/domain';
 
+export class RefreshTokenCommandResult {
+  accessToken: string;
+  refreshToken: string;
+}
+
 @CommandHandler(RefreshTokenCommand)
-export class RefreshTokenHandler implements ICommandHandler<RefreshTokenCommand> {
+export class RefreshTokenHandler implements ICommandHandler<
+  RefreshTokenCommand,
+  RefreshTokenCommandResult
+> {
   constructor(
     private readonly jwtService: JwtService,
     @Inject(USER_REPOSITORY) private readonly userRepo: IUserRepository,
     @Inject(ROLE_REPOSITORY) private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) { }
+  ) {}
 
-  async execute(command: RefreshTokenCommand) {
+  async execute(
+    command: RefreshTokenCommand,
+  ): Promise<RefreshTokenCommandResult> {
     const { refreshToken } = command;
     let userId: string;
 

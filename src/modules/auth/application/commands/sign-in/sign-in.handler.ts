@@ -11,8 +11,28 @@ import {
   PERMISSION_REPOSITORY,
 } from 'src/modules/permission/domain';
 
+export class SignInCommandResult {
+  accessToken: string;
+  refreshToken: string;
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    organizationId: string | null;
+    departmentId: string | null;
+    status: string;
+    roles: string[];
+    permissions: string[];
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
+  };
+}
+
 @CommandHandler(SignInCommand)
-export class SignInHandler implements ICommandHandler<SignInCommand> {
+export class SignInHandler implements ICommandHandler<
+  SignInCommand,
+  SignInCommandResult
+> {
   constructor(
     private readonly jwtService: JwtService,
     @Inject(USER_REPOSITORY)
@@ -21,11 +41,11 @@ export class SignInHandler implements ICommandHandler<SignInCommand> {
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) { }
+  ) {}
 
-  async execute(cmd: SignInCommand) {
+  async execute(cmd: SignInCommand): Promise<SignInCommandResult> {
     const user = await this.userRepo.findByUsername(
-      cmd.orgId || null,
+      cmd.organizationId || null,
       cmd.username,
     );
     if (!user) {

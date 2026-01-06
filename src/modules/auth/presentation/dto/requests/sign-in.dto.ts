@@ -1,11 +1,11 @@
 import { Expose } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, ValidateIf, IsString } from 'class-validator';
 
 export class SignInDto {
   @Expose({ name: 'organization_id' })
-  @IsOptional()
+  @ValidateIf((_, value) => value !== null)
   @IsString()
-  organizationId?: string;
+  organizationId: string | null;
 
   @Expose()
   @IsNotEmpty()

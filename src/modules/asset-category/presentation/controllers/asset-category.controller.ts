@@ -40,7 +40,7 @@ export class AssetCategoryController {
     private readonly deleteHandler: DeleteAssetCategoryHandler,
     private readonly getListHandler: GetAssetCategoriesHandler,
     private readonly getDetailsHandler: GetAssetCategoryDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CATEGORY_CREATE')

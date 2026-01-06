@@ -2,12 +2,17 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { SignInDto, RefreshTokenDto } from '../dto';
 import { AuthResponse, TokenResponse } from '../dto/responses';
-import { SignInCommand, RefreshTokenCommand } from '../../application';
+import {
+  SignInCommand,
+  RefreshTokenCommand,
+  SignInCommandResult,
+  RefreshTokenCommandResult,
+} from '../../application';
 import { Public } from '../decorators';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) { }
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Public()
   @Post('login')
@@ -19,10 +24,13 @@ export class AuthController {
       dto.password,
     );
 
-    const result: any = await this.commandBus.execute(cmd);
+    const result = await this.commandBus.execute<
+      SignInCommand,
+      SignInCommandResult
+    >(cmd);
     return new AuthResponse(
-      result.accessToken as string,
-      result.refreshToken as string,
+      result.accessToken,
+      result.refreshToken,
       result.user,
     );
   }
@@ -33,10 +41,10 @@ export class AuthController {
   async refresh(@Body() dto: RefreshTokenDto): Promise<TokenResponse> {
     const cmd = new RefreshTokenCommand(dto.refreshToken);
 
-    const result: any = await this.commandBus.execute(cmd);
-    return new TokenResponse(
-      result.accessToken as string,
-      result.refreshToken as string,
-    );
+    const result = await this.commandBus.execute<
+      RefreshTokenCommand,
+      RefreshTokenCommandResult
+    >(cmd);
+    return new TokenResponse(result.accessToken, result.refreshToken);
   }
 }
