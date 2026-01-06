@@ -12,13 +12,23 @@ export class UpdateAssetCategoryHandler {
   constructor(
     @Inject(ASSET_CATEGORY_REPOSITORY)
     private readonly assetCategoryRepo: IAssetCategoryRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: UpdateAssetCategoryCommand): Promise<AssetCategory> {
     const category = await this.assetCategoryRepo.findById(cmd.categoryId);
     if (!category) {
       throw new UseCaseException(
         `Asset category with id ${cmd.categoryId} not found`,
+        UpdateAssetCategoryCommand.name,
+      );
+    }
+
+    if (
+      cmd.organizationId &&
+      category.organizationId !== cmd.organizationId
+    ) {
+      throw new UseCaseException(
+        `You do not have permission to update this asset category`,
         UpdateAssetCategoryCommand.name,
       );
     }

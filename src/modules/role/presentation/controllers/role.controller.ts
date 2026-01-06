@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
@@ -25,7 +26,8 @@ import {
   GetRolesQuery,
   GetRoleDetailsQuery,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 import { Role } from '../../domain';
 
 @Controller('roles')
@@ -33,7 +35,7 @@ export class RoleController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @Permissions('ROLE_VIEW')
   @Get()
@@ -61,7 +63,21 @@ export class RoleController {
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ROLE_CREATE')
   @Post()
-  async create(@Body() dto: CreateRoleRequest): Promise<RoleResponse> {
+  async create(
+    @CurrentUser() user: JwtPayload,
+    @Body() dto: CreateRoleRequest,
+  ): Promise<RoleResponse> {
+    if (user.isRoot) {
+      if (!dto.organizationId) {
+        throw new BadRequestException('Organization ID is required for root users');
+      }
+    } else {
+      if (!user.organizationId) {
+        throw new BadRequestException('User does not belong to any organization');
+      }
+      dto.organizationId = user.organizationId;
+    }
+
     const cmd = new CreateRoleCommand(
       dto.organizationId,
       dto.name,

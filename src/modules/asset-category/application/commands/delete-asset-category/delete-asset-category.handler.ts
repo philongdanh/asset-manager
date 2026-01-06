@@ -11,12 +11,22 @@ export class DeleteAssetCategoryHandler {
   constructor(
     @Inject(ASSET_CATEGORY_REPOSITORY)
     private readonly assetCategoryRepo: IAssetCategoryRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: DeleteAssetCategoryCommand): Promise<void> {
     const category = await this.assetCategoryRepo.findById(cmd.categoryId);
     if (!category) {
       return;
+    }
+
+    if (
+      cmd.organizationId &&
+      category.organizationId !== cmd.organizationId
+    ) {
+      throw new UseCaseException(
+        `You do not have permission to delete this asset category`,
+        DeleteAssetCategoryCommand.name,
+      );
     }
 
     const hasDependencies = await this.assetCategoryRepo.hasDependencies(

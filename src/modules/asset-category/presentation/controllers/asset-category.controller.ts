@@ -23,7 +23,8 @@ import {
   GetAssetCategoriesHandler,
   GetAssetCategoryDetailsHandler,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { Permissions, CurrentUser } from 'src/modules/auth/presentation';
+import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 import {
   AssetCategoryResponse,
   CreateAssetCategoryRequest,
@@ -40,16 +41,17 @@ export class AssetCategoryController {
     private readonly deleteHandler: DeleteAssetCategoryHandler,
     private readonly getListHandler: GetAssetCategoriesHandler,
     private readonly getDetailsHandler: GetAssetCategoryDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CATEGORY_CREATE')
   @Post()
   async create(
     @Body() dto: CreateAssetCategoryRequest,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetCategoryResponse> {
     const cmd = new CreateAssetCategoryCommand(
-      dto.organizationId,
+      user.organizationId ?? dto.organizationId,
       dto.code,
       dto.categoryName,
       dto.parentId || null,
@@ -63,9 +65,11 @@ export class AssetCategoryController {
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateAssetCategoryRequest,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetCategoryResponse> {
     const cmd = new UpdateAssetCategoryCommand(
       id,
+      user.organizationId,
       dto.categoryName,
       dto.code,
       dto.parentId || null,
@@ -79,8 +83,9 @@ export class AssetCategoryController {
   @Delete(':id')
   async delete(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<void> {
-    const cmd = new DeleteAssetCategoryCommand(id);
+    const cmd = new DeleteAssetCategoryCommand(id, user.organizationId);
     await this.deleteHandler.execute(cmd);
   }
 
@@ -88,9 +93,10 @@ export class AssetCategoryController {
   @Get()
   async getList(
     @Query() query: GetAssetCategoriesRequest,
+    @CurrentUser() user: JwtPayload,
   ): Promise<{ data: AssetCategoryResponse[]; total: number }> {
     const q: GetAssetCategoriesQuery = {
-      organizationId: query.organizationId || '',
+      organizationId: (user.organizationId ?? query.organizationId) || '',
       options: {
         limit: query.limit,
         offset: query.offset,

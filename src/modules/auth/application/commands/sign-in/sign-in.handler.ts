@@ -41,7 +41,7 @@ export class SignInHandler implements ICommandHandler<
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: SignInCommand): Promise<SignInCommandResult> {
     const user = await this.userRepo.findByUsername(
@@ -78,6 +78,7 @@ export class SignInHandler implements ICommandHandler<
       user.username,
       user.isRoot,
       permissionNames,
+      user.organizationId,
     );
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
@@ -113,30 +114,22 @@ export class SignInHandler implements ICommandHandler<
     username: string,
     isRoot: boolean,
     permissions: string[],
+    organizationId: string | null,
   ) {
+    const payload = {
+      id: userId,
+      username,
+      organizationId,
+      permissions,
+      isRoot,
+    };
     const [at, rt] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          id: userId,
-          username,
-          permissions,
-          isRoot,
-        },
-        {
-          expiresIn: '24h',
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          id: userId,
-          username,
-          isRoot,
-          permissions,
-        },
-        {
-          expiresIn: '30d',
-        },
-      ),
+      this.jwtService.signAsync(payload, {
+        expiresIn: '24h',
+      }),
+      this.jwtService.signAsync(payload, {
+        expiresIn: '30d',
+      }),
     ]);
 
     return {
