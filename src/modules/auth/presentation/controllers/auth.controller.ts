@@ -7,14 +7,14 @@ import { Public } from '../decorators';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly commandBus: CommandBus) { }
 
   @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() dto: SignInDto): Promise<AuthResponse> {
     const cmd = new SignInCommand(
-      dto.organizationId,
+      dto.organizationId || null,
       dto.username,
       dto.password,
     );
