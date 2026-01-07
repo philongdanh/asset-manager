@@ -25,6 +25,7 @@ import { GetAssetsHandler } from '../../application/queries/get-assets/get-asset
 import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
 import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 import { Asset } from '../../domain';
+import { AssetResult } from '../../application/dtos/asset.result';
 import {
   AssetResponse,
   CreateAssetRequest,
@@ -125,9 +126,17 @@ export class AssetController {
   @Get()
   async getList(
     @Query() query: GetAssetsRequest,
-    @Query('organizationId') organizationId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<{ data: AssetResponse[]; total: number }> {
-    const q: GetAssetsQuery = {
+    const organizationId = user.isRoot ? query.organizationId : user.organizationId;
+
+    if (!organizationId) {
+      if (!user.isRoot && !user.organizationId) {
+        throw new BadRequestException('Current user is not assigned to any organization');
+      }
+    }
+
+    const result = await this.getListHandler.execute({
       organizationId: organizationId || '',
       options: {
         status: query.status,
@@ -139,9 +148,7 @@ export class AssetController {
         offset: query.offset,
         includeDeleted: query.includeDeleted,
       },
-    };
-
-    const result = await this.getListHandler.execute(q);
+    });
     return {
       data: result.data.map((item) => this.toResponse(item)),
       total: result.total,
@@ -152,13 +159,20 @@ export class AssetController {
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetResponse> {
     const query = new GetAssetDetailsQuery(id);
     const result = await this.getDetailsHandler.execute(query);
+
+    if (!user.isRoot && result.asset.organizationId !== user.organizationId) {
+      // Return 404 to avoid leaking existence of asset in other orgs
+      throw new BadRequestException(`Asset with id ${id} not found`); // Or NotFoundException
+    }
+
     return this.toResponse(result);
   }
 
-  private toResponse(asset: Asset): AssetResponse {
-    return new AssetResponse(asset);
+  private toResponse(result: AssetResult | Asset): AssetResponse {
+    return new AssetResponse(result);
   }
 }

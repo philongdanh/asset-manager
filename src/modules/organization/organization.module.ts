@@ -33,5 +33,6 @@ import { CqrsModule } from '@nestjs/cqrs';
     GetOrganizationsHandler,
     GetOrganizationDetailsHandler,
   ],
+  exports: [ORGANIZATION_REPOSITORY],
 })
-export class OrganizationModule {}
+export class OrganizationModule { }

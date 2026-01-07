@@ -4,14 +4,34 @@ import {
   AssetCondition,
   AssetStatus,
 } from '../../../domain/entities/asset.entity';
+import { AssetResult } from '../../../application/dtos/asset.result';
+
+// Inline types for clean serialization
+interface OrganizationInfo {
+  id: string;
+  name: string;
+}
+
+interface CategoryInfo {
+  id: string;
+  code: string;
+  category_name: string;
+  parent_id: string | null;
+}
+
+interface CreatedByUserInfo {
+  id: string;
+  username: string;
+  email: string;
+}
 
 @Exclude()
 export class AssetResponse {
   @Expose()
   id: string;
 
-  @Expose({ name: 'organization_id' })
-  organizationId: string;
+  @Expose()
+  organization: OrganizationInfo | null;
 
   @Expose({ name: 'asset_code' })
   assetCode: string;
@@ -19,11 +39,11 @@ export class AssetResponse {
   @Expose({ name: 'asset_name' })
   assetName: string;
 
-  @Expose({ name: 'category_id' })
-  categoryId: string;
+  @Expose()
+  category: CategoryInfo | null;
 
-  @Expose({ name: 'created_by_user_id' })
-  createdByUserId: string;
+  @Expose({ name: 'created_by_user' })
+  createdByUser: CreatedByUserInfo | null;
 
   @Expose({ name: 'purchase_price' })
   purchasePrice: number;
@@ -76,13 +96,11 @@ export class AssetResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(asset: Asset) {
+  constructor(result: AssetResult | Asset) {
+    const asset = 'asset' in result ? result.asset : result;
     this.id = asset.id;
-    this.organizationId = asset.organizationId;
     this.assetCode = asset.assetCode;
     this.assetName = asset.assetName;
-    this.categoryId = asset.categoryId;
-    this.createdByUserId = asset.createdByUserId;
     this.purchasePrice = asset.purchasePrice;
     this.originalCost = asset.originalCost;
     this.currentValue = asset.currentValue;
@@ -100,5 +118,30 @@ export class AssetResponse {
     this.imageUrl = asset.imageUrl;
     this.createdAt = asset.createdAt!;
     this.updatedAt = asset.updatedAt!;
+
+    if ('asset' in result) {
+      this.organization = result.organization
+        ? { id: result.organization.id, name: result.organization.name }
+        : null;
+      this.category = result.category
+        ? {
+          id: result.category.id,
+          code: result.category.code,
+          category_name: result.category.categoryName,
+          parent_id: result.category.parentId,
+        }
+        : null;
+      this.createdByUser = result.createdByUser
+        ? {
+          id: result.createdByUser.id,
+          username: result.createdByUser.username,
+          email: result.createdByUser.email,
+        }
+        : null;
+    } else {
+      this.organization = null;
+      this.category = null;
+      this.createdByUser = null;
+    }
   }
 }

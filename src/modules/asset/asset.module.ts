@@ -10,8 +10,12 @@ import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
 import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { PrismaAssetRepository } from './infrastructure/persistence/repositories/prisma-asset.repository';
 import { AssetController } from './presentation';
+import { OrganizationModule } from '../organization/organization.module';
+import { UserModule } from '../user/user.module';
+import { AssetCategoryModule } from '../asset-category/asset-category.module';
 
 @Module({
+  imports: [OrganizationModule, UserModule, AssetCategoryModule],
   controllers: [AssetController],
   providers: [
     PrismaService,
@@ -30,4 +34,4 @@ import { AssetController } from './presentation';
     GetAssetDetailsHandler,
   ],
 })
-export class AssetModule {}
+export class AssetModule { }

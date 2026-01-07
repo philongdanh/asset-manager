@@ -25,6 +25,11 @@ export class GetAssetsRequest {
   @IsOptional()
   departmentId?: string;
 
+  @Expose({ name: 'organization_id' })
+  @IsUUID('4')
+  @IsOptional()
+  organizationId?: string;
+
   @Expose({ name: 'user_id' })
   @IsUUID('4')
   @IsOptional()

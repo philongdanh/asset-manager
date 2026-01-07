@@ -11,7 +11,7 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaAssetRepository implements IAssetRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findByStatus(
     organizationId: string,
@@ -182,16 +182,12 @@ export class PrismaAssetRepository implements IAssetRepository {
   ): Promise<{ data: Asset[]; total: number }> {
     const where: Prisma.AssetWhereInput = {
       organizationId,
+      deletedAt: options?.includeDeleted == false ? null : undefined,
+      status: options?.status,
+      categoryId: options?.categoryId,
+      currentDepartmentId: options?.departmentId,
+      currentUserId: options?.userId,
     };
-
-    if (!options?.includeDeleted) {
-      where.deletedAt = null;
-    }
-
-    if (options?.status) where.status = options.status;
-    if (options?.categoryId) where.categoryId = options.categoryId;
-    if (options?.departmentId) where.currentDepartmentId = options.departmentId;
-    if (options?.userId) where.currentUserId = options.userId;
 
     if (options?.search) {
       where.OR = [
