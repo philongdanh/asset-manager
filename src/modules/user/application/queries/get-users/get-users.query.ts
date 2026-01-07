@@ -2,7 +2,7 @@ import { UserStatus } from '../../../domain';
 
 export class GetUsersQuery {
   constructor(
-    public readonly organizationId: string,
+    public readonly organizationId: string | null,
     public readonly options?: {
       departmentId?: string;
       status?: UserStatus;
@@ -12,5 +12,5 @@ export class GetUsersQuery {
       offset?: number;
       includeDeleted?: boolean;
     },
-  ) {}
+  ) { }
 }

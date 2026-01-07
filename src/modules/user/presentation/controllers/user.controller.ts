@@ -21,7 +21,7 @@ import {
   GetUsersQuery,
   GetUserDetailsQuery,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
 import { User } from '../../domain';
 import {
   CreateUserRequest,
@@ -29,6 +29,7 @@ import {
   UpdateUserRequest,
   UserResponse,
 } from '../dto';
+import { type JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 
 @Controller('users')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -36,7 +37,7 @@ export class UserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('USER_CREATE')
@@ -57,9 +58,10 @@ export class UserController {
   @Permissions('USER_VIEW')
   @Get()
   async getList(
+    @CurrentUser() user: JwtPayload,
     @Query() query: GetUsersRequest,
   ): Promise<{ data: UserResponse[]; total: number }> {
-    const qry = new GetUsersQuery('', {
+    const qry = new GetUsersQuery(user.organizationId, {
       // TODO: extract organizationId from context
       departmentId: query.departmentId,
       status: query.status,

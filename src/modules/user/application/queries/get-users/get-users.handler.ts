@@ -9,11 +9,14 @@ export class GetUsersHandler implements IQueryHandler<GetUsersQuery> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(
     query: GetUsersQuery,
   ): Promise<{ data: User[]; total: number }> {
+    if (!query.organizationId) {
+      throw new Error('Organization ID is required');
+    }
     return await this.userRepo.find(query.organizationId, query.options);
   }
 }
