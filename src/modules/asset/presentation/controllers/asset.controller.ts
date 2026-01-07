@@ -19,7 +19,6 @@ import { CreateAssetHandler } from '../../application/commands/create-asset/crea
 import { DeleteAssetHandler } from '../../application/commands/delete-asset/delete-asset.handler';
 import { UpdateAssetHandler } from '../../application/commands/update-asset/update-asset.handler';
 import { GetAssetDetailsQuery } from '../../application/queries/get-asset-details/get-asset-details.query';
-import { GetAssetsQuery } from '../../application/queries/get-assets/get-assets.query';
 import { GetAssetDetailsHandler } from '../../application/queries/get-asset-details/get-asset-details.handler';
 import { GetAssetsHandler } from '../../application/queries/get-assets/get-assets.handler';
 import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
@@ -40,7 +39,7 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')

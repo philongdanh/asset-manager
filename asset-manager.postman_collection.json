@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "c3d8a962-39f8-4f72-b650-12d75716f8d4",
+		"_postman_id": "0dc3caf0-ec4e-44dd-822d-cd9e3a070bdd",
 		"name": "Asset Manager API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "45918773",
-		"_collection_link": "https://longgggwww.postman.co/workspace/6c6cfce9-3003-403a-885c-0dac3fb12b04/collection/45918773-c3d8a962-39f8-4f72-b650-12d75716f8d4?action=share&source=collection_link&creator=45918773"
+		"_collection_link": "https://longgggwww.postman.co/workspace/%E5%B0%8F%E9%BE%99~6c6cfce9-3003-403a-885c-0dac3fb12b04/collection/45918773-0dc3caf0-ec4e-44dd-822d-cd9e3a070bdd?action=share&source=collection_link&creator=45918773"
 	},
 	"item": [
 		{
@@ -118,7 +118,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"asset_code\": \"AS-001\",\n  \"asset_name\": \"MacBook Pro\",\n  \"category_id\": \"ae3844fc-c230-4991-86f8-87941c362e71\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"model\": \"M3 Max\",\n  \"serial_number\": \"SN123456\",\n  \"manufacturer\": \"Apple\",\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2025-01-01T00:00:00Z\",\n  \"location\": \"Hanoi Office\",\n  \"image_url\": \"https://example.com/file.jpg\",\n  \"specifications\": {\"ram\":\"32GB\", \"storage\":\"1TB\"},\n  \"condition\": \"NEW\",\n  \"status\": \"AVAILABLE\"\n}",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"asset_code\": \"ASSET-2026-001\",\n  \"asset_name\": \"Máy tính Dell Latitude 5520\",\n  \"category_id\": \"ae3844fc-c230-4991-86f8-87941c362e71\",\n  \"purchase_price\": 25000000,\n  \"original_cost\": 25000000,\n  \"current_value\": 20000000,\n  \"model\": \"Latitude 5520\",\n  \"serial_number\": \"SN-DELL-2026-00123\",\n  \"manufacturer\": \"Dell Technologies\",\n  \"purchase_date\": \"2026-01-15T00:00:00Z\",\n  \"warranty_expiry_date\": \"2029-01-15T00:00:00Z\",\n  \"location\": \"Tầng 3 - Phòng IT\",\n  \"image_url\": \"https://example.com/assets/dell-latitude-5520.jpg\",\n  \"specifications\": {\n    \"cpu\": \"Intel Core i7-1165G7\",\n    \"ram\": \"16GB DDR4\",\n    \"storage\": \"512GB SSD\",\n    \"display\": \"15.6 inch FHD\"\n  },\n  \"condition\": \"NEW\",\n  \"status\": \"AVAILABLE\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -144,7 +144,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"asset_name\": \"MacBook Pro Updated\",\n  \"category_id\": \"ae3844fc-c230-4991-86f8-87941c362e71\",\n  \"model\": \"M3 Max\",\n  \"serial_number\": \"SN123456\",\n  \"manufacturer\": \"Apple\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 900,\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2025-01-01T00:00:00Z\",\n  \"condition\": \"GOOD\",\n  \"location\": \"Hanoi Office\",\n  \"specifications\": {\"ram\":\"32GB\"},\n  \"status\": \"IN_USE\",\n  \"image_url\": \"https://example.com/file.jpg\"\n}",
+							"raw": "{\n  \"asset_name\": \"Máy tính Dell Latitude 5520 (Đã nâng cấp)\",\n  \"category_id\": \"ae3844fc-c230-4991-86f8-87941c362e71\",\n  \"model\": \"Latitude 5520\",\n  \"serial_number\": \"SN-DELL-2026-00123\",\n  \"manufacturer\": \"Dell Technologies\",\n  \"purchase_price\": 25000000,\n  \"original_cost\": 25000000,\n  \"current_value\": 18000000,\n  \"purchase_date\": \"2026-01-15T00:00:00Z\",\n  \"warranty_expiry_date\": \"2029-01-15T00:00:00Z\",\n  \"condition\": \"GOOD\",\n  \"location\": \"Tầng 2 - Phòng Kế toán\",\n  \"specifications\": {\n    \"cpu\": \"Intel Core i7-1165G7\",\n    \"ram\": \"32GB DDR4\",\n    \"storage\": \"1TB SSD\"\n  },\n  \"status\": \"IN_USE\",\n  \"image_url\": \"https://example.com/assets/dell-latitude-5520-upgraded.jpg\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -163,7 +163,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "uuid"
+									"value": "ddf902bc-8088-4a83-a270-a807dee2928b"
 								}
 							]
 						}
@@ -200,7 +200,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/assets?organization_id=uuid",
+							"raw": "{{base_url}}/assets",
 							"host": [
 								"{{base_url}}"
 							],
@@ -210,7 +210,8 @@
 							"query": [
 								{
 									"key": "organization_id",
-									"value": "uuid"
+									"value": "uuid",
+									"disabled": true
 								},
 								{
 									"key": "status",
@@ -259,7 +260,7 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "uuid"
+									"value": "ddf902bc-8088-4a83-a270-a807dee2928b"
 								}
 							]
 						}
@@ -278,7 +279,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"entry_type\": \"text\",\n  \"amount\": 1000,\n  \"entry_date\": \"2024-01-01T00:00:00Z\",\n  \"description\": \"Description here\",\n  \"asset_id\": \"{{asset_id}}\",\n  \"reference_type\": \"text\",\n  \"reference_id\": \"{{uuid}}\"\n}",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"entry_type\": \"DEPRECIATION\",\n  \"amount\": 2000000,\n  \"entry_date\": \"2026-01-31T00:00:00Z\",\n  \"description\": \"Khấu hao tháng 01/2026 - Máy tính Dell Latitude 5520\",\n  \"asset_id\": \"ddf902bc-8088-4a83-a270-a807dee2928b\",\n  \"reference_type\": \"ASSET_DEPRECIATION\",\n  \"reference_id\": \"f47ac10b-58cc-4372-a567-0e02b2c3d479\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -373,7 +374,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"code\": \"text\",\n  \"category_name\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"code\": \"IT-EQUIP\",\n  \"category_name\": \"Thiết bị công nghệ thông tin\",\n  \"parent_id\": null\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -455,7 +456,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/asset-categories?organization_id=uuid",
+							"raw": "{{base_url}}/asset-categories?organization_id={{organization_id}}",
 							"host": [
 								"{{base_url}}"
 							],
@@ -465,7 +466,7 @@
 							"query": [
 								{
 									"key": "organization_id",
-									"value": "uuid"
+									"value": "{{organization_id}}"
 								}
 							]
 						}
@@ -1095,7 +1096,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/audit-logs?user_id=uuid&action=string&entity_type=uuid&start_date=uuid&end_date=uuid&limit=uuid&offset=uuid",
+							"raw": "{{base_url}}/audit-logs?entity_type=uuid&start_date=uuid&end_date=uuid&limit=uuid&offset=uuid",
 							"host": [
 								"{{base_url}}"
 							],
@@ -1115,28 +1116,23 @@
 								},
 								{
 									"key": "entity_type",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "start_date",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "end_date",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "limit",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "offset",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								}
 							]
 						}
@@ -1247,23 +1243,19 @@
 							"query": [
 								{
 									"key": "fiscal_year",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "department_id",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "status",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "budget_type",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								}
 							]
 						}
@@ -1625,7 +1617,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/inventory-checks?status=string&start_date=uuid&end_date=uuid&limit=uuid&offset=uuid",
+							"raw": "{{base_url}}/inventory-checks?start_date=uuid&end_date=uuid&limit=uuid&offset=uuid",
 							"host": [
 								"{{base_url}}"
 							],
@@ -1640,23 +1632,19 @@
 								},
 								{
 									"key": "start_date",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "end_date",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "limit",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "offset",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								}
 							]
 						}
@@ -1979,7 +1967,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/organizations?status=INACTIVE&include_deleted=uuid",
+							"raw": "{{base_url}}/organizations",
 							"host": [
 								"{{base_url}}"
 							],
@@ -1995,7 +1983,7 @@
 								{
 									"key": "include_deleted",
 									"value": "uuid",
-									"disabled": false
+									"disabled": true
 								}
 							]
 						}
@@ -2385,7 +2373,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/users?department_id=uuid&status=uuid&role_id=uuid&search=uuid&limit=uuid&offset=uuid&include_deleted=uuid",
+							"raw": "{{base_url}}/users?status=uuid&search=uuid&limit=uuid&offset=uuid&include_deleted=uuid",
 							"host": [
 								"{{base_url}}"
 							],
@@ -2400,8 +2388,7 @@
 								},
 								{
 									"key": "status",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "role_id",
@@ -2410,23 +2397,19 @@
 								},
 								{
 									"key": "search",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "limit",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "offset",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								},
 								{
 									"key": "include_deleted",
-									"value": "uuid",
-									"disabled": false
+									"value": "uuid"
 								}
 							]
 						}
@@ -2554,8 +2537,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:3000/v1",
-			"type": "string"
+			"value": "http://localhost:3000/v1"
 		},
 		{
 			"key": "access_token",

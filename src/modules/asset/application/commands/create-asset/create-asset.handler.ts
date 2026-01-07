@@ -34,7 +34,7 @@ export class CreateAssetHandler {
     private readonly userRepo: IUserRepository,
     @Inject(ASSET_CATEGORY_REPOSITORY)
     private readonly categoryRepo: IAssetCategoryRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: CreateAssetCommand): Promise<AssetResult> {
     const existsByCode = await this.assetRepo.existsByCode(

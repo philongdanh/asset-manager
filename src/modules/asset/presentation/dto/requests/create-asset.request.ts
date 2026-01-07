@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   IsDecimal,
   IsEnum,
@@ -67,10 +67,12 @@ export class CreateAssetRequest {
 
   @Expose({ name: 'purchase_date' })
   @IsOptional()
+  @Type(() => Date)
   purchaseDate: Date | null;
 
   @Expose({ name: 'warranty_expiry_date' })
   @IsOptional()
+  @Type(() => Date)
   warrantyExpiryDate: Date | null;
 
   @Expose()

@@ -331,8 +331,12 @@ export class AssetBuilder {
     return this;
   }
 
-  public withPurchaseDate(date: Date | null): this {
-    this.purchaseDate = date;
+  public withPurchaseDate(date: Date | string | null): this {
+    if (typeof date === 'string') {
+      this.purchaseDate = new Date(date);
+    } else {
+      this.purchaseDate = date;
+    }
     return this;
   }
 
@@ -346,8 +350,12 @@ export class AssetBuilder {
     return this;
   }
 
-  public withWarrantyExpiryDate(date: Date | null): this {
-    this.warrantyExpiryDate = date;
+  public withWarrantyExpiryDate(date: Date | string | null): this {
+    if (typeof date === 'string') {
+      this.warrantyExpiryDate = new Date(date);
+    } else {
+      this.warrantyExpiryDate = date;
+    }
     return this;
   }
 
