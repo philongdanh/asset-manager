@@ -35,7 +35,7 @@ export class RoleController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @Permissions('ROLE_VIEW')
   @Get()
@@ -45,11 +45,15 @@ export class RoleController {
   ): Promise<{ data: RoleResponse[]; total: number }> {
     if (user.isRoot) {
       if (!query.organizationId) {
-        throw new BadRequestException('Organization ID is required for root users');
+        throw new BadRequestException(
+          'Organization ID is required for root users',
+        );
       }
     } else {
       if (!user.organizationId) {
-        throw new BadRequestException('User does not belong to any organization');
+        throw new BadRequestException(
+          'User does not belong to any organization',
+        );
       }
       query.organizationId = user.organizationId;
     }
@@ -89,11 +93,15 @@ export class RoleController {
   ): Promise<RoleResponse> {
     if (user.isRoot) {
       if (!dto.organizationId) {
-        throw new BadRequestException('Organization ID is required for root users');
+        throw new BadRequestException(
+          'Organization ID is required for root users',
+        );
       }
     } else {
       if (!user.organizationId) {
-        throw new BadRequestException('User does not belong to any organization');
+        throw new BadRequestException(
+          'User does not belong to any organization',
+        );
       }
       dto.organizationId = user.organizationId;
     }
@@ -140,6 +148,8 @@ export class RoleController {
     if (!user.isRoot && !orgId) {
       throw new BadRequestException('User does not belong to any organization');
     }
-    await this.commandBus.execute(new DeleteRoleCommand(id, orgId || undefined));
+    await this.commandBus.execute(
+      new DeleteRoleCommand(id, orgId || undefined),
+    );
   }
 }

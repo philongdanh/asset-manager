@@ -41,7 +41,7 @@ export class SignInHandler implements ICommandHandler<
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) { }
+  ) {}
 
   async execute(cmd: SignInCommand): Promise<SignInCommandResult> {
     const user = await this.userRepo.findByUsername(

@@ -10,15 +10,31 @@ import {
   AssetStatus,
 } from '../../../domain/entities/asset.entity';
 import { UpdateAssetCommand } from './update-asset.command';
+import {
+  ORGANIZATION_REPOSITORY,
+  type IOrganizationRepository,
+} from '../../../../organization/domain';
+import { USER_REPOSITORY, type IUserRepository } from '../../../../user/domain';
+import {
+  ASSET_CATEGORY_REPOSITORY,
+  type IAssetCategoryRepository,
+} from '../../../../asset-category/domain';
+import { AssetResult } from '../../dtos/asset.result';
 
 @Injectable()
 export class UpdateAssetHandler {
   constructor(
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepo: IAssetRepository,
+    @Inject(ORGANIZATION_REPOSITORY)
+    private readonly orgRepo: IOrganizationRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepo: IUserRepository,
+    @Inject(ASSET_CATEGORY_REPOSITORY)
+    private readonly categoryRepo: IAssetCategoryRepository,
   ) {}
 
-  async execute(cmd: UpdateAssetCommand): Promise<Asset> {
+  async execute(cmd: UpdateAssetCommand): Promise<AssetResult> {
     const asset = await this.assetRepo.findById(cmd.assetId);
     if (!asset) {
       throw new UseCaseException(
@@ -44,6 +60,19 @@ export class UpdateAssetHandler {
     );
     asset.changeStatus(cmd.status as AssetStatus);
 
-    return await this.assetRepo.update(asset);
+    const updatedAsset = await this.assetRepo.update(asset);
+
+    const [organization, category, createdByUser] = await Promise.all([
+      this.orgRepo.findById(updatedAsset.organizationId),
+      this.categoryRepo.findById(updatedAsset.categoryId),
+      this.userRepo.findById(updatedAsset.createdByUserId),
+    ]);
+
+    return {
+      asset: updatedAsset,
+      organization,
+      category,
+      createdByUser,
+    };
   }
 }

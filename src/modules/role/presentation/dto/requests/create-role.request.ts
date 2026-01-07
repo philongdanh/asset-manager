@@ -1,5 +1,11 @@
 import { Expose } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateRoleRequest {
   @Expose({ name: 'organization_id' })

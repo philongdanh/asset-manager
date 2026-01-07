@@ -8,10 +8,13 @@ export class DeleteRoleHandler implements ICommandHandler<DeleteRoleCommand> {
   constructor(
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepository: IRoleRepository,
-  ) { }
+  ) {}
 
   async execute(command: DeleteRoleCommand): Promise<void> {
-    const role = await this.roleRepository.findById(command.roleId, command.organizationId);
+    const role = await this.roleRepository.findById(
+      command.roleId,
+      command.organizationId,
+    );
     if (!role) {
       throw new NotFoundException(`Role with ID ${command.roleId} not found`);
     }

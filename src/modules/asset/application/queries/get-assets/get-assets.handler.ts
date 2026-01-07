@@ -10,10 +10,7 @@ import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
 } from '../../../../organization/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from '../../../../user/domain';
+import { USER_REPOSITORY, type IUserRepository } from '../../../../user/domain';
 import {
   ASSET_CATEGORY_REPOSITORY,
   type IAssetCategoryRepository,
@@ -31,7 +28,7 @@ export class GetAssetsHandler {
     private readonly userRepo: IUserRepository,
     @Inject(ASSET_CATEGORY_REPOSITORY)
     private readonly categoryRepo: IAssetCategoryRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetAssetsQuery,

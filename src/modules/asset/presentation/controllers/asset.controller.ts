@@ -24,7 +24,6 @@ import { GetAssetDetailsHandler } from '../../application/queries/get-asset-deta
 import { GetAssetsHandler } from '../../application/queries/get-assets/get-assets.handler';
 import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
 import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
-import { Asset } from '../../domain';
 import { AssetResult } from '../../application/dtos/asset.result';
 import {
   AssetResponse,
@@ -41,7 +40,7 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')
@@ -51,11 +50,15 @@ export class AssetController {
     @CurrentUser() user: JwtPayload,
   ): Promise<AssetResponse> {
     const userId = user.id;
-    const organizationId = user.isRoot ? dto.organizationId : user.organizationId;
+    const organizationId = user.isRoot
+      ? dto.organizationId
+      : user.organizationId;
 
     if (!organizationId) {
       if (!user.isRoot && !user.organizationId) {
-        throw new BadRequestException('Current user is not assigned to any organization');
+        throw new BadRequestException(
+          'Current user is not assigned to any organization',
+        );
       }
       throw new BadRequestException('Organization ID is required');
     }
@@ -128,11 +131,15 @@ export class AssetController {
     @Query() query: GetAssetsRequest,
     @CurrentUser() user: JwtPayload,
   ): Promise<{ data: AssetResponse[]; total: number }> {
-    const organizationId = user.isRoot ? query.organizationId : user.organizationId;
+    const organizationId = user.isRoot
+      ? query.organizationId
+      : user.organizationId;
 
     if (!organizationId) {
       if (!user.isRoot && !user.organizationId) {
-        throw new BadRequestException('Current user is not assigned to any organization');
+        throw new BadRequestException(
+          'Current user is not assigned to any organization',
+        );
       }
     }
 
@@ -161,8 +168,9 @@ export class AssetController {
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @CurrentUser() user: JwtPayload,
   ): Promise<AssetResponse> {
-    const query = new GetAssetDetailsQuery(id);
-    const result = await this.getDetailsHandler.execute(query);
+    const result = await this.getDetailsHandler.execute(
+      new GetAssetDetailsQuery(id),
+    );
 
     if (!user.isRoot && result.asset.organizationId !== user.organizationId) {
       // Return 404 to avoid leaking existence of asset in other orgs
@@ -172,7 +180,7 @@ export class AssetController {
     return this.toResponse(result);
   }
 
-  private toResponse(result: AssetResult | Asset): AssetResponse {
+  private toResponse(result: AssetResult): AssetResponse {
     return new AssetResponse(result);
   }
 }

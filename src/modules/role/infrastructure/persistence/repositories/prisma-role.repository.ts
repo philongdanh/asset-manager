@@ -6,7 +6,7 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaRoleRepository implements IRoleRepository {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   // --- Query Methods ---
   async find(organizationId: string): Promise<{ data: Role[]; total: number }> {
@@ -34,7 +34,10 @@ export class PrismaRoleRepository implements IRoleRepository {
     };
   }
 
-  async findById(roleId: string, organizationId?: string): Promise<Role | null> {
+  async findById(
+    roleId: string,
+    organizationId?: string,
+  ): Promise<Role | null> {
     const where: Prisma.RoleWhereInput = { id: roleId };
     if (organizationId) {
       where.organizationId = organizationId;
@@ -53,10 +56,10 @@ export class PrismaRoleRepository implements IRoleRepository {
         include: {
           rolePermissions: {
             include: {
-              permission: true
-            }
-          }
-        }
+              permission: true,
+            },
+          },
+        },
       });
       return roleScoped ? RoleMapper.toDomain(roleScoped) : null;
     }
@@ -74,7 +77,6 @@ export class PrismaRoleRepository implements IRoleRepository {
     });
     return roleUnscoped ? RoleMapper.toDomain(roleUnscoped) : null;
   }
-
 
   async findByUserId(userId: string): Promise<Role[]> {
     const userRoles = await this.prisma.userRole.findMany({

@@ -34,4 +34,4 @@ import { AssetCategoryModule } from '../asset-category/asset-category.module';
     GetAssetDetailsHandler,
   ],
 })
-export class AssetModule { }
+export class AssetModule {}

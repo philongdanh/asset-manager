@@ -11,10 +11,7 @@ import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
 } from '../../../../organization/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from '../../../../user/domain';
+import { USER_REPOSITORY, type IUserRepository } from '../../../../user/domain';
 import {
   ASSET_CATEGORY_REPOSITORY,
   type IAssetCategoryRepository,
@@ -32,7 +29,7 @@ export class GetAssetDetailsHandler {
     private readonly userRepo: IUserRepository,
     @Inject(ASSET_CATEGORY_REPOSITORY)
     private readonly categoryRepo: IAssetCategoryRepository,
-  ) { }
+  ) {}
 
   async execute(query: GetAssetDetailsQuery): Promise<AssetResult> {
     const asset = await this.assetRepo.findById(query.assetId);

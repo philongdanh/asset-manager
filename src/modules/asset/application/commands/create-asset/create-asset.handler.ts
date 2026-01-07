@@ -11,6 +11,16 @@ import {
   AssetStatus,
 } from '../../../domain/entities/asset.entity';
 import { CreateAssetCommand } from './create-asset.command';
+import {
+  ORGANIZATION_REPOSITORY,
+  type IOrganizationRepository,
+} from '../../../../organization/domain';
+import { USER_REPOSITORY, type IUserRepository } from '../../../../user/domain';
+import {
+  ASSET_CATEGORY_REPOSITORY,
+  type IAssetCategoryRepository,
+} from '../../../../asset-category/domain';
+import { AssetResult } from '../../dtos/asset.result';
 
 @Injectable()
 export class CreateAssetHandler {
@@ -18,9 +28,15 @@ export class CreateAssetHandler {
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepo: IAssetRepository,
+    @Inject(ORGANIZATION_REPOSITORY)
+    private readonly orgRepo: IOrganizationRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepo: IUserRepository,
+    @Inject(ASSET_CATEGORY_REPOSITORY)
+    private readonly categoryRepo: IAssetCategoryRepository,
   ) {}
 
-  async execute(cmd: CreateAssetCommand): Promise<Asset> {
+  async execute(cmd: CreateAssetCommand): Promise<AssetResult> {
     const existsByCode = await this.assetRepo.existsByCode(
       cmd.organizationId,
       cmd.assetCode,
@@ -60,6 +76,19 @@ export class CreateAssetHandler {
       .withImageUrl(cmd.imageUrl)
       .build();
 
-    return await this.assetRepo.save(asset);
+    const savedAsset = await this.assetRepo.save(asset);
+
+    const [organization, category, createdByUser] = await Promise.all([
+      this.orgRepo.findById(savedAsset.organizationId),
+      this.categoryRepo.findById(savedAsset.categoryId),
+      this.userRepo.findById(savedAsset.createdByUserId),
+    ]);
+
+    return {
+      asset: savedAsset,
+      organization,
+      category,
+      createdByUser,
+    };
   }
 }

@@ -35,4 +35,4 @@ import { CqrsModule } from '@nestjs/cqrs';
   ],
   exports: [ORGANIZATION_REPOSITORY],
 })
-export class OrganizationModule { }
+export class OrganizationModule {}

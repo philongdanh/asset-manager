@@ -5,5 +5,5 @@ export class UpdateAssetCategoryCommand {
     public readonly categoryName: string,
     public readonly code: string,
     public readonly parentId: string | null,
-  ) { }
+  ) {}
 }

@@ -1,10 +1,9 @@
 import { Exclude, Expose } from 'class-transformer';
 import {
-  Asset,
   AssetCondition,
   AssetStatus,
 } from '../../../domain/entities/asset.entity';
-import { AssetResult } from '../../../application/dtos/asset.result';
+import type { AssetResult } from '../../../application/dtos/asset.result';
 
 // Inline types for clean serialization
 interface OrganizationInfo {
@@ -96,8 +95,9 @@ export class AssetResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(result: AssetResult | Asset) {
-    const asset = 'asset' in result ? result.asset : result;
+  constructor(result: AssetResult) {
+    const { asset, organization, category, createdByUser } = result;
+
     this.id = asset.id;
     this.assetCode = asset.assetCode;
     this.assetName = asset.assetName;
@@ -119,29 +119,23 @@ export class AssetResponse {
     this.createdAt = asset.createdAt!;
     this.updatedAt = asset.updatedAt!;
 
-    if ('asset' in result) {
-      this.organization = result.organization
-        ? { id: result.organization.id, name: result.organization.name }
-        : null;
-      this.category = result.category
-        ? {
-          id: result.category.id,
-          code: result.category.code,
-          category_name: result.category.categoryName,
-          parent_id: result.category.parentId,
+    this.organization = organization
+      ? { id: organization.id, name: organization.name }
+      : null;
+    this.category = category
+      ? {
+          id: category.id,
+          code: category.code,
+          category_name: category.categoryName,
+          parent_id: category.parentId,
         }
-        : null;
-      this.createdByUser = result.createdByUser
-        ? {
-          id: result.createdByUser.id,
-          username: result.createdByUser.username,
-          email: result.createdByUser.email,
+      : null;
+    this.createdByUser = createdByUser
+      ? {
+          id: createdByUser.id,
+          username: createdByUser.username,
+          email: createdByUser.email,
         }
-        : null;
-    } else {
-      this.organization = null;
-      this.category = null;
-      this.createdByUser = null;
-    }
+      : null;
   }
 }
