@@ -27,7 +27,9 @@ import {
   GetMaintenanceSchedulesHandler,
   GetMaintenanceScheduleDetailsHandler,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { MaintenanceScheduleResult } from '../../application/dtos/maintenance-schedule.result';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from '../../../auth/presentation/interfaces/jwt-payload.interface';
 import { MaintenanceSchedule } from '../../domain';
 import {
   MaintenanceScheduleResponse,
@@ -47,7 +49,7 @@ export class MaintenanceScheduleController {
     private readonly deleteHandler: DeleteMaintenanceScheduleHandler,
     private readonly getListHandler: GetMaintenanceSchedulesHandler,
     private readonly getDetailsHandler: GetMaintenanceScheduleDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('MAINTENANCE_CREATE')
@@ -64,19 +66,29 @@ export class MaintenanceScheduleController {
       dto.estimatedCost || null,
     );
     const result = await this.createHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      maintenance: result,
+      asset: null,
+      organization: null,
+      performedByUser: null,
+    });
   }
 
   @Permissions('MAINTENANCE_UPDATE')
   @Patch(':id/start')
   async start(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Query('userId') userId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<MaintenanceScheduleResponse> {
-    const performerId = userId || '00000000-0000-0000-0000-000000000000';
+    const performerId = user.id;
     const cmd = new StartMaintenanceCommand(id, performerId);
     const result = await this.startHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      maintenance: result,
+      asset: null,
+      organization: null,
+      performedByUser: null,
+    });
   }
 
   @Permissions('MAINTENANCE_UPDATE')
@@ -91,7 +103,12 @@ export class MaintenanceScheduleController {
       dto.actualCost || null,
     );
     const result = await this.completeHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      maintenance: result,
+      asset: null,
+      organization: null,
+      performedByUser: null,
+    });
   }
 
   @Permissions('MAINTENANCE_UPDATE')
@@ -102,7 +119,12 @@ export class MaintenanceScheduleController {
   ): Promise<MaintenanceScheduleResponse> {
     const cmd = new CancelMaintenanceCommand(id, dto.reason);
     const result = await this.cancelHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      maintenance: result,
+      asset: null,
+      organization: null,
+      performedByUser: null,
+    });
   }
 
   @Permissions('MAINTENANCE_VIEW')
@@ -110,8 +132,13 @@ export class MaintenanceScheduleController {
   async getList(
     @Query() query: GetMaintenanceSchedulesRequest,
     @Query('organizationId') organizationId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<{ data: MaintenanceScheduleResponse[]; total: number }> {
-    const q = new GetMaintenanceSchedulesQuery(organizationId || '', {
+    const orgId = user.isRoot
+      ? organizationId || ''
+      : user.organizationId || '';
+
+    const q = new GetMaintenanceSchedulesQuery(orgId, {
       assetId: query.assetId,
       status: query.status,
       maintenanceType: query.maintenanceType,
@@ -147,7 +174,9 @@ export class MaintenanceScheduleController {
     await this.deleteHandler.execute(new DeleteMaintenanceScheduleCommand(id));
   }
 
-  private toResponse(entity: MaintenanceSchedule): MaintenanceScheduleResponse {
-    return new MaintenanceScheduleResponse(entity);
+  private toResponse(
+    result: MaintenanceScheduleResult,
+  ): MaintenanceScheduleResponse {
+    return new MaintenanceScheduleResponse(result);
   }
 }

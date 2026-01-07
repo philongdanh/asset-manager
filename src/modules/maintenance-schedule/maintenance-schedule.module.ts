@@ -16,6 +16,10 @@ import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
 import { ASSET_REPOSITORY } from '../asset/domain';
 import { PrismaAssetRepository } from '../asset/infrastructure/persistence/repositories/prisma-asset.repository';
+import { ORGANIZATION_REPOSITORY } from '../organization/domain';
+import { PrismaOrganizationRepository } from '../organization/infrastructure/persistence/repositories/prisma-organization.repository';
+import { USER_REPOSITORY } from '../user/domain';
+import { PrismaUserRepository } from '../user/infrastructure/persistence/repositories/prisma-user.repository';
 
 const handlers: Provider[] = [
   CreateMaintenanceScheduleHandler,
@@ -43,8 +47,16 @@ const handlers: Provider[] = [
       provide: ASSET_REPOSITORY,
       useClass: PrismaAssetRepository,
     },
+    {
+      provide: ORGANIZATION_REPOSITORY,
+      useClass: PrismaOrganizationRepository,
+    },
+    {
+      provide: USER_REPOSITORY,
+      useClass: PrismaUserRepository,
+    },
     ...handlers,
   ],
   exports: [MAINTENANCE_SCHEDULE_REPOSITORY],
 })
-export class MaintenanceScheduleModule {}
+export class MaintenanceScheduleModule { }
