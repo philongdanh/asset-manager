@@ -4,6 +4,7 @@ import {
   AssetDisposalStatus,
   AssetDisposalType,
 } from '../../../domain';
+import type { AssetDisposalResult } from '../../../application/dtos/asset-disposal.result';
 
 @Exclude()
 export class AssetDisposalResponse {
@@ -43,18 +44,49 @@ export class AssetDisposalResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(entity: AssetDisposal) {
-    this.id = entity.id;
-    this.assetId = entity.assetId;
-    this.organizationId = entity.organizationId;
-    this.disposalDate = entity.disposalDate;
-    this.disposalType = entity.disposalType;
-    this.disposalValue = entity.disposalValue;
-    this.reason = entity.reason;
-    this.approvedByUserId = entity.approvedByUserId;
-    this.status = entity.status;
-    this.accountingEntryId = entity.accountingEntryId;
-    this.createdAt = entity.createdAt!;
-    this.updatedAt = entity.updatedAt!;
+  @Expose()
+  asset: any | null;
+
+  @Expose()
+  organization: any | null;
+
+  @Expose({ name: 'approved_by_user' })
+  approvedByUser: any | null;
+
+  constructor(result: AssetDisposalResult) {
+    const { disposal, asset, organization, approvedByUser } = result;
+
+    this.id = disposal.id;
+    this.assetId = disposal.assetId;
+    this.organizationId = disposal.organizationId;
+    this.disposalDate = disposal.disposalDate;
+    this.disposalType = disposal.disposalType;
+    this.disposalValue = disposal.disposalValue;
+    this.reason = disposal.reason;
+    this.approvedByUserId = disposal.approvedByUserId;
+    this.status = disposal.status;
+    this.accountingEntryId = disposal.accountingEntryId;
+    this.createdAt = disposal.createdAt!;
+    this.updatedAt = disposal.updatedAt!;
+
+    this.asset = asset
+      ? {
+        id: asset.id,
+        asset_code: asset.assetCode,
+        asset_name: asset.assetName,
+      }
+      : null;
+
+    this.organization = organization
+      ? { id: organization.id, name: organization.name }
+      : null;
+
+    this.approvedByUser = approvedByUser
+      ? {
+        id: approvedByUser.id,
+        username: approvedByUser.username,
+        email: approvedByUser.email,
+      }
+      : null;
   }
 }

@@ -24,7 +24,9 @@ import {
   GetAssetDisposalDetailsHandler,
   GetAssetDisposalsHandler,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { AssetDisposalResult } from '../../application/dtos/asset-disposal.result';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from '../../../auth/presentation/interfaces/jwt-payload.interface';
 import { AssetDisposal } from '../../domain';
 import {
   AssetDisposalResponse,
@@ -42,7 +44,7 @@ export class AssetDisposalController {
     private readonly cancelHandler: CancelAssetDisposalHandler,
     private readonly getListHandler: GetAssetDisposalsHandler,
     private readonly getDetailsHandler: GetAssetDisposalDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DISPOSAL_CREATE')
@@ -59,19 +61,29 @@ export class AssetDisposalController {
       dto.reason || null,
     );
     const result = await this.createHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      disposal: result,
+      asset: null,
+      organization: null,
+      approvedByUser: null,
+    });
   }
 
   @Permissions('DISPOSAL_APPROVE')
   @Patch(':id/approve')
   async approve(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Query('userId') userId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetDisposalResponse> {
-    const approverId = userId || '00000000-0000-0000-0000-000000000000';
+    const approverId = user.id;
     const cmd = new ApproveAssetDisposalCommand(id, approverId);
     const result = await this.approveHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      disposal: result,
+      asset: null,
+      organization: null,
+      approvedByUser: null,
+    });
   }
 
   @Permissions('DISPOSAL_APPROVE')
@@ -79,12 +91,17 @@ export class AssetDisposalController {
   async reject(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: RejectAssetDisposalRequest,
-    @Query('userId') userId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetDisposalResponse> {
-    const rejectorId = userId || '00000000-0000-0000-0000-000000000000';
+    const rejectorId = user.id;
     const cmd = new RejectAssetDisposalCommand(id, rejectorId, dto.reason);
     const result = await this.rejectHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      disposal: result,
+      asset: null,
+      organization: null,
+      approvedByUser: null,
+    });
   }
 
   @Permissions('DISPOSAL_UPDATE')
@@ -94,7 +111,12 @@ export class AssetDisposalController {
   ): Promise<AssetDisposalResponse> {
     const cmd = new CancelAssetDisposalCommand(id);
     const result = await this.cancelHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      disposal: result,
+      asset: null,
+      organization: null,
+      approvedByUser: null,
+    });
   }
 
   @Permissions('DISPOSAL_VIEW')
@@ -102,9 +124,14 @@ export class AssetDisposalController {
   async getList(
     @Query() query: GetAssetDisposalsRequest,
     @Query('organizationId') organizationId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<{ data: AssetDisposalResponse[]; total: number }> {
+    const orgId = user.isRoot
+      ? organizationId || ''
+      : user.organizationId || '';
+
     const q: GetAssetDisposalsQuery = {
-      organizationId: organizationId || '',
+      organizationId: orgId,
       options: {
         status: query.status,
         disposalType: query.disposalType,
@@ -132,7 +159,7 @@ export class AssetDisposalController {
     return this.toResponse(result);
   }
 
-  private toResponse(entity: AssetDisposal): AssetDisposalResponse {
-    return new AssetDisposalResponse(entity);
+  private toResponse(result: AssetDisposalResult): AssetDisposalResponse {
+    return new AssetDisposalResponse(result);
   }
 }

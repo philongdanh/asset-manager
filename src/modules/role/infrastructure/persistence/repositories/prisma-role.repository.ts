@@ -6,27 +6,32 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaRoleRepository implements IRoleRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   // --- Query Methods ---
   async find(organizationId: string): Promise<{ data: Role[]; total: number }> {
-    const where: Prisma.RoleWhereInput = { organizationId };
+    // const where: Prisma.RoleWhereInput = { organizationId };
+    // const [data, total] = await Promise.all([
+    //   this.prisma.role.findMany({
+    //     where,
+    //     include: {
+    //       rolePermissions: {
+    //         include: {
+    //           permission: true,
+    //         },
+    //       },
+    //     },
+    //     orderBy: {
+    //       updatedAt: 'desc',
+    //     },
+    //   }),
+    //   this.prisma.role.count({ where }),
+    // ]);
     const [data, total] = await Promise.all([
-      this.prisma.role.findMany({
-        where,
-        include: {
-          rolePermissions: {
-            include: {
-              permission: true,
-            },
-          },
-        },
-        orderBy: {
-          updatedAt: 'desc',
-        },
-      }),
-      this.prisma.role.count({ where }),
+      this.prisma.role.findMany(),
+      this.prisma.role.count(),
     ]);
+
 
     return {
       data: data.map((role) => RoleMapper.toDomain(role)),
@@ -43,9 +48,14 @@ export class PrismaRoleRepository implements IRoleRepository {
       where.organizationId = organizationId;
     }
     const role = await this.prisma.role.findUnique({
-      where: { id: roleId }, // findUnique only works with unique constraints. To check orgId, use findFirst with strict condition or check after fetch.
-      // Correction: Prisma findUnique only allows unique fields in where. I cannot pass organizationId strictly in where of findUnique.
-      // Better approach: use findFirst if organizationId is present, or findUnique if not. But findFirst is safer for generic where.
+      where: { id: roleId },
+      include: {
+        rolePermissions: {
+          include: {
+            permission: true,
+          },
+        },
+      },
     });
 
     // Strategy 2: Fetch by ID then check OrganizationID in application layer or use findFirst.
