@@ -3,9 +3,11 @@ import {
   IsDecimal,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   IsUUID,
+  IsObject,
 } from 'class-validator';
 import {
   AssetCondition,
@@ -39,17 +41,17 @@ export class UpdateAssetRequest {
   manufacturer: string | null;
 
   @Expose({ name: 'purchase_price' })
-  @IsDecimal()
+  @IsNumber()
   @IsNotEmpty()
   purchasePrice: number;
 
   @Expose({ name: 'original_cost' })
-  @IsDecimal()
+  @IsNumber()
   @IsNotEmpty()
   originalCost: number;
 
   @Expose({ name: 'current_value' })
-  @IsDecimal()
+  @IsNumber()
   @IsNotEmpty()
   currentValue: number;
 
@@ -72,9 +74,9 @@ export class UpdateAssetRequest {
   location: string | null;
 
   @Expose()
-  @IsString()
+  @IsObject()
   @IsOptional()
-  specifications: string | null;
+  specifications: Record<string, any> | null;
 
   @Expose()
   @IsEnum(AssetStatus)

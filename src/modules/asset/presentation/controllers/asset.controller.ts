@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { CreateAssetCommand } from '../../application/commands/create-asset/create-asset.command';
 import { DeleteAssetCommand } from '../../application/commands/delete-asset/delete-asset.command';
@@ -21,7 +22,8 @@ import { GetAssetDetailsQuery } from '../../application/queries/get-asset-detail
 import { GetAssetsQuery } from '../../application/queries/get-assets/get-assets.query';
 import { GetAssetDetailsHandler } from '../../application/queries/get-asset-details/get-asset-details.handler';
 import { GetAssetsHandler } from '../../application/queries/get-assets/get-assets.handler';
-import { Permissions } from 'src/modules/auth/presentation';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 import { Asset } from '../../domain';
 import {
   AssetResponse,
@@ -38,19 +40,27 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')
   @Post()
   async create(
     @Body() dto: CreateAssetRequest,
-    @Query('userId') createdByUserId?: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetResponse> {
-    const userId = createdByUserId || '00000000-0000-0000-0000-000000000000';
+    const userId = user.id;
+    const organizationId = user.isRoot ? dto.organizationId : user.organizationId;
+
+    if (!organizationId) {
+      if (!user.isRoot && !user.organizationId) {
+        throw new BadRequestException('Current user is not assigned to any organization');
+      }
+      throw new BadRequestException('Organization ID is required');
+    }
 
     const cmd = new CreateAssetCommand(
-      dto.organizationId,
+      organizationId,
       dto.assetCode,
       dto.assetName,
       dto.categoryId,
@@ -64,7 +74,7 @@ export class AssetController {
       dto.purchaseDate || null,
       dto.warrantyExpiryDate || null,
       dto.location || null,
-      dto.specifications || null,
+      dto.specifications ? JSON.stringify(dto.specifications) : null,
       dto.condition || null,
       dto.status || null,
       dto.imageUrl || null,
@@ -93,7 +103,7 @@ export class AssetController {
       dto.warrantyExpiryDate || null,
       dto.condition || null,
       dto.location || null,
-      dto.specifications || null,
+      dto.specifications ? JSON.stringify(dto.specifications) : null,
       dto.status || '',
       dto.imageUrl || null,
     );

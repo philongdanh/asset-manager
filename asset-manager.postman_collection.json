@@ -118,7 +118,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"asset_code\": \"text\",\n  \"asset_name\": \"text\",\n  \"category_id\": \"{{uuid}}\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"model\": \"text\",\n  \"serial_number\": \"text\",\n  \"manufacturer\": \"text\",\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"location\": \"text\",\n  \"image_url\": \"https://example.com/file.jpg\",\n  \"specifications\": {},\n  \"condition\": \"EXCELLENT | GOOD | FAIR | POOR | BROKEN | NEW | USED\",\n  \"status\": \"AVAILABLE | IN_USE | MAINTENANCE | DISPOSED\"\n}",
+							"raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"asset_code\": \"AS-001\",\n  \"asset_name\": \"MacBook Pro\",\n  \"category_id\": \"ae3844fc-c230-4991-86f8-87941c362e71\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"model\": \"M3 Max\",\n  \"serial_number\": \"SN123456\",\n  \"manufacturer\": \"Apple\",\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2025-01-01T00:00:00Z\",\n  \"location\": \"Hanoi Office\",\n  \"image_url\": \"https://example.com/file.jpg\",\n  \"specifications\": {\"ram\":\"32GB\", \"storage\":\"1TB\"},\n  \"condition\": \"NEW\",\n  \"status\": \"AVAILABLE\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -126,99 +126,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/assets?organization_id=uuid&asset_code=uuid&asset_name=uuid&category_id=uuid&purchase_price=uuid&original_cost=uuid&current_value=uuid&model=uuid&serial_number=uuid&manufacturer=uuid&purchase_date=uuid&warranty_expiry_date=uuid&location=uuid&image_url=uuid&specifications=uuid&condition=uuid&status=uuid",
+							"raw": "{{base_url}}/assets",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"assets"
-							],
-							"query": [
-								{
-									"key": "organization_id",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "asset_code",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "asset_name",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "category_id",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "purchase_price",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "original_cost",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "current_value",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "model",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "serial_number",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "manufacturer",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "purchase_date",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "warranty_expiry_date",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "location",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "image_url",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "specifications",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "condition",
-									"value": "uuid",
-									"disabled": false
-								},
-								{
-									"key": "status",
-									"value": "uuid",
-									"disabled": false
-								}
 							]
 						}
 					},
@@ -231,7 +144,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"asset_name\": \"text\",\n  \"category_id\": \"{{uuid}}\",\n  \"model\": \"text\",\n  \"serial_number\": \"text\",\n  \"manufacturer\": \"text\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"condition\": \"EXCELLENT | GOOD | FAIR | POOR | BROKEN | NEW | USED\",\n  \"location\": \"text\",\n  \"specifications\": {},\n  \"status\": \"AVAILABLE | IN_USE | MAINTENANCE | DISPOSED\",\n  \"image_url\": \"https://example.com/file.jpg\"\n}",
+							"raw": "{\n  \"asset_name\": \"MacBook Pro Updated\",\n  \"category_id\": \"ae3844fc-c230-4991-86f8-87941c362e71\",\n  \"model\": \"M3 Max\",\n  \"serial_number\": \"SN123456\",\n  \"manufacturer\": \"Apple\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 900,\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2025-01-01T00:00:00Z\",\n  \"condition\": \"GOOD\",\n  \"location\": \"Hanoi Office\",\n  \"specifications\": {\"ram\":\"32GB\"},\n  \"status\": \"IN_USE\",\n  \"image_url\": \"https://example.com/file.jpg\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
