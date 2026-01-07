@@ -35,6 +35,7 @@ import {
   GetAssetTransfersRequest,
   RejectAssetTransferRequest,
 } from '../dto';
+import { AssetTransferResult } from '../../application/dtos/asset-transfer.result';
 
 @Controller('asset-transfers')
 export class AssetTransferController {
@@ -64,7 +65,7 @@ export class AssetTransferController {
       dto.toUserId || null,
     );
     const result = await this.createHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponseFromEntity(result);
   }
 
   @Permissions('TRANSFER_APPROVE')
@@ -76,7 +77,7 @@ export class AssetTransferController {
     const approverId = userId || '00000000-0000-0000-0000-000000000000';
     const cmd = new ApproveAssetTransferCommand(id, approverId);
     const result = await this.approveHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponseFromEntity(result);
   }
 
   @Permissions('TRANSFER_APPROVE')
@@ -89,7 +90,7 @@ export class AssetTransferController {
     const rejectorId = userId || '00000000-0000-0000-0000-000000000000';
     const cmd = new RejectAssetTransferCommand(id, rejectorId, dto.reason);
     const result = await this.rejectHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponseFromEntity(result);
   }
 
   @Permissions('TRANSFER_UPDATE')
@@ -99,7 +100,7 @@ export class AssetTransferController {
   ): Promise<AssetTransferResponse> {
     const cmd = new CompleteAssetTransferCommand(id);
     const result = await this.completeHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponseFromEntity(result);
   }
 
   @Permissions('TRANSFER_UPDATE')
@@ -110,7 +111,7 @@ export class AssetTransferController {
   ): Promise<AssetTransferResponse> {
     const cmd = new CancelAssetTransferCommand(id, dto.reason);
     const result = await this.cancelHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponseFromEntity(result);
   }
 
   @Permissions('TRANSFER_VIEW')
@@ -150,7 +151,22 @@ export class AssetTransferController {
     return this.toResponse(result);
   }
 
-  private toResponse(entity: AssetTransfer): AssetTransferResponse {
-    return new AssetTransferResponse(entity);
+  private toResponse(result: AssetTransferResult): AssetTransferResponse {
+    return new AssetTransferResponse(result);
+  }
+
+  private toResponseFromEntity(entity: AssetTransfer): AssetTransferResponse {
+    const result: AssetTransferResult = {
+      transfer: entity,
+      asset: null,
+      organization: null,
+      fromDepartment: null,
+      toDepartment: null,
+      fromUser: null,
+      toUser: null,
+      approvedByUser: null,
+    };
+    return new AssetTransferResponse(result);
   }
 }
+
