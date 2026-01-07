@@ -134,7 +134,12 @@ export class RoleController {
   @Delete(':id')
   async delete(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<void> {
-    await this.commandBus.execute(new DeleteRoleCommand(id));
+    const orgId = user.isRoot ? undefined : user.organizationId;
+    if (!user.isRoot && !orgId) {
+      throw new BadRequestException('User does not belong to any organization');
+    }
+    await this.commandBus.execute(new DeleteRoleCommand(id, orgId || undefined));
   }
 }
