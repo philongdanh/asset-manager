@@ -46,7 +46,7 @@ export class AssetTransferController {
     private readonly cancelHandler: CancelAssetTransferHandler,
     private readonly getListHandler: GetAssetTransfersHandler,
     private readonly getDetailsHandler: GetAssetTransferDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('TRANSFER_CREATE')
@@ -60,9 +60,7 @@ export class AssetTransferController {
       dto.transferType,
       dto.transferDate,
       dto.reason || null,
-      dto.fromDepartmentId || null,
       dto.toDepartmentId || null,
-      dto.fromUserId || null,
       dto.toUserId || null,
     );
     const result = await this.createHandler.execute(cmd);

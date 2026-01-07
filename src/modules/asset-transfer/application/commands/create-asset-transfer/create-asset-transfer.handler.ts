@@ -20,10 +20,11 @@ export class CreateAssetTransferHandler {
     private readonly transferRepo: IAssetTransferRepository,
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepo: IAssetRepository,
-  ) {}
+  ) { }
 
   async execute(cmd: CreateAssetTransferCommand): Promise<AssetTransfer> {
     const asset = await this.assetRepo.findById(cmd.assetId);
+    console.log('dajdkas', asset)
     if (!asset) {
       throw new UseCaseException(
         `Asset with id ${cmd.assetId} not found`,
@@ -32,13 +33,13 @@ export class CreateAssetTransferHandler {
     }
 
     // Check if asset is already in a pending transfer?
-    const hasPending = await this.transferRepo.hasPendingTransfer(cmd.assetId);
-    if (hasPending) {
-      throw new UseCaseException(
-        `Asset ${cmd.assetId} already has a pending transfer`,
-        CreateAssetTransferCommand.name,
-      );
-    }
+    // const hasPending = await this.transferRepo.hasPendingTransfer(cmd.assetId);
+    // if (hasPending) {
+    //   throw new UseCaseException(
+    //     `Asset ${cmd.assetId} already has a pending transfer`,
+    //     CreateAssetTransferCommand.name,
+    //   );
+    // }
 
     const id = this.idGenerator.generate();
     const transfer = AssetTransfer.builder(
@@ -48,9 +49,9 @@ export class CreateAssetTransferHandler {
       cmd.transferType,
     )
       .onDate(cmd.transferDate)
-      .fromDepartment(cmd.fromDepartmentId)
+      .fromDepartment(asset.currentDepartmentId)
       .toDepartment(cmd.toDepartmentId)
-      .fromUser(cmd.fromUserId)
+      .fromUser(asset.currentUserId)
       .toUser(cmd.toUserId)
       .withReason(cmd.reason)
       .build();

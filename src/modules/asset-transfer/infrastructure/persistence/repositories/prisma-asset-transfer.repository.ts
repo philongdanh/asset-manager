@@ -11,7 +11,7 @@ import { AssetTransferMapper } from '../mappers/asset-transfer.mapper';
 
 @Injectable()
 export class PrismaAssetTransferRepository implements IAssetTransferRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async findById(id: string): Promise<AssetTransfer | null> {
     const raw = await this.prisma.assetTransfer.findUnique({
@@ -110,14 +110,19 @@ export class PrismaAssetTransferRepository implements IAssetTransferRepository {
       };
     }
 
+    // const [data, total] = await Promise.all([
+    //   this.prisma.assetTransfer.findMany({
+    //     where,
+    //     take: options?.limit,
+    //     skip: options?.offset,
+    //     orderBy: { transferDate: 'desc' },
+    //   }),
+    //   this.prisma.assetTransfer.count({ where }),
+    // ]);
+
     const [data, total] = await Promise.all([
-      this.prisma.assetTransfer.findMany({
-        where,
-        take: options?.limit,
-        skip: options?.offset,
-        orderBy: { transferDate: 'desc' },
-      }),
-      this.prisma.assetTransfer.count({ where }),
+      this.prisma.assetTransfer.findMany(),
+      this.prisma.assetTransfer.count(),
     ]);
 
     return {

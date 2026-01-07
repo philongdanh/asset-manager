@@ -2,50 +2,80 @@ import { Inject, NotFoundException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateRoleCommand } from './update-role.command';
 import { ROLE_REPOSITORY, type IRoleRepository, Role } from '../../../domain';
+import { EntityNotFoundException } from 'src/shared/domain';
+import { type IPermissionRepository, PERMISSION_REPOSITORY } from 'src/modules/permission';
+
+export class UpdateRoleResult {
+  constructor(
+    public readonly tenantId: string,
+    public readonly id: string,
+    public readonly name: string,
+    public readonly permissions: PermissionResponse[],
+  ) { }
+}
+
+class PermissionResponse {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+  ) { }
+}
 
 @CommandHandler(UpdateRoleCommand)
-export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand> {
+export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, void> {
   constructor(
     @Inject(ROLE_REPOSITORY)
-    private readonly roleRepository: IRoleRepository,
-  ) {}
+    private readonly roleRepo: IRoleRepository,
+    @Inject(PERMISSION_REPOSITORY)
+    private readonly permRepo: IPermissionRepository,
+  ) { }
 
-  async execute(command: UpdateRoleCommand): Promise<Role> {
-    const role = await this.roleRepository.findById(
-      command.roleId,
-      command.organizationId,
+  async execute(cmd: UpdateRoleCommand): Promise<void> {
+    const role = await this.roleRepo.findById(
+      cmd.id,
+      cmd.tenantId,
     );
     if (!role) {
-      throw new NotFoundException(`Role with ID ${command.roleId} not found`);
+      throw new EntityNotFoundException(`Role with ID ${cmd.id} not found`, UpdateRoleCommand.name);
     }
 
-    if (command.name !== undefined) {
-      role.name = command.name;
+    if (cmd.name !== undefined) {
+      role.name = cmd.name;
     }
 
-    if (command.permissionIds !== undefined) {
+    if (cmd.permissionIds !== undefined) {
       // Get current permissions
-      const currentPermissions = await this.roleRepository.getRolePermissions(
-        command.roleId,
+      const currentPermissions = await this.roleRepo.getRolePermissions(
+        cmd.id,
       );
 
       // Remove permissions that are no longer in the list
       const toRemove = currentPermissions.filter(
-        (id) => !command.permissionIds!.includes(id),
+        (id) => !cmd.permissionIds!.includes(id),
       );
       if (toRemove.length > 0) {
-        await this.roleRepository.removePermissions(command.roleId, toRemove);
+        await this.roleRepo.removePermissions(cmd.id, toRemove);
       }
 
       // Add new permissions
-      const toAdd = command.permissionIds.filter(
+      const toAdd = cmd.permissionIds.filter(
         (id) => !currentPermissions.includes(id),
       );
       if (toAdd.length > 0) {
-        await this.roleRepository.assignPermissions(command.roleId, toAdd);
+        await this.roleRepo.assignPermissions(cmd.id, toAdd);
       }
     }
 
-    return this.roleRepository.save(role);
+    const savedRole = await this.roleRepo.save(role);
+    const permissions = await this.roleRepo.assignPermissions(cmd.id, cmd.permissionIds!);
+    // return new UpdateRoleResult(
+    //   savedRole.tenantId,
+    //   savedRole.id,
+    //   savedRole.name,
+    //   savedRole.permissions.map((permission) => new PermissionResponse(
+    //     permission.id,
+    //     permission.name,
+    //   )),
+    // );
   }
 }

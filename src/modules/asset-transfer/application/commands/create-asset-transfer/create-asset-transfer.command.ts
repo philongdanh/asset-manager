@@ -7,9 +7,7 @@ export class CreateAssetTransferCommand {
     public readonly transferType: AssetTransferType,
     public readonly transferDate: Date,
     public readonly reason: string | null,
-    public readonly fromDepartmentId: string | null,
     public readonly toDepartmentId: string | null,
-    public readonly fromUserId: string | null,
     public readonly toUserId: string | null,
-  ) {}
+  ) { }
 }

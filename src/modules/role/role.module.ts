@@ -13,6 +13,7 @@ import {
   GetRoleDetailsHandler,
 } from './application';
 import { RoleController } from './presentation';
+import { PERMISSION_REPOSITORY, PermissionModule, PrismaPermissionRepository } from '../permission';
 
 const CommandHandlers = [
   CreateRoleHandler,
@@ -22,7 +23,7 @@ const CommandHandlers = [
 const QueryHandlers = [GetRolesHandler, GetRoleDetailsHandler];
 
 @Module({
-  imports: [CqrsModule],
+  imports: [CqrsModule, PermissionModule],
   controllers: [RoleController],
   providers: [
     PrismaService,
@@ -34,8 +35,12 @@ const QueryHandlers = [GetRolesHandler, GetRoleDetailsHandler];
       provide: ROLE_REPOSITORY,
       useClass: PrismaRoleRepository,
     },
+    {
+      provide: PERMISSION_REPOSITORY,
+      useClass: PrismaPermissionRepository,
+    },
     ...CommandHandlers,
     ...QueryHandlers,
   ],
 })
-export class RoleModule {}
+export class RoleModule { }

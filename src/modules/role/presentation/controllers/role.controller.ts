@@ -35,7 +35,7 @@ export class RoleController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @Permissions('ROLE_VIEW')
   @Get()
@@ -62,7 +62,7 @@ export class RoleController {
       new GetRolesQuery(query.organizationId),
     );
     return {
-      data: result.data.map((role) => new RoleResponse(role)),
+      data: result.data.map((role) => new RoleResponse(role, [])),
       total: result.total,
     };
   }
@@ -78,10 +78,10 @@ export class RoleController {
       // Should not happen if auth middleware works correctly for non-root users
       throw new BadRequestException('User does not belong to any organization');
     }
-    const role: Role = await this.queryBus.execute(
+    const { role, permissions } = await this.queryBus.execute(
       new GetRoleDetailsQuery(id, orgId || undefined),
     );
-    return new RoleResponse(role);
+    return new RoleResponse(role, permissions);
   }
 
   @HttpCode(HttpStatus.CREATED)
@@ -112,37 +112,37 @@ export class RoleController {
       dto.permissionIds,
     );
     const role: Role = await this.commandBus.execute(cmd);
-    return new RoleResponse(role);
+    return new RoleResponse(role, []);
   }
 
   @Permissions('ROLE_UPDATE')
   @Patch(':id')
   async update(
+    @CurrentUser() user: JwtPayload,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateRoleRequest,
-    @CurrentUser() user: JwtPayload,
   ): Promise<RoleResponse> {
-    const orgId = user.isRoot ? undefined : user.organizationId;
-    if (!user.isRoot && !orgId) {
+    if (!user.organizationId) {
       throw new BadRequestException('User does not belong to any organization');
     }
+    const orgId = user.organizationId;
 
     const cmd = new UpdateRoleCommand(
+      orgId,
       id,
       dto.name,
       dto.permissionIds,
-      orgId || undefined,
     );
     const role: Role = await this.commandBus.execute(cmd);
-    return new RoleResponse(role);
+    return new RoleResponse(role, []);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Permissions('ROLE_DELETE')
   @Delete(':id')
   async delete(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @CurrentUser() user: JwtPayload,
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
     const orgId = user.isRoot ? undefined : user.organizationId;
     if (!user.isRoot && !orgId) {

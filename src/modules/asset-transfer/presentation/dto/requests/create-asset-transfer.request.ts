@@ -35,20 +35,10 @@ export class CreateAssetTransferRequest {
   @IsOptional()
   reason: string | null;
 
-  @Expose({ name: 'from_department_id' })
-  @IsUUID('4')
-  @IsOptional()
-  fromDepartmentId: string | null;
-
   @Expose({ name: 'to_department_id' })
   @IsUUID('4')
   @IsOptional()
   toDepartmentId: string | null;
-
-  @Expose({ name: 'from_user_id' })
-  @IsUUID('4')
-  @IsOptional()
-  fromUserId: string | null;
 
   @Expose({ name: 'to_user_id' })
   @IsUUID('4')

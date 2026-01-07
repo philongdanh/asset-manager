@@ -11,7 +11,7 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaAssetRepository implements IAssetRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findByStatus(
     organizationId: string,
@@ -144,12 +144,12 @@ export class PrismaAssetRepository implements IAssetRepository {
   }
 
   async findById(assetId: string): Promise<Asset | null> {
-    const raw = await this.prisma.asset.findUnique({
+    const raw = await this.prisma.asset.findFirst({
       where: {
         id: assetId,
-        deletedAt: null,
       },
     });
+    console.log('raw', raw)
     return raw ? AssetMapper.toDomain(raw) : null;
   }
 
