@@ -45,8 +45,8 @@ export class AssetController {
   @Permissions('ASSET_CREATE')
   @Post()
   async create(
-    @Body() dto: CreateAssetRequest,
     @CurrentUser() user: JwtPayload,
+    @Body() dto: CreateAssetRequest,
   ): Promise<AssetResponse> {
     const userId = user.id;
     const organizationId = user.isRoot
@@ -118,9 +118,15 @@ export class AssetController {
   @Permissions('ASSET_DELETE')
   @Delete(':id')
   async delete(
+    @CurrentUser() user: JwtPayload,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
-    const cmd = new DeleteAssetCommand(id);
+    if (!user.organizationId) {
+      throw new BadRequestException(
+        'Current user is not assigned to any organization',
+      );
+    }
+    const cmd = new DeleteAssetCommand(user.organizationId, user.id, id);
     await this.deleteHandler.execute(cmd);
   }
 
