@@ -1,5 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { AssetDepreciation, DepreciationMethod } from '../../../domain';
+import type { AssetDepreciationResult } from '../../../application/dtos/asset-depreciation.result';
 
 @Exclude()
 export class AssetDepreciationResponse {
@@ -36,17 +37,37 @@ export class AssetDepreciationResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
-  constructor(entity: AssetDepreciation) {
-    this.id = entity.id;
-    this.assetId = entity.assetId;
-    this.organizationId = entity.organizationId;
-    this.depreciationDate = entity.depreciationDate;
-    this.method = entity.method;
-    this.depreciationValue = entity.depreciationValue;
-    this.accumulatedDepreciation = entity.accumulatedDepreciation;
-    this.remainingValue = entity.remainingValue;
-    this.accountingEntryId = entity.accountingEntryId;
-    this.createdAt = entity.createdAt!;
-    this.updatedAt = entity.updatedAt!;
+  @Expose()
+  asset: any | null;
+
+  @Expose()
+  organization: any | null;
+
+  constructor(result: AssetDepreciationResult) {
+    const { depreciation, asset, organization } = result;
+
+    this.id = depreciation.id;
+    this.assetId = depreciation.assetId;
+    this.organizationId = depreciation.organizationId;
+    this.depreciationDate = depreciation.depreciationDate;
+    this.method = depreciation.method;
+    this.depreciationValue = depreciation.depreciationValue;
+    this.accumulatedDepreciation = depreciation.accumulatedDepreciation;
+    this.remainingValue = depreciation.remainingValue;
+    this.accountingEntryId = depreciation.accountingEntryId;
+    this.createdAt = depreciation.createdAt!;
+    this.updatedAt = depreciation.updatedAt!;
+
+    this.asset = asset
+      ? {
+        id: asset.id,
+        asset_code: asset.assetCode,
+        asset_name: asset.assetName,
+      }
+      : null;
+
+    this.organization = organization
+      ? { id: organization.id, name: organization.name }
+      : null;
   }
 }

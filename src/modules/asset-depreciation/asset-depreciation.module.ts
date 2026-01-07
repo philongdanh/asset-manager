@@ -12,6 +12,8 @@ import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
 import { ASSET_REPOSITORY } from '../asset/domain';
 import { PrismaAssetRepository } from '../asset/infrastructure/persistence/repositories/prisma-asset.repository';
+import { ORGANIZATION_REPOSITORY } from '../organization/domain';
+import { PrismaOrganizationRepository } from '../organization/infrastructure/persistence/repositories/prisma-organization.repository';
 
 const handlers: Provider[] = [
   RecordDepreciationHandler,
@@ -35,8 +37,12 @@ const handlers: Provider[] = [
       provide: ASSET_REPOSITORY,
       useClass: PrismaAssetRepository,
     },
+    {
+      provide: ORGANIZATION_REPOSITORY,
+      useClass: PrismaOrganizationRepository,
+    },
     ...handlers,
   ],
   exports: [ASSET_DEPRECIATION_REPOSITORY],
 })
-export class AssetDepreciationModule {}
+export class AssetDepreciationModule { }

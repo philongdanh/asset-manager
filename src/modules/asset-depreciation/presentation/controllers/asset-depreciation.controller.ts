@@ -17,7 +17,9 @@ import {
   GetAssetDepreciationsHandler,
   GetAssetDepreciationDetailsHandler,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { AssetDepreciationResult } from '../../application/dtos/asset-depreciation.result';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from '../../../auth/presentation/interfaces/jwt-payload.interface';
 import { AssetDepreciation } from '../../domain';
 import { AssetDepreciationResponse, RecordDepreciationRequest } from '../dto';
 
@@ -27,7 +29,7 @@ export class AssetDepreciationController {
     private readonly recordHandler: RecordDepreciationHandler,
     private readonly getListHandler: GetAssetDepreciationsHandler,
     private readonly getDetailsHandler: GetAssetDepreciationDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DEPRECIATION_CREATE')
@@ -45,18 +47,27 @@ export class AssetDepreciationController {
       dto.remainingValue,
     );
     const result = await this.recordHandler.execute(cmd);
-    return this.toResponse(result);
+    return this.toResponse({
+      depreciation: result,
+      asset: null,
+      organization: null,
+    });
   }
 
   @Permissions('DEPRECIATION_VIEW')
   @Get()
   async getList(
     @Query('organizationId') organizationId: string,
-    @Query('assetId') assetId?: string,
-    @Query('limit') limit?: number,
-    @Query('offset') offset?: number,
+    @Query('assetId') assetId: string,
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+    @CurrentUser() user: JwtPayload,
   ): Promise<{ data: AssetDepreciationResponse[]; total: number }> {
-    const q = new GetAssetDepreciationsQuery(organizationId || '', {
+    const orgId = user.isRoot
+      ? organizationId || ''
+      : user.organizationId || '';
+
+    const q = new GetAssetDepreciationsQuery(orgId, {
       assetId,
       limit,
       offset,
@@ -78,7 +89,9 @@ export class AssetDepreciationController {
     return this.toResponse(result);
   }
 
-  private toResponse(entity: AssetDepreciation): AssetDepreciationResponse {
-    return new AssetDepreciationResponse(entity);
+  private toResponse(
+    result: AssetDepreciationResult,
+  ): AssetDepreciationResponse {
+    return new AssetDepreciationResponse(result);
   }
 }
