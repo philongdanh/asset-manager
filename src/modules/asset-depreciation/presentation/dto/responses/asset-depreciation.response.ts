@@ -28,6 +28,9 @@ export class AssetDepreciationResponse {
   @Expose({ name: 'remaining_value' })
   remainingValue: number;
 
+  @Expose({ name: 'depreciation_percentage' })
+  depreciationPercentage: number | null;
+
   @Expose({ name: 'accounting_entry_id' })
   accountingEntryId: string | null;
 
@@ -52,10 +55,18 @@ export class AssetDepreciationResponse {
     this.depreciationDate = depreciation.depreciationDate;
     this.method = depreciation.method;
     this.depreciationValue = depreciation.depreciationValue;
+    this.depreciationValue = depreciation.depreciationValue;
     this.accumulatedDepreciation = depreciation.accumulatedDepreciation;
     this.remainingValue = depreciation.remainingValue;
     this.accountingEntryId = depreciation.accountingEntryId;
     this.createdAt = depreciation.createdAt!;
+
+    this.depreciationPercentage =
+      asset && asset.originalCost > 0
+        ? Number(
+          ((depreciation.accumulatedDepreciation / asset.originalCost) * 100).toFixed(2),
+        )
+        : null;
     this.updatedAt = depreciation.updatedAt!;
 
     this.asset = asset
