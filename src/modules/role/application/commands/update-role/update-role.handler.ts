@@ -8,10 +8,10 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand> {
   constructor(
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepository: IRoleRepository,
-  ) {}
+  ) { }
 
   async execute(command: UpdateRoleCommand): Promise<Role> {
-    const role = await this.roleRepository.findById(command.roleId);
+    const role = await this.roleRepository.findById(command.roleId, command.organizationId);
     if (!role) {
       throw new NotFoundException(`Role with ID ${command.roleId} not found`);
     }

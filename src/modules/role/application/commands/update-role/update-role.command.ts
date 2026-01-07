@@ -3,5 +3,6 @@ export class UpdateRoleCommand {
     public readonly roleId: string,
     public readonly name?: string,
     public readonly permissionIds?: string[],
-  ) {}
+    public readonly organizationId?: string,
+  ) { }
 }

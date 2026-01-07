@@ -40,10 +40,22 @@ export class RoleController {
   @Permissions('ROLE_VIEW')
   @Get()
   async getList(
+    @CurrentUser() user: JwtPayload,
     @Query() query: GetRolesRequest,
   ): Promise<{ data: RoleResponse[]; total: number }> {
+    if (user.isRoot) {
+      if (!query.organizationId) {
+        throw new BadRequestException('Organization ID is required for root users');
+      }
+    } else {
+      if (!user.organizationId) {
+        throw new BadRequestException('User does not belong to any organization');
+      }
+      query.organizationId = user.organizationId;
+    }
+
     const result: { data: Role[]; total: number } = await this.queryBus.execute(
-      new GetRolesQuery(query.organizationId || ''),
+      new GetRolesQuery(query.organizationId),
     );
     return {
       data: result.data.map((role) => new RoleResponse(role)),
@@ -55,8 +67,16 @@ export class RoleController {
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<RoleResponse> {
-    const role: Role = await this.queryBus.execute(new GetRoleDetailsQuery(id));
+    const orgId = user.isRoot ? undefined : user.organizationId;
+    if (!user.isRoot && !orgId) {
+      // Should not happen if auth middleware works correctly for non-root users
+      throw new BadRequestException('User does not belong to any organization');
+    }
+    const role: Role = await this.queryBus.execute(
+      new GetRoleDetailsQuery(id, orgId || undefined),
+    );
     return new RoleResponse(role);
   }
 
@@ -92,8 +112,19 @@ export class RoleController {
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateRoleRequest,
+    @CurrentUser() user: JwtPayload,
   ): Promise<RoleResponse> {
-    const cmd = new UpdateRoleCommand(id, dto.name, dto.permissionIds);
+    const orgId = user.isRoot ? undefined : user.organizationId;
+    if (!user.isRoot && !orgId) {
+      throw new BadRequestException('User does not belong to any organization');
+    }
+
+    const cmd = new UpdateRoleCommand(
+      id,
+      dto.name,
+      dto.permissionIds,
+      orgId || undefined,
+    );
     const role: Role = await this.commandBus.execute(cmd);
     return new RoleResponse(role);
   }

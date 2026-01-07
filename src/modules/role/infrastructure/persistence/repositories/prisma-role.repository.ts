@@ -6,7 +6,7 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaRoleRepository implements IRoleRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   // --- Query Methods ---
   async find(organizationId: string): Promise<{ data: Role[]; total: number }> {
@@ -34,8 +34,35 @@ export class PrismaRoleRepository implements IRoleRepository {
     };
   }
 
-  async findById(roleId: string): Promise<Role | null> {
+  async findById(roleId: string, organizationId?: string): Promise<Role | null> {
+    const where: Prisma.RoleWhereInput = { id: roleId };
+    if (organizationId) {
+      where.organizationId = organizationId;
+    }
     const role = await this.prisma.role.findUnique({
+      where: { id: roleId }, // findUnique only works with unique constraints. To check orgId, use findFirst with strict condition or check after fetch.
+      // Correction: Prisma findUnique only allows unique fields in where. I cannot pass organizationId strictly in where of findUnique.
+      // Better approach: use findFirst if organizationId is present, or findUnique if not. But findFirst is safer for generic where.
+    });
+
+    // Strategy 2: Fetch by ID then check OrganizationID in application layer or use findFirst.
+    // Using findFirst is cleaner for "WHERE id = ? AND organizationId = ?" style.
+    if (organizationId) {
+      const roleScoped = await this.prisma.role.findFirst({
+        where: { id: roleId, organizationId },
+        include: {
+          rolePermissions: {
+            include: {
+              permission: true
+            }
+          }
+        }
+      });
+      return roleScoped ? RoleMapper.toDomain(roleScoped) : null;
+    }
+
+    // Default behavior if no organizationId passed (Root user or unsafe context) - Fallback to original findUnique
+    const roleUnscoped = await this.prisma.role.findUnique({
       where: { id: roleId },
       include: {
         rolePermissions: {
@@ -45,8 +72,9 @@ export class PrismaRoleRepository implements IRoleRepository {
         },
       },
     });
-    return role ? RoleMapper.toDomain(role) : null;
+    return roleUnscoped ? RoleMapper.toDomain(roleUnscoped) : null;
   }
+
 
   async findByUserId(userId: string): Promise<Role[]> {
     const userRoles = await this.prisma.userRole.findMany({
