@@ -26,7 +26,8 @@ import {
   GetAssetTransferDetailsHandler,
   GetAssetTransfersHandler,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 import { AssetTransfer } from '../../domain';
 import {
   AssetTransferResponse,
@@ -72,12 +73,11 @@ export class AssetTransferController {
   @Patch(':id/approve')
   async approve(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @Query('userId') userId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetTransferResponse> {
-    const approverId = userId || '00000000-0000-0000-0000-000000000000';
-    const cmd = new ApproveAssetTransferCommand(id, approverId);
+    const cmd = new ApproveAssetTransferCommand(id, user.id);
     const result = await this.approveHandler.execute(cmd);
-    return this.toResponseFromEntity(result);
+    return this.toResponse(result);
   }
 
   @Permissions('TRANSFER_APPROVE')
@@ -85,10 +85,9 @@ export class AssetTransferController {
   async reject(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: RejectAssetTransferRequest,
-    @Query('userId') userId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetTransferResponse> {
-    const rejectorId = userId || '00000000-0000-0000-0000-000000000000';
-    const cmd = new RejectAssetTransferCommand(id, rejectorId, dto.reason);
+    const cmd = new RejectAssetTransferCommand(id, user.id, dto.reason);
     const result = await this.rejectHandler.execute(cmd);
     return this.toResponseFromEntity(result);
   }
