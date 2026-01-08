@@ -33,7 +33,6 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, voi
   async execute(cmd: UpdateRoleCommand): Promise<void> {
     const role = await this.roleRepo.findById(
       cmd.id,
-      cmd.tenantId,
     );
     if (!role) {
       throw new EntityNotFoundException(`Role with ID ${cmd.id} not found`, UpdateRoleCommand.name);

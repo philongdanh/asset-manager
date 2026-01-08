@@ -1,18 +1,19 @@
-import { IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsUUID } from 'class-validator';
 import { Expose } from 'class-transformer';
 
 export class CreateInventoryCheckRequest {
   @Expose({ name: 'organization_id' })
+  @IsOptional()
   @IsUUID('4')
-  organizationId: string;
+  organizationId?: string;
 
-  @Expose({ name: 'inventory_date' })
+  @Expose()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @Expose({ name: 'check_date' })
   @IsOptional()
   @IsString()
   inventoryDate?: string;
-
-  @Expose()
-  @IsOptional()
-  @IsString()
-  notes?: string;
 }

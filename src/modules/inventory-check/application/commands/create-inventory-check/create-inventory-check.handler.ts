@@ -6,6 +6,15 @@ import {
   InventoryCheck,
 } from 'src/modules/inventory-check/domain';
 import { CreateInventoryCheckCommand } from './create-inventory-check.command';
+import { InventoryCheckResult } from '../../dtos/inventory-check.result';
+import {
+  ORGANIZATION_REPOSITORY,
+  type IOrganizationRepository,
+} from 'src/modules/organization/domain';
+import {
+  USER_REPOSITORY,
+  type IUserRepository,
+} from 'src/modules/user/domain';
 
 @Injectable()
 export class CreateInventoryCheckHandler {
@@ -13,9 +22,15 @@ export class CreateInventoryCheckHandler {
     @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
     @Inject(INVENTORY_CHECK_REPOSITORY)
     private readonly repository: IInventoryCheckRepository,
-  ) {}
+    @Inject(ORGANIZATION_REPOSITORY)
+    private readonly organizationRepository: IOrganizationRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepository: IUserRepository,
+  ) { }
 
-  async execute(cmd: CreateInventoryCheckCommand): Promise<InventoryCheck> {
+  async execute(
+    cmd: CreateInventoryCheckCommand,
+  ): Promise<InventoryCheckResult> {
     const id = this.idGenerator.generate();
     const builder = InventoryCheck.builder(
       id,
@@ -23,10 +38,22 @@ export class CreateInventoryCheckHandler {
       cmd.createdByUserId,
     );
 
-    if (cmd.checkDate) builder.withCheckDate(cmd.checkDate);
-    if (cmd.notes) builder.withNotes(cmd.notes);
+    builder.withInventoryName(cmd.name);
 
-    const check = builder.build();
-    return await this.repository.save(check);
+    if (cmd.checkDate) builder.withCheckDate(cmd.checkDate);
+
+    const inventoryCheck = builder.build();
+    const savedCheck = await this.repository.save(inventoryCheck);
+
+    const [organization, checkerUser] = await Promise.all([
+      this.organizationRepository.findById(savedCheck.organizationId),
+      this.userRepository.findById(savedCheck.checkerUserId),
+    ]);
+
+    return {
+      inventoryCheck: savedCheck,
+      organization,
+      checkerUser,
+    };
   }
 }

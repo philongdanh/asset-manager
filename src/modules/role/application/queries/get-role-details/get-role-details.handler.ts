@@ -18,10 +18,7 @@ export class GetRoleDetailsHandler implements IQueryHandler<GetRoleDetailsQuery>
   async execute(
     query: GetRoleDetailsQuery,
   ): Promise<{ role: Role; permissions: Permission[] }> {
-    const role = await this.roleRepository.findById(
-      query.roleId,
-      query.organizationId,
-    );
+    const role = await this.roleRepository.findById(query.roleId);
     if (!role) {
       throw new NotFoundException(`Role with ID ${query.roleId} not found`);
     }

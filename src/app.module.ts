@@ -24,6 +24,9 @@ import { BudgetPlanModule } from './modules/budget-plan';
 import { InventoryCheckModule } from './modules/inventory-check';
 import { AuditLogModule } from './modules/audit-log';
 import { FileModule } from './modules/file/file.module';
+import { SharedInfrastructureModule } from './shared/infrastructure/shared-infrastructure.module';
+import { TenantContextInterceptor } from './shared/infrastructure/context/tenant-context.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -48,6 +51,7 @@ import { FileModule } from './modules/file/file.module';
     InventoryCheckModule,
     AuditLogModule,
     FileModule,
+    SharedInfrastructureModule,
   ],
   controllers: [AppController],
   providers: [
@@ -56,6 +60,10 @@ import { FileModule } from './modules/file/file.module';
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TenantContextInterceptor,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule { }

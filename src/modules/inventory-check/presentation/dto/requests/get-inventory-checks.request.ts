@@ -3,6 +3,11 @@ import { Type } from 'class-transformer';
 import { Expose } from 'class-transformer';
 
 export class GetInventoryChecksRequest {
+  @Expose({ name: 'organization_id' })
+  @IsOptional()
+  @IsString()
+  organizationId?: string;
+
   @Expose()
   @IsOptional()
   @IsString()

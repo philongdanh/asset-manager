@@ -9,8 +9,8 @@ import {
   Patch,
   Post,
   Query,
-  Request,
   Delete,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   CreateInventoryCheckCommand,
@@ -36,7 +36,8 @@ import {
   GetInventoryCheckHandler,
   GetInventoryChecksHandler,
 } from '../../application/queries';
-import { Permissions } from 'src/modules/auth/presentation';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 import {
   CreateInventoryCheckRequest,
   GetInventoryChecksRequest,
@@ -45,8 +46,9 @@ import {
   UpdateInventoryCheckDetailsRequest,
   UpdateInventoryCheckRequest,
 } from '../dto';
-import { InventoryCheck, InventoryDetail } from '../../domain';
+import { InventoryDetail } from '../../domain';
 import { plainToInstance } from 'class-transformer';
+import { InventoryCheckResult } from '../../application/dtos/inventory-check.result';
 
 @Controller('inventory-checks')
 export class InventoryCheckController {
@@ -59,20 +61,32 @@ export class InventoryCheckController {
     private readonly getListHandler: GetInventoryChecksHandler,
     private readonly getHandler: GetInventoryCheckHandler,
     private readonly getDetailsHandler: GetInventoryCheckDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('INVENTORY_CREATE')
   @Post()
   async create(
     @Body() dto: CreateInventoryCheckRequest,
-    @Request() req: { user: { id: string } },
+    @CurrentUser() user: JwtPayload,
   ): Promise<InventoryCheckResponse> {
+    const organizationId = user.isRoot
+      ? dto.organizationId
+      : user.organizationId;
+
+    if (!organizationId) {
+      throw new BadRequestException(
+        user.isRoot
+          ? 'Organization ID is required'
+          : 'Current user is not assigned to any organization',
+      );
+    }
+
     const cmd = new CreateInventoryCheckCommand(
-      dto.organizationId,
-      req.user.id,
+      organizationId,
+      user.id,
+      dto.name,
       dto.inventoryDate ? new Date(dto.inventoryDate) : undefined,
-      dto.notes,
     );
     const result = await this.createHandler.execute(cmd);
     return this.toResponse(result);
@@ -86,7 +100,7 @@ export class InventoryCheckController {
   ): Promise<InventoryCheckResponse> {
     const cmd = new UpdateInventoryCheckCommand(
       id,
-      dto.notes,
+      dto.name,
       dto.status,
       dto.inventoryDate ? new Date(dto.inventoryDate) : undefined,
     );
@@ -119,9 +133,21 @@ export class InventoryCheckController {
   @Get()
   async getList(
     @Query() query: GetInventoryChecksRequest,
-    @Query('organizationId') organizationId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<{ data: InventoryCheckResponse[]; total: number }> {
-    const q = new GetInventoryChecksQuery(organizationId || '', {
+    const organizationId = user.isRoot
+      ? query.organizationId
+      : user.organizationId;
+
+    if (!organizationId) {
+      throw new BadRequestException(
+        user.isRoot
+          ? 'Organization ID is required'
+          : 'Current user is not assigned to any organization',
+      );
+    }
+
+    const q = new GetInventoryChecksQuery(organizationId, {
       status: query.status,
       startDate: query.startDate ? new Date(query.startDate) : undefined,
       endDate: query.endDate ? new Date(query.endDate) : undefined,
@@ -140,9 +166,19 @@ export class InventoryCheckController {
   @Get(':id')
   async get(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<InventoryCheckResponse> {
     const query = new GetInventoryCheckQuery(id);
     const result = await this.getHandler.execute(query);
+
+    // Security check for non-root users
+    if (
+      !user.isRoot &&
+      result.inventoryCheck.organizationId !== user.organizationId
+    ) {
+      throw new BadRequestException(`Inventory check with id ${id} not found`);
+    }
+
     return this.toResponse(result);
   }
 
@@ -165,10 +201,8 @@ export class InventoryCheckController {
     await this.deleteHandler.execute(new DeleteInventoryCheckCommand(id));
   }
 
-  private toResponse(entity: InventoryCheck): InventoryCheckResponse {
-    return plainToInstance(InventoryCheckResponse, entity, {
-      excludeExtraneousValues: true,
-    });
+  private toResponse(result: InventoryCheckResult): InventoryCheckResponse {
+    return new InventoryCheckResponse(result);
   }
 
   private toDetailResponse(entity: InventoryDetail): InventoryDetailResponse {

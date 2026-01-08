@@ -21,6 +21,11 @@ import {
   PrismaInventoryDetailRepository,
 } from './infrastructure';
 import { InventoryCheckController } from './presentation';
+import {
+  ORGANIZATION_REPOSITORY,
+  PrismaOrganizationRepository,
+} from '../organization';
+import { USER_REPOSITORY, PrismaUserRepository } from '../user';
 
 @Module({
   controllers: [InventoryCheckController],
@@ -38,6 +43,14 @@ import { InventoryCheckController } from './presentation';
       provide: INVENTORY_DETAIL_REPOSITORY,
       useClass: PrismaInventoryDetailRepository,
     },
+    {
+      provide: ORGANIZATION_REPOSITORY,
+      useClass: PrismaOrganizationRepository,
+    },
+    {
+      provide: USER_REPOSITORY,
+      useClass: PrismaUserRepository,
+    },
     CreateInventoryCheckHandler,
     UpdateInventoryCheckHandler,
     DeleteInventoryCheckHandler,
@@ -49,4 +62,4 @@ import { InventoryCheckController } from './presentation';
   ],
   exports: [INVENTORY_CHECK_REPOSITORY, INVENTORY_DETAIL_REPOSITORY],
 })
-export class InventoryCheckModule {}
+export class InventoryCheckModule { }
