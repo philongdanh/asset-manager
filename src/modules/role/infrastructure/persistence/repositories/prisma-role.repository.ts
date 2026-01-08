@@ -9,8 +9,7 @@ import { TenantContextService } from 'src/shared/infrastructure/context/tenant-c
 @Injectable()
 export class PrismaRoleRepository
   extends BaseRepository
-  implements IRoleRepository
-{
+  implements IRoleRepository {
   constructor(
     private readonly prisma: PrismaService,
     tenantContext: TenantContextService,
@@ -19,8 +18,12 @@ export class PrismaRoleRepository
   }
 
   // --- Query Methods ---
-  async find(): Promise<{ data: Role[]; total: number }> {
-    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({});
+  async find(filter?: {
+    organizationId?: string;
+  }): Promise<{ data: Role[]; total: number }> {
+    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({
+      organizationId: filter?.organizationId,
+    });
 
     const [data, total] = await Promise.all([
       this.prisma.role.findMany({
@@ -117,14 +120,12 @@ export class PrismaRoleRepository
 
   // --- Persistence Methods ---
   async save(role: Role): Promise<Role> {
-    // Ensure the domain object has the correct organizationId from context if not already set
-    if (!role.organizationId) {
-      const tenantId = this.tenantContext.getTenantId();
-      if (tenantId) {
-        // Technically domain objects should be immutable, but here we're ensuring persistence safety.
-        // Assuming Role has a way to set organizationId or it's handled in the mapper.
-        (role as any).organizationId = tenantId;
-      }
+    // Ensure the domain object has the correct organizationId from context
+    const tenantId = this.tenantContext.getTenantId();
+    if (tenantId) {
+      // Technically domain objects should be immutable, but here we're ensuring persistence safety.
+      // Assuming Role has a way to set organizationId or it's handled in the mapper.
+      (role as any).organizationId = tenantId;
     }
 
     const upsertArgs = RoleMapper.toUpsertArgs(role);

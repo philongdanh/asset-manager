@@ -35,7 +35,7 @@ export class RoleController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) {}
+  ) { }
 
   @Permissions('ROLE_VIEW')
   @Get()
@@ -43,20 +43,13 @@ export class RoleController {
     @CurrentUser() user: JwtPayload,
     @Query() query: GetRolesRequest,
   ): Promise<{ data: RoleResponse[]; total: number }> {
-    if (user.isRoot) {
-      if (!query.organizationId) {
-        throw new BadRequestException(
-          'Organization ID is required for root users',
-        );
-      }
-    } else {
-      if (!user.organizationId) {
-        throw new BadRequestException(
-          'User does not belong to any organization',
-        );
-      }
-      query.organizationId = user.organizationId;
+    if (user.isRoot && !query.organizationId) {
+      throw new BadRequestException(
+        'Organization ID is required for root users',
+      );
     }
+    // For non-root users, the repository will automatically filter by their organization
+    // via TenantContext, overriding any organizationId passed in the query.
 
     const result: { data: Role[]; total: number } = await this.queryBus.execute(
       new GetRolesQuery(query.organizationId),
@@ -71,15 +64,9 @@ export class RoleController {
   @Get(':id')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-    @CurrentUser() user: JwtPayload,
   ): Promise<RoleResponse> {
-    const orgId = user.isRoot ? undefined : user.organizationId;
-    if (!user.isRoot && !orgId) {
-      // Should not happen if auth middleware works correctly for non-root users
-      throw new BadRequestException('User does not belong to any organization');
-    }
     const { role, permissions } = await this.queryBus.execute(
-      new GetRoleDetailsQuery(id, orgId || undefined),
+      new GetRoleDetailsQuery(id),
     );
     return new RoleResponse(role, permissions);
   }
@@ -91,23 +78,21 @@ export class RoleController {
     @CurrentUser() user: JwtPayload,
     @Body() dto: CreateRoleRequest,
   ): Promise<RoleResponse> {
-    if (user.isRoot) {
-      if (!dto.organizationId) {
-        throw new BadRequestException(
-          'Organization ID is required for root users',
-        );
-      }
-    } else {
-      if (!user.organizationId) {
-        throw new BadRequestException(
-          'User does not belong to any organization',
-        );
-      }
-      dto.organizationId = user.organizationId;
+    if (user.isRoot && !dto.organizationId) {
+      throw new BadRequestException(
+        'Organization ID is required for root users',
+      );
+    }
+    // For non-root users, we use their organizationId.
+    const orgId = user.isRoot ? dto.organizationId : user.organizationId;
+
+    if (!orgId) {
+      // Should catch if create request comes from user without org (unlikely if guarded)
+      throw new BadRequestException('Organization ID is missing');
     }
 
     const cmd = new CreateRoleCommand(
-      dto.organizationId,
+      orgId,
       dto.name,
       dto.permissionIds,
     );
@@ -118,16 +103,10 @@ export class RoleController {
   @Permissions('ROLE_UPDATE')
   @Patch(':id')
   async update(
-    @CurrentUser() user: JwtPayload,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateRoleRequest,
   ): Promise<RoleResponse> {
-    if (!user.organizationId) {
-      throw new BadRequestException('User does not belong to any organization');
-    }
-    const orgId = user.organizationId;
-
-    const cmd = new UpdateRoleCommand(orgId, id, dto.name, dto.permissionIds);
+    const cmd = new UpdateRoleCommand(id, dto.name, dto.permissionIds);
     const role: Role = await this.commandBus.execute(cmd);
     return new RoleResponse(role, []);
   }
@@ -136,15 +115,8 @@ export class RoleController {
   @Permissions('ROLE_DELETE')
   @Delete(':id')
   async delete(
-    @CurrentUser() user: JwtPayload,
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
   ): Promise<void> {
-    const orgId = user.isRoot ? undefined : user.organizationId;
-    if (!user.isRoot && !orgId) {
-      throw new BadRequestException('User does not belong to any organization');
-    }
-    await this.commandBus.execute(
-      new DeleteRoleCommand(id, orgId || undefined),
-    );
+    await this.commandBus.execute(new DeleteRoleCommand(id));
   }
 }

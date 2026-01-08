@@ -4,7 +4,9 @@ export const ROLE_REPOSITORY = Symbol('ROLE_REPOSITORY');
 
 export interface IRoleRepository {
   // --- Query Methods ---
-  find(): Promise<{ data: Role[]; total: number }>;
+  find(filter?: {
+    organizationId?: string;
+  }): Promise<{ data: Role[]; total: number }>;
   findById(roleId: string): Promise<Role | null>;
   findByUserId(userId: string): Promise<Role[]>;
   findByPermission(permissionId: string): Promise<Role[]>;

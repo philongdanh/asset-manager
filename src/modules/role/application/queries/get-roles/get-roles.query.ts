@@ -1,3 +1,3 @@
 export class GetRolesQuery {
-  constructor(public readonly organizationId: string) {}
+  constructor(public readonly organizationId?: string) { }
 }
