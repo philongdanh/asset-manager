@@ -155,6 +155,7 @@ export class InventoryCheckController {
       endDate: query.endDate ? new Date(query.endDate) : undefined,
       limit: query.limit,
       offset: query.offset,
+      assetIds: query.assetIds,
     });
 
     const result = await this.getListHandler.execute(q);

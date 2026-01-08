@@ -10,6 +10,10 @@ import {
   type IOrganizationRepository,
 } from 'src/modules/organization/domain';
 import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
+import {
+  ASSET_REPOSITORY,
+  type IAssetRepository,
+} from 'src/modules/asset/domain';
 
 @Injectable()
 export class GetInventoryChecksHandler {
@@ -20,7 +24,9 @@ export class GetInventoryChecksHandler {
     private readonly organizationRepository: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
-  ) {}
+    @Inject(ASSET_REPOSITORY)
+    private readonly assetRepository: IAssetRepository,
+  ) { }
 
   async execute(
     query: GetInventoryChecksQuery,
@@ -38,10 +44,23 @@ export class GetInventoryChecksHandler {
           this.userRepository.findById(inventoryCheck.checkerUserId),
         ]);
 
+        let assets: any[] = [];
+        if (inventoryCheck.details.length > 0) {
+          const assetIds = inventoryCheck.details.map(d => d.assetId);
+          // Optimize: Fetch all assets in one go if repository supports it, 
+          // or fetch individually. Since we don't have findByIds, we loop or adding findByIds.
+          // For now, let's just fetch individually or assume we can find them.
+          // Actually, standard repo usually has findById. 
+          // A better approach is to add findByIds to AssetRepository, but for now we iterate.
+          assets = await Promise.all(assetIds.map(id => this.assetRepository.findById(id)));
+          assets = assets.filter(a => a !== null);
+        }
+
         return {
           inventoryCheck,
           organization,
           checkerUser,
+          assets,
         };
       }),
     );

@@ -33,5 +33,14 @@ export class GetInventoryChecksRequest {
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
+  @Expose()
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
   offset?: number;
+
+  @Expose({ name: 'asset_ids' })
+  @IsOptional()
+  @IsString({ each: true })
+  assetIds?: string[];
 }

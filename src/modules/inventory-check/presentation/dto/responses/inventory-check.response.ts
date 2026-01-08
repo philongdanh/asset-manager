@@ -13,6 +13,12 @@ interface CheckerUserInfo {
   email: string;
 }
 
+interface AssetInfo {
+  id: string;
+  assetCode: string;
+  assetName: string;
+}
+
 @Exclude()
 export class InventoryCheckResponse {
   @Expose()
@@ -42,8 +48,11 @@ export class InventoryCheckResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
+  @Expose()
+  assets: AssetInfo[];
+
   constructor(result: InventoryCheckResult) {
-    const { inventoryCheck, organization, checkerUser } = result;
+    const { inventoryCheck, organization, checkerUser, assets } = result;
 
     this.id = inventoryCheck.id;
     this.name = inventoryCheck.inventoryName;
@@ -63,5 +72,11 @@ export class InventoryCheckResponse {
         email: checkerUser.email,
       }
       : null;
+
+    this.assets = (assets || []).map((a) => ({
+      id: a.id,
+      assetCode: a.assetCode,
+      assetName: a.assetName,
+    }));
   }
 }

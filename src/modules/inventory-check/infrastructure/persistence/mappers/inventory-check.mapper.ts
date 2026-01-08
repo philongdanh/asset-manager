@@ -19,7 +19,11 @@ export class InventoryCheckMapper {
     builder.inventoryName = raw.inventoryName;
     if (raw.notes) builder.notes = raw.notes;
 
-    // TODO: Map details relation back to domain if included in raw query
+    // Map details if included
+    if ((raw as any).details && Array.isArray((raw as any).details)) {
+      const details = (raw as any).details.map(InventoryDetailMapper.toDomain);
+      builder.withDetails(details);
+    }
 
     return builder.build();
   }

@@ -7,6 +7,7 @@ export class GetInventoryChecksQuery {
       endDate?: Date;
       limit?: number;
       offset?: number;
+      assetIds?: string[];
     } = {},
-  ) {}
+  ) { }
 }

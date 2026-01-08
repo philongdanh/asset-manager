@@ -15,6 +15,7 @@ export interface IInventoryCheckRepository {
       endDate?: Date;
       limit?: number;
       offset?: number;
+      assetIds?: string[];
     },
   ): Promise<{ data: InventoryCheck[]; total: number }>;
 

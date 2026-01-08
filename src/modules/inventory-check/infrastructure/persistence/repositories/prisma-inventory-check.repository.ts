@@ -9,7 +9,7 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaInventoryCheckRepository implements IInventoryCheckRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async findById(id: string): Promise<InventoryCheck | null> {
     const raw = await this.prisma.inventoryCheck.findUnique({ where: { id } });
@@ -24,6 +24,7 @@ export class PrismaInventoryCheckRepository implements IInventoryCheckRepository
       endDate?: Date;
       limit?: number;
       offset?: number;
+      assetIds?: string[];
     },
   ): Promise<{ data: InventoryCheck[]; total: number }> {
     const where: Prisma.InventoryCheckWhereInput = { organizationId };
@@ -35,12 +36,23 @@ export class PrismaInventoryCheckRepository implements IInventoryCheckRepository
       if (options.endDate) where.inventoryDate.lte = options.endDate;
     }
 
+    if (options?.assetIds && options.assetIds.length > 0) {
+      where.details = {
+        some: {
+          assetId: { in: options.assetIds },
+        },
+      };
+    }
+
     const [raws, total] = await Promise.all([
       this.prisma.inventoryCheck.findMany({
         where,
         take: options?.limit,
         skip: options?.offset,
         orderBy: { inventoryDate: 'desc' },
+        include: {
+          details: true,
+        },
       }),
       this.prisma.inventoryCheck.count({ where }),
     ]);
