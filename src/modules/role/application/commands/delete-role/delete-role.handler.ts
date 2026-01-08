@@ -1,11 +1,11 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { DeleteRoleCommand } from './delete-role.command';
+import { DeleteRolesCommand } from './delete-role.command';
 import { ROLE_REPOSITORY, type IRoleRepository } from '../../../domain';
 
-@CommandHandler(DeleteRoleCommand)
-export class DeleteRoleHandler implements ICommandHandler<
-  DeleteRoleCommand,
+@CommandHandler(DeleteRolesCommand)
+export class DeleteRolesHandler implements ICommandHandler<
+  DeleteRolesCommand,
   void
 > {
   constructor(
@@ -13,7 +13,7 @@ export class DeleteRoleHandler implements ICommandHandler<
     private readonly roleRepo: IRoleRepository,
   ) {}
 
-  async execute(cmd: DeleteRoleCommand): Promise<void> {
+  async execute(cmd: DeleteRolesCommand): Promise<void> {
     await this.roleRepo.delete(cmd.ids);
   }
 }

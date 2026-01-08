@@ -8,7 +8,7 @@ import { PrismaRoleRepository } from './infrastructure';
 import {
   CreateRoleHandler,
   UpdateRoleHandler,
-  DeleteRoleHandler,
+  DeleteRolesHandler,
   GetRolesHandler,
   GetRoleDetailsHandler,
 } from './application';
@@ -23,7 +23,7 @@ import { USER_REPOSITORY, PrismaUserRepository } from '../user';
 const CommandHandlers = [
   CreateRoleHandler,
   UpdateRoleHandler,
-  DeleteRoleHandler,
+  DeleteRolesHandler,
 ];
 const QueryHandlers = [GetRolesHandler, GetRoleDetailsHandler];
 

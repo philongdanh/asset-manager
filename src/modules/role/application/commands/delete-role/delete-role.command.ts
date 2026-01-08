@@ -1,3 +1,3 @@
-export class DeleteRoleCommand {
+export class DeleteRolesCommand {
   constructor(public readonly ids: string[]) {}
 }

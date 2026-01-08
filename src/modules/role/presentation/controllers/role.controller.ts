@@ -3,7 +3,6 @@ import {
   Post,
   Body,
   Get,
-  Query,
   Param,
   Patch,
   Delete,
@@ -15,13 +14,14 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateRoleRequest,
   UpdateRoleRequest,
+  DeleteRolesRequest,
   RoleResponse,
   RoleListResponse,
 } from '../dto';
 import {
   CreateRoleCommand,
   UpdateRoleCommand,
-  DeleteRoleCommand,
+  DeleteRolesCommand,
   GetRolesQuery,
   GetRoleDetailsQuery,
   RoleResult,
@@ -80,10 +80,8 @@ export class RoleController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @Permissions('ROLE_DELETE')
-  @Delete(':id')
-  async delete(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<void> {
-    await this.commandBus.execute(new DeleteRoleCommand(id));
+  @Delete()
+  async delete(@Body() dto: DeleteRolesRequest): Promise<void> {
+    await this.commandBus.execute(new DeleteRolesCommand(dto.ids));
   }
 }
