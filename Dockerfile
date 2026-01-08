@@ -1,6 +1,10 @@
 # Stage 1: Build
 FROM node:20-alpine AS builder
 
+ARG DATABASE_URL
+
+ENV DATABASE_URL=$DATABASE_URL
+
 WORKDIR /app
 
 # Install dependencies
@@ -9,6 +13,8 @@ RUN npm install
 
 # Copy source code and pre-generated prisma client
 COPY . .
+
+RUN npx prisma generate
 
 # Build the application
 RUN npm run build
