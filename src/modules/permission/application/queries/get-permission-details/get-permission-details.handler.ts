@@ -1,14 +1,16 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetPermissionDetailsQuery } from './get-permission-details.query';
 import {
   PERMISSION_REPOSITORY,
   type IPermissionRepository,
-  Permission,
-} from '../../../domain';
-import { PermissionResult } from '../../dtos';
-import { EntityNotFoundException } from 'src/shared/domain';
-import { type IRoleRepository, ROLE_REPOSITORY } from 'src/modules/role';
+} from 'src/modules/permission/domain/repositories/permission.repository.interface';
+import { PermissionResult } from 'src/modules/permission/application/dtos/permission.result';
+import { EntityNotFoundException } from 'src/shared/domain/exceptions/entity-not-found.exception';
+import {
+  ROLE_REPOSITORY,
+  type IRoleRepository,
+} from 'src/modules/role/domain/repositories/role.repository.interface';
 
 @QueryHandler(GetPermissionDetailsQuery)
 export class GetPermissionDetailsHandler implements IQueryHandler<

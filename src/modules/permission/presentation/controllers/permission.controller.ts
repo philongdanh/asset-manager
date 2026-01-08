@@ -1,29 +1,16 @@
+import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
+import { QueryBus } from '@nestjs/cqrs';
 import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Param,
-  Patch,
-  Delete,
-  HttpCode,
-  HttpStatus,
-  ParseUUIDPipe,
-} from '@nestjs/common';
-import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import {
-  CreatePermissionRequest,
-  UpdatePermissionRequest,
   PermissionResponse,
   PermissionListRespone,
-} from '../dto';
+} from 'src/modules/permission/presentation/dto';
+import { GetPermissionsQuery } from 'src/modules/permission/application/queries/get-permissions/get-permissions.query';
+import { GetPermissionDetailsQuery } from 'src/modules/permission/application/queries/get-permission-details/get-permission-details.query';
+import { Permissions } from 'src/modules/auth/presentation/decorators/permissions.decorator';
 import {
-  GetPermissionsQuery,
-  GetPermissionDetailsQuery,
-} from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
-import { Permission } from '../../domain';
-import { PermissionListResult, PermissionResult } from '../../application/dtos';
+  PermissionListResult,
+  PermissionResult,
+} from 'src/modules/permission/application/dtos/permission.result';
 
 @Controller('permissions')
 export class PermissionController {

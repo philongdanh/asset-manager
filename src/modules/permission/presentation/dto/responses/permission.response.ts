@@ -2,8 +2,8 @@ import { Exclude, Expose } from 'class-transformer';
 import {
   PermissionListResult,
   PermissionResult,
-} from 'src/modules/permission/application/dtos';
-import { RoleResult } from 'src/modules/role';
+} from 'src/modules/permission/application/dtos/permission.result';
+import { RoleResult } from 'src/modules/role/application/dtos/role.result';
 import { RoleResponse } from 'src/modules/role/presentation/dto/responses/role.response';
 
 @Exclude()

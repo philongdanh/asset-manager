@@ -1,13 +1,14 @@
 import { Inject } from '@nestjs/common';
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import {
   PERMISSION_REPOSITORY,
   type IPermissionRepository,
-  Permission,
-} from '../../../domain';
-
+} from 'src/modules/permission/domain/repositories/permission.repository.interface';
 import { GetPermissionsQuery } from './get-permissions.query';
-import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { PermissionListResult, PermissionResult } from '../../dtos';
+import {
+  PermissionListResult,
+  PermissionResult,
+} from 'src/modules/permission/application/dtos/permission.result';
 
 @QueryHandler(GetPermissionsQuery)
 export class GetPermissionsHandler implements IQueryHandler<

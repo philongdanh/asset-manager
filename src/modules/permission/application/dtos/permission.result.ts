@@ -1,5 +1,5 @@
-import { Permission } from 'src/modules/permission';
-import { Role } from 'src/modules/role';
+import { Permission } from 'src/modules/permission/domain/entities/permission.entity';
+import { Role } from 'src/modules/role/domain/entities/role.entity';
 
 export class PermissionResult {
   constructor(

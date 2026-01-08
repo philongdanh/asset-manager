@@ -2,7 +2,7 @@ import {
   Prisma,
   Permission as PrismaPermission,
 } from 'generated/prisma/client';
-import { Permission } from '../../../domain';
+import { Permission } from 'src/modules/permission/domain/entities/permission.entity';
 
 export class PermissionMapper {
   static toDomain(prismaPermission: PrismaPermission): Permission {
