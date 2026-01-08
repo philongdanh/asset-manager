@@ -116,12 +116,18 @@ export class PrismaRoleRepository
 
   // --- Persistence Methods ---
   async save(role: Role): Promise<Role> {
-    // Ensure the domain object has the correct organizationId from context
-    const tenantId = this.tenantContext.getTenantId();
-    if (tenantId) {
-      // Technically domain objects should be immutable, but here we're ensuring persistence safety.
-      // Assuming Role has a way to set organizationId or it's handled in the mapper.
-      (role as any).organizationId = tenantId;
+    // For update operations, verify the role belongs to current tenant
+    const existingRole = await this.prisma.role.findUnique({
+      where: { id: role.id },
+      select: { id: true, organizationId: true },
+    });
+
+    if (existingRole) {
+      // Update case: verify tenant ownership
+      const tenantId = this.tenantContext.getTenantId();
+      if (tenantId && existingRole.organizationId !== tenantId) {
+        throw new Error('Role not found or access denied');
+      }
     }
 
     const upsertArgs = RoleMapper.toUpsertArgs(role);
@@ -223,10 +229,13 @@ export class PrismaRoleRepository
     const exists = await this.existsById(roleId);
     if (!exists) throw new Error('Role not found or access denied');
 
+    // Apply tenant filter via role relation
+    const tenantFilter = this.getTenantFilter();
     await this.prisma.rolePermission.deleteMany({
       where: {
         roleId,
         permissionId: { in: permissionIds },
+        role: tenantFilter,
       },
     });
   }
@@ -257,10 +266,13 @@ export class PrismaRoleRepository
     const exists = await this.existsById(roleId);
     if (!exists) throw new Error('Role not found or access denied');
 
+    // Apply tenant filter via role relation
+    const tenantFilter = this.getTenantFilter();
     await this.prisma.userRole.deleteMany({
       where: {
         roleId,
         userId: { in: userIds },
+        role: tenantFilter,
       },
     });
   }

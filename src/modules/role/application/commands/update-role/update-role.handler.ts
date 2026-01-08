@@ -1,42 +1,24 @@
-import { Inject, NotFoundException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateRoleCommand } from './update-role.command';
-import { ROLE_REPOSITORY, type IRoleRepository, Role } from '../../../domain';
+import { ROLE_REPOSITORY, type IRoleRepository } from '../../../domain';
 import { EntityNotFoundException } from 'src/shared/domain';
 import {
   type IPermissionRepository,
   PERMISSION_REPOSITORY,
 } from 'src/modules/permission';
-
-export class UpdateRoleResult {
-  constructor(
-    public readonly tenantId: string,
-    public readonly id: string,
-    public readonly name: string,
-    public readonly permissions: PermissionResponse[],
-  ) {}
-}
-
-class PermissionResponse {
-  constructor(
-    public readonly id: string,
-    public readonly name: string,
-  ) {}
-}
+import { RoleResult } from '../../dtos';
 
 @CommandHandler(UpdateRoleCommand)
-export class UpdateRoleHandler implements ICommandHandler<
-  UpdateRoleCommand,
-  void
-> {
+export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, RoleResult> {
   constructor(
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) {}
+  ) { }
 
-  async execute(cmd: UpdateRoleCommand): Promise<void> {
+  async execute(cmd: UpdateRoleCommand): Promise<RoleResult> {
     const role = await this.roleRepo.findById(cmd.id);
     if (!role) {
       throw new EntityNotFoundException(
@@ -71,18 +53,9 @@ export class UpdateRoleHandler implements ICommandHandler<
     }
 
     const savedRole = await this.roleRepo.save(role);
-    const permissions = await this.roleRepo.assignPermissions(
-      cmd.id,
-      cmd.permissionIds!,
-    );
-    // return new UpdateRoleResult(
-    //   savedRole.tenantId,
-    //   savedRole.id,
-    //   savedRole.name,
-    //   savedRole.permissions.map((permission) => new PermissionResponse(
-    //     permission.id,
-    //     permission.name,
-    //   )),
-    // );
+    const permissions = await this.permRepo.findByRoles([savedRole.id]);
+
+    return new RoleResult(savedRole, permissions, []);
   }
 }
+

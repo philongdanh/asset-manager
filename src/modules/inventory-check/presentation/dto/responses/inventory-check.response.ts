@@ -15,18 +15,18 @@ interface CheckerUserInfo {
 
 interface AssetInfo {
   id: string;
-  assetCode: string;
-  assetName: string;
-  purchasePrice: number;
-  originalCost: number;
-  currentValue: number;
+  asset_code: string;
+  asset_name: string;
+  purchase_price: number;
+  original_cost: number;
+  current_value: number;
   status: string;
   model: string | null;
-  serialNumber: string | null;
+  serial_number: string | null;
   manufacturer: string | null;
   location: string | null;
   condition: string | null;
-  imageUrl: string | null;
+  image_url: string | null;
 }
 
 @Exclude()
@@ -85,18 +85,19 @@ export class InventoryCheckResponse {
 
     this.assets = (assets || []).map((a) => ({
       id: a.id,
-      assetCode: a.assetCode,
-      assetName: a.assetName,
-      purchasePrice: a.purchasePrice,
-      originalCost: a.originalCost,
-      currentValue: a.currentValue,
+      asset_code: a.assetCode,
+      asset_name: a.assetName,
+      purchase_price: a.purchasePrice,
+      original_cost: a.originalCost,
+      current_value: a.currentValue,
       status: a.status,
       model: a.model,
-      serialNumber: a.serialNumber,
+      serial_number: a.serialNumber,
       manufacturer: a.manufacturer,
       location: a.location,
       condition: a.condition,
-      imageUrl: a.imageUrl,
+      image_url: a.imageUrl,
     }));
   }
 }
+

@@ -1,7 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Permission } from '../../../../permission/domain/entities/permission.entity';
 import { PermissionResponse } from '../../../../permission/presentation/dto/responses/permission.response';
-import { Role } from '../../../domain';
+import { RoleResult } from '../../../application';
 
 @Exclude()
 export class RoleResponse {
@@ -23,12 +22,13 @@ export class RoleResponse {
   @Expose()
   permissions: PermissionResponse[];
 
-  constructor(role: Role, permissions: Permission[]) {
-    this.id = role.id;
-    this.name = role.name;
-    this.organizationId = role.organizationId;
-    this.createdAt = role.createdAt!;
-    this.updatedAt = role.updatedAt!;
-    this.permissions = permissions.map((p) => new PermissionResponse(p));
+  constructor(result: RoleResult) {
+    this.id = result.role.id;
+    this.name = result.role.name;
+    this.organizationId = result.role.organizationId;
+    this.createdAt = result.role.createdAt!;
+    this.updatedAt = result.role.updatedAt!;
+    this.permissions = result.permissions.map((p) => new PermissionResponse(p));
   }
 }
+
