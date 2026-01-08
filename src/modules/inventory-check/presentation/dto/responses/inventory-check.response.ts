@@ -33,6 +33,9 @@ export class InventoryCheckResponse {
   @Expose()
   status: string;
 
+  @Expose()
+  notes: string | null;
+
   @Expose({ name: 'created_at' })
   createdAt: Date;
 
@@ -46,6 +49,7 @@ export class InventoryCheckResponse {
     this.name = inventoryCheck.inventoryName;
     this.checkDate = inventoryCheck.checkDate;
     this.status = inventoryCheck.status;
+    this.notes = inventoryCheck.notes ?? null;
     this.createdAt = inventoryCheck.createdAt!;
     this.updatedAt = inventoryCheck.updatedAt!;
 
@@ -54,10 +58,10 @@ export class InventoryCheckResponse {
       : null;
     this.checkerUser = checkerUser
       ? {
-          id: checkerUser.id,
-          username: checkerUser.username,
-          email: checkerUser.email,
-        }
+        id: checkerUser.id,
+        username: checkerUser.username,
+        email: checkerUser.email,
+      }
       : null;
   }
 }

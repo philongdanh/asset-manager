@@ -23,7 +23,7 @@ export class CreateInventoryCheckHandler {
     private readonly organizationRepository: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(
     cmd: CreateInventoryCheckCommand,
@@ -38,6 +38,7 @@ export class CreateInventoryCheckHandler {
     builder.withInventoryName(cmd.name);
 
     if (cmd.checkDate) builder.withCheckDate(cmd.checkDate);
+    if (cmd.notes) builder.withNotes(cmd.notes);
 
     const inventoryCheck = builder.build();
     const savedCheck = await this.repository.save(inventoryCheck);

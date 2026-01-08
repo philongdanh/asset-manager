@@ -6,6 +6,7 @@ export class InventoryCheck extends BaseEntity {
   private _checkerUserId: string;
   private _status: string;
   private _inventoryName: string;
+  private _notes?: string;
 
   protected constructor(builder: InventoryCheckBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt);
@@ -14,6 +15,7 @@ export class InventoryCheck extends BaseEntity {
     this._checkerUserId = builder.checkerUserId;
     this._status = builder.status;
     this._inventoryName = builder.inventoryName;
+    this._notes = builder.notes;
   }
 
   // --- Getters ---
@@ -37,15 +39,20 @@ export class InventoryCheck extends BaseEntity {
     return this._inventoryName;
   }
 
+  public get notes(): string | undefined {
+    return this._notes;
+  }
+
   // --- Business Methods ---
   public finish(): void {
     this._status = 'FINISHED';
     this.markAsUpdated();
   }
 
-  public updateInfo(inventoryName?: string, checkDate?: Date): void {
+  public updateInfo(inventoryName?: string, checkDate?: Date, notes?: string): void {
     if (inventoryName !== undefined) this._inventoryName = inventoryName;
     if (checkDate !== undefined) this._checkDate = checkDate;
+    if (notes !== undefined) this._notes = notes;
     this.markAsUpdated();
   }
 
@@ -72,6 +79,7 @@ export class InventoryCheckBuilder {
   public checkDate: Date = new Date();
   public status: string = 'IN_PROGRESS';
   public inventoryName: string = '';
+  public notes?: string;
   public createdAt: Date = new Date();
   public updatedAt: Date = new Date();
 
@@ -83,6 +91,11 @@ export class InventoryCheckBuilder {
 
   public withInventoryName(name: string): this {
     this.inventoryName = name;
+    return this;
+  }
+
+  public withNotes(notes: string): this {
+    this.notes = notes;
     return this;
   }
 

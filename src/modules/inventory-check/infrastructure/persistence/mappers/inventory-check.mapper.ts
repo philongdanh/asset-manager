@@ -15,6 +15,7 @@ export class InventoryCheckMapper {
     builder.checkDate = raw.inventoryDate;
     builder.status = raw.status;
     builder.inventoryName = raw.inventoryName;
+    if (raw.notes) builder.notes = raw.notes;
 
     return builder.build();
   }
@@ -30,6 +31,7 @@ export class InventoryCheckMapper {
         createdByUserId: inventoryCheck.checkerUserId,
         status: inventoryCheck.status,
         inventoryName: inventoryCheck.inventoryName,
+        notes: inventoryCheck.notes,
         createdAt: inventoryCheck.createdAt,
         updatedAt: inventoryCheck.updatedAt,
       },

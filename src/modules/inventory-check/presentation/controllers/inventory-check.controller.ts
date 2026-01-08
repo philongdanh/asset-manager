@@ -61,7 +61,7 @@ export class InventoryCheckController {
     private readonly getListHandler: GetInventoryChecksHandler,
     private readonly getHandler: GetInventoryCheckHandler,
     private readonly getDetailsHandler: GetInventoryCheckDetailsHandler,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('INVENTORY_CREATE')
@@ -87,6 +87,7 @@ export class InventoryCheckController {
       user.id,
       dto.name,
       dto.inventoryDate ? new Date(dto.inventoryDate) : undefined,
+      dto.notes,
     );
     const result = await this.createHandler.execute(cmd);
     return this.toResponse(result);

@@ -331,6 +331,7 @@ model InventoryCheck {
   inventoryDate   DateTime @map("inventory_date") @db.Date
   inventoryName   String   @map("inventory_name")
   status          String
+  notes           String?  @db.Text
   createdByUserId String   @map("created_by_user_id")
 
   // Timestamps

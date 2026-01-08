@@ -16,4 +16,9 @@ export class CreateInventoryCheckRequest {
   @IsOptional()
   @IsString()
   inventoryDate?: string;
+
+  @Expose()
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }
