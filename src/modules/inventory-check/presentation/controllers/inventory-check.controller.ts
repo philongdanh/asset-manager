@@ -189,10 +189,20 @@ export class InventoryCheckController {
   @Get(':id/details')
   async getDetails(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): Promise<InventoryDetailResponse[]> {
-    const query = new GetInventoryCheckDetailsQuery(id);
-    const result = await this.getDetailsHandler.execute(query);
-    return result.map((item) => this.toDetailResponse(item));
+    @CurrentUser() user: JwtPayload,
+  ): Promise<InventoryCheckResponse> {
+    const query = new GetInventoryCheckQuery(id);
+    const result = await this.getHandler.execute(query);
+
+    // Security check for non-root users
+    if (
+      !user.isRoot &&
+      result.inventoryCheck.organizationId !== user.organizationId
+    ) {
+      throw new BadRequestException(`Inventory check with id ${id} not found`);
+    }
+
+    return this.toResponse(result);
   }
 
   @HttpCode(HttpStatus.NO_CONTENT)

@@ -11,6 +11,10 @@ import {
   type IOrganizationRepository,
 } from 'src/modules/organization/domain';
 import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
+import {
+  ASSET_REPOSITORY,
+  type IAssetRepository,
+} from 'src/modules/asset/domain';
 
 @Injectable()
 export class GetInventoryCheckHandler {
@@ -21,7 +25,9 @@ export class GetInventoryCheckHandler {
     private readonly organizationRepository: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
-  ) {}
+    @Inject(ASSET_REPOSITORY)
+    private readonly assetRepository: IAssetRepository,
+  ) { }
 
   async execute(query: GetInventoryCheckQuery): Promise<InventoryCheckResult> {
     const inventoryCheck = await this.repository.findById(query.id);
@@ -37,10 +43,21 @@ export class GetInventoryCheckHandler {
       this.userRepository.findById(inventoryCheck.checkerUserId),
     ]);
 
+    let assets: any[] = [];
+    if (inventoryCheck.details.length > 0) {
+      const assetIds = inventoryCheck.details.map((d) => d.assetId);
+      // Fetch assets manually since we don't have findByIds yet
+      assets = await Promise.all(
+        assetIds.map((id) => this.assetRepository.findById(id)),
+      );
+      assets = assets.filter((a) => a !== null);
+    }
+
     return {
       inventoryCheck,
       organization,
       checkerUser,
+      assets,
     };
   }
 }

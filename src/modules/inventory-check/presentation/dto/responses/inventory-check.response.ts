@@ -17,6 +17,16 @@ interface AssetInfo {
   id: string;
   assetCode: string;
   assetName: string;
+  purchasePrice: number;
+  originalCost: number;
+  currentValue: number;
+  status: string;
+  model: string | null;
+  serialNumber: string | null;
+  manufacturer: string | null;
+  location: string | null;
+  condition: string | null;
+  imageUrl: string | null;
 }
 
 @Exclude()
@@ -77,6 +87,16 @@ export class InventoryCheckResponse {
       id: a.id,
       assetCode: a.assetCode,
       assetName: a.assetName,
+      purchasePrice: a.purchasePrice,
+      originalCost: a.originalCost,
+      currentValue: a.currentValue,
+      status: a.status,
+      model: a.model,
+      serialNumber: a.serialNumber,
+      manufacturer: a.manufacturer,
+      location: a.location,
+      condition: a.condition,
+      imageUrl: a.imageUrl,
     }));
   }
 }

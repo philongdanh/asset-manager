@@ -12,7 +12,10 @@ export class PrismaInventoryCheckRepository implements IInventoryCheckRepository
   constructor(private readonly prisma: PrismaService) { }
 
   async findById(id: string): Promise<InventoryCheck | null> {
-    const raw = await this.prisma.inventoryCheck.findUnique({ where: { id } });
+    const raw = await this.prisma.inventoryCheck.findUnique({
+      where: { id },
+      include: { details: true },
+    });
     return raw ? InventoryCheckMapper.toDomain(raw) : null;
   }
 
