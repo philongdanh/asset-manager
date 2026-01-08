@@ -49,7 +49,7 @@ export class MaintenanceScheduleController {
     private readonly deleteHandler: DeleteMaintenanceScheduleHandler,
     private readonly getListHandler: GetMaintenanceSchedulesHandler,
     private readonly getDetailsHandler: GetMaintenanceScheduleDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('MAINTENANCE_CREATE')

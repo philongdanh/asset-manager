@@ -37,7 +37,7 @@ export class UserController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('USER_CREATE')

@@ -10,10 +10,7 @@ import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
 } from 'src/modules/organization/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from 'src/modules/user/domain';
+import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
 
 @Injectable()
 export class FinishInventoryCheckHandler {
@@ -24,9 +21,11 @@ export class FinishInventoryCheckHandler {
     private readonly organizationRepository: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
-  ) { }
+  ) {}
 
-  async execute(cmd: FinishInventoryCheckCommand): Promise<InventoryCheckResult> {
+  async execute(
+    cmd: FinishInventoryCheckCommand,
+  ): Promise<InventoryCheckResult> {
     const check = await this.repository.findById(cmd.id);
     if (!check) {
       throw new UseCaseException(

@@ -12,10 +12,7 @@ import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
 } from '../../../../organization/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from '../../../../user/domain';
+import { USER_REPOSITORY, type IUserRepository } from '../../../../user/domain';
 import { MaintenanceScheduleResult } from '../../dtos/maintenance-schedule.result';
 
 @Injectable()
@@ -29,7 +26,7 @@ export class GetMaintenanceSchedulesHandler {
     private readonly orgRepo: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetMaintenanceSchedulesQuery,

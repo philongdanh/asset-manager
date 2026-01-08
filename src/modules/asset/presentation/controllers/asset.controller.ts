@@ -39,7 +39,7 @@ export class AssetController {
     private readonly deleteHandler: DeleteAssetHandler,
     private readonly getListHandler: GetAssetsHandler,
     private readonly getDetailsHandler: GetAssetDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('ASSET_CREATE')

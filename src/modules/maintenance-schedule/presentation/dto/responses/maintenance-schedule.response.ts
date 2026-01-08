@@ -79,10 +79,10 @@ export class MaintenanceScheduleResponse {
 
     this.asset = asset
       ? {
-        id: asset.id,
-        asset_code: asset.assetCode,
-        asset_name: asset.assetName,
-      }
+          id: asset.id,
+          asset_code: asset.assetCode,
+          asset_name: asset.assetName,
+        }
       : null;
 
     this.organization = organization
@@ -91,10 +91,10 @@ export class MaintenanceScheduleResponse {
 
     this.performedByUser = performedByUser
       ? {
-        id: performedByUser.id,
-        username: performedByUser.username,
-        email: performedByUser.email,
-      }
+          id: performedByUser.id,
+          username: performedByUser.username,
+          email: performedByUser.email,
+        }
       : null;
   }
 }

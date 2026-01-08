@@ -35,7 +35,7 @@ export class RoleController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
 
   @Permissions('ROLE_VIEW')
   @Get()
@@ -127,12 +127,7 @@ export class RoleController {
     }
     const orgId = user.organizationId;
 
-    const cmd = new UpdateRoleCommand(
-      orgId,
-      id,
-      dto.name,
-      dto.permissionIds,
-    );
+    const cmd = new UpdateRoleCommand(orgId, id, dto.name, dto.permissionIds);
     const role: Role = await this.commandBus.execute(cmd);
     return new RoleResponse(role, []);
   }

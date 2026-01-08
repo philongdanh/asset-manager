@@ -13,7 +13,7 @@ export class GetRoleDetailsHandler implements IQueryHandler<GetRoleDetailsQuery>
     private readonly roleRepository: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permissionRepository: IPermissionRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetRoleDetailsQuery,

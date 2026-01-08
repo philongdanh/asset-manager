@@ -62,4 +62,4 @@ import { USER_REPOSITORY, PrismaUserRepository } from '../user';
   ],
   exports: [INVENTORY_CHECK_REPOSITORY, INVENTORY_DETAIL_REPOSITORY],
 })
-export class InventoryCheckModule { }
+export class InventoryCheckModule {}

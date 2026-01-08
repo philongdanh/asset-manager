@@ -64,17 +64,20 @@ export class AssetDepreciationResponse {
     this.depreciationPercentage =
       asset && asset.originalCost > 0
         ? Number(
-          ((depreciation.accumulatedDepreciation / asset.originalCost) * 100).toFixed(2),
-        )
+            (
+              (depreciation.accumulatedDepreciation / asset.originalCost) *
+              100
+            ).toFixed(2),
+          )
         : null;
     this.updatedAt = depreciation.updatedAt!;
 
     this.asset = asset
       ? {
-        id: asset.id,
-        asset_code: asset.assetCode,
-        asset_name: asset.assetName,
-      }
+          id: asset.id,
+          asset_code: asset.assetCode,
+          asset_name: asset.assetName,
+        }
       : null;
 
     this.organization = organization

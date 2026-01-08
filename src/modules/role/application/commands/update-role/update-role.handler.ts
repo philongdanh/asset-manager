@@ -3,7 +3,10 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UpdateRoleCommand } from './update-role.command';
 import { ROLE_REPOSITORY, type IRoleRepository, Role } from '../../../domain';
 import { EntityNotFoundException } from 'src/shared/domain';
-import { type IPermissionRepository, PERMISSION_REPOSITORY } from 'src/modules/permission';
+import {
+  type IPermissionRepository,
+  PERMISSION_REPOSITORY,
+} from 'src/modules/permission';
 
 export class UpdateRoleResult {
   constructor(
@@ -11,31 +14,35 @@ export class UpdateRoleResult {
     public readonly id: string,
     public readonly name: string,
     public readonly permissions: PermissionResponse[],
-  ) { }
+  ) {}
 }
 
 class PermissionResponse {
   constructor(
     public readonly id: string,
     public readonly name: string,
-  ) { }
+  ) {}
 }
 
 @CommandHandler(UpdateRoleCommand)
-export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, void> {
+export class UpdateRoleHandler implements ICommandHandler<
+  UpdateRoleCommand,
+  void
+> {
   constructor(
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) { }
+  ) {}
 
   async execute(cmd: UpdateRoleCommand): Promise<void> {
-    const role = await this.roleRepo.findById(
-      cmd.id,
-    );
+    const role = await this.roleRepo.findById(cmd.id);
     if (!role) {
-      throw new EntityNotFoundException(`Role with ID ${cmd.id} not found`, UpdateRoleCommand.name);
+      throw new EntityNotFoundException(
+        `Role with ID ${cmd.id} not found`,
+        UpdateRoleCommand.name,
+      );
     }
 
     if (cmd.name !== undefined) {
@@ -44,9 +51,7 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, voi
 
     if (cmd.permissionIds !== undefined) {
       // Get current permissions
-      const currentPermissions = await this.roleRepo.getRolePermissions(
-        cmd.id,
-      );
+      const currentPermissions = await this.roleRepo.getRolePermissions(cmd.id);
 
       // Remove permissions that are no longer in the list
       const toRemove = currentPermissions.filter(
@@ -66,7 +71,10 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, voi
     }
 
     const savedRole = await this.roleRepo.save(role);
-    const permissions = await this.roleRepo.assignPermissions(cmd.id, cmd.permissionIds!);
+    const permissions = await this.roleRepo.assignPermissions(
+      cmd.id,
+      cmd.permissionIds!,
+    );
     // return new UpdateRoleResult(
     //   savedRole.tenantId,
     //   savedRole.id,

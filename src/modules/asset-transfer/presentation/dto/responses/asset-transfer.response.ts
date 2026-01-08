@@ -101,10 +101,10 @@ export class AssetTransferResponse {
     // Map nested objects
     this.asset = asset
       ? {
-        id: asset.id,
-        asset_code: asset.assetCode,
-        asset_name: asset.assetName,
-      }
+          id: asset.id,
+          asset_code: asset.assetCode,
+          asset_name: asset.assetName,
+        }
       : null;
 
     this.organization = organization
@@ -121,26 +121,26 @@ export class AssetTransferResponse {
 
     this.fromUser = fromUser
       ? {
-        id: fromUser.id,
-        username: fromUser.username,
-        email: fromUser.email,
-      }
+          id: fromUser.id,
+          username: fromUser.username,
+          email: fromUser.email,
+        }
       : null;
 
     this.toUser = toUser
       ? {
-        id: toUser.id,
-        username: toUser.username,
-        email: toUser.email,
-      }
+          id: toUser.id,
+          username: toUser.username,
+          email: toUser.email,
+        }
       : null;
 
     this.approvedByUser = approvedByUser
       ? {
-        id: approvedByUser.id,
-        username: approvedByUser.username,
-        email: approvedByUser.email,
-      }
+          id: approvedByUser.id,
+          username: approvedByUser.username,
+          email: approvedByUser.email,
+        }
       : null;
   }
 }

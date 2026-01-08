@@ -10,10 +10,7 @@ import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
 } from 'src/modules/organization/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from 'src/modules/user/domain';
+import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
 
 @Injectable()
 export class UpdateInventoryCheckHandler {
@@ -24,7 +21,7 @@ export class UpdateInventoryCheckHandler {
     private readonly organizationRepository: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(
     cmd: UpdateInventoryCheckCommand,

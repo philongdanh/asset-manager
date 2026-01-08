@@ -54,10 +54,10 @@ export class InventoryCheckResponse {
       : null;
     this.checkerUser = checkerUser
       ? {
-        id: checkerUser.id,
-        username: checkerUser.username,
-        email: checkerUser.email,
-      }
+          id: checkerUser.id,
+          username: checkerUser.username,
+          email: checkerUser.email,
+        }
       : null;
   }
 }

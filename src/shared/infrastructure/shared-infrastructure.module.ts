@@ -5,13 +5,13 @@ import { TenantContextInterceptor } from './context/tenant-context.interceptor';
 
 @Global()
 @Module({
-    imports: [
-        ClsModule.forRoot({
-            global: true,
-            middleware: { mount: true },
-        }),
-    ],
-    providers: [TenantContextService, TenantContextInterceptor],
-    exports: [TenantContextService, TenantContextInterceptor],
+  imports: [
+    ClsModule.forRoot({
+      global: true,
+      middleware: { mount: true },
+    }),
+  ],
+  providers: [TenantContextService, TenantContextInterceptor],
+  exports: [TenantContextService, TenantContextInterceptor],
 })
-export class SharedInfrastructureModule { }
+export class SharedInfrastructureModule {}

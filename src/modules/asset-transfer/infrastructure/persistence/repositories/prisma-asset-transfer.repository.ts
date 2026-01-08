@@ -11,7 +11,7 @@ import { AssetTransferMapper } from '../mappers/asset-transfer.mapper';
 
 @Injectable()
 export class PrismaAssetTransferRepository implements IAssetTransferRepository {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async findById(id: string): Promise<AssetTransfer | null> {
     const raw = await this.prisma.assetTransfer.findUnique({

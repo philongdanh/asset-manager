@@ -24,7 +24,7 @@ export class GetAssetDepreciationDetailsHandler {
     private readonly assetRepo: IAssetRepository,
     @Inject(ORGANIZATION_REPOSITORY)
     private readonly orgRepo: IOrganizationRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetAssetDepreciationDetailsQuery,

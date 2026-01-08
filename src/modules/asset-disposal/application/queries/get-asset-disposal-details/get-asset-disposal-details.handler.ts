@@ -13,10 +13,7 @@ import {
   ORGANIZATION_REPOSITORY,
   type IOrganizationRepository,
 } from '../../../../organization/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from '../../../../user/domain';
+import { USER_REPOSITORY, type IUserRepository } from '../../../../user/domain';
 import { AssetDisposalResult } from '../../dtos/asset-disposal.result';
 
 @Injectable()
@@ -30,7 +27,7 @@ export class GetAssetDisposalDetailsHandler {
     private readonly orgRepo: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetAssetDisposalDetailsQuery,

@@ -45,4 +45,4 @@ const handlers: Provider[] = [
   ],
   exports: [ASSET_DEPRECIATION_REPOSITORY],
 })
-export class AssetDepreciationModule { }
+export class AssetDepreciationModule {}

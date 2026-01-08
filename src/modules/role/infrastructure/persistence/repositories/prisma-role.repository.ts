@@ -7,7 +7,10 @@ import { BaseRepository } from 'src/shared/infrastructure/prisma/base.repository
 import { TenantContextService } from 'src/shared/infrastructure/context/tenant-context.service';
 
 @Injectable()
-export class PrismaRoleRepository extends BaseRepository implements IRoleRepository {
+export class PrismaRoleRepository
+  extends BaseRepository
+  implements IRoleRepository
+{
   constructor(
     private readonly prisma: PrismaService,
     tenantContext: TenantContextService,

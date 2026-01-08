@@ -20,11 +20,11 @@ export class CreateAssetTransferHandler {
     private readonly transferRepo: IAssetTransferRepository,
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepo: IAssetRepository,
-  ) { }
+  ) {}
 
   async execute(cmd: CreateAssetTransferCommand): Promise<AssetTransfer> {
     const asset = await this.assetRepo.findById(cmd.assetId);
-    console.log('dajdkas', asset)
+    console.log('dajdkas', asset);
     if (!asset) {
       throw new UseCaseException(
         `Asset with id ${cmd.assetId} not found`,

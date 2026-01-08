@@ -9,7 +9,7 @@ export class GetUsersHandler implements IQueryHandler<GetUsersQuery> {
   constructor(
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetUsersQuery,

@@ -71,10 +71,10 @@ export class AssetDisposalResponse {
 
     this.asset = asset
       ? {
-        id: asset.id,
-        asset_code: asset.assetCode,
-        asset_name: asset.assetName,
-      }
+          id: asset.id,
+          asset_code: asset.assetCode,
+          asset_name: asset.assetName,
+        }
       : null;
 
     this.organization = organization
@@ -83,10 +83,10 @@ export class AssetDisposalResponse {
 
     this.approvedByUser = approvedByUser
       ? {
-        id: approvedByUser.id,
-        username: approvedByUser.username,
-        email: approvedByUser.email,
-      }
+          id: approvedByUser.id,
+          username: approvedByUser.username,
+          email: approvedByUser.email,
+        }
       : null;
   }
 }

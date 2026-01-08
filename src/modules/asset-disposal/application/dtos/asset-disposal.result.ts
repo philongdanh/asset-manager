@@ -4,8 +4,8 @@ import { Organization } from '../../../organization/domain';
 import { User } from '../../../user/domain';
 
 export interface AssetDisposalResult {
-    disposal: AssetDisposal;
-    asset: Asset | null;
-    organization: Organization | null;
-    approvedByUser: User | null;
+  disposal: AssetDisposal;
+  asset: Asset | null;
+  organization: Organization | null;
+  approvedByUser: User | null;
 }

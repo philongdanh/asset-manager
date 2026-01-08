@@ -3,7 +3,7 @@ import { Organization } from 'src/modules/organization/domain/entities/organizat
 import { User } from 'src/modules/user/domain/entities/user.entity';
 
 export interface InventoryCheckResult {
-    inventoryCheck: InventoryCheck;
-    organization: Organization | null;
-    checkerUser: User | null;
+  inventoryCheck: InventoryCheck;
+  organization: Organization | null;
+  checkerUser: User | null;
 }

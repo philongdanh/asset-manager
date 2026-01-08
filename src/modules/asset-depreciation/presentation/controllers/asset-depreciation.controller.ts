@@ -29,7 +29,7 @@ export class AssetDepreciationController {
     private readonly recordHandler: RecordDepreciationHandler,
     private readonly getListHandler: GetAssetDepreciationsHandler,
     private readonly getDetailsHandler: GetAssetDepreciationDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DEPRECIATION_CREATE')

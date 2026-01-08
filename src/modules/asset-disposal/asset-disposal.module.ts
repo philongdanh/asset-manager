@@ -57,4 +57,4 @@ const handlers: Provider[] = [
   ],
   exports: [ASSET_DISPOSAL_REPOSITORY],
 })
-export class AssetDisposalModule { }
+export class AssetDisposalModule {}

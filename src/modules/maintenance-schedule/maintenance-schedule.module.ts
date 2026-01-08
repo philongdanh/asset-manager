@@ -59,4 +59,4 @@ const handlers: Provider[] = [
   ],
   exports: [MAINTENANCE_SCHEDULE_REPOSITORY],
 })
-export class MaintenanceScheduleModule { }
+export class MaintenanceScheduleModule {}

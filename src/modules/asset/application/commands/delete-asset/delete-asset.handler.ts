@@ -15,7 +15,7 @@ export class DeleteAssetHandler {
     private readonly assetRepo: IAssetRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(cmd: DeleteAssetCommand): Promise<void> {
     const actor = await this.userRepo.findById(cmd.actorId);

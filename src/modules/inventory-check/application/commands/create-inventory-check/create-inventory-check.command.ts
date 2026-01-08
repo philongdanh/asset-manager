@@ -4,5 +4,5 @@ export class CreateInventoryCheckCommand {
     public readonly createdByUserId: string,
     public readonly name: string,
     public readonly checkDate?: Date,
-  ) { }
+  ) {}
 }

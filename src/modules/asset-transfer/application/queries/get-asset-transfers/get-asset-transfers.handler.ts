@@ -16,10 +16,7 @@ import {
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
 } from '../../../../department/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from '../../../../user/domain';
+import { USER_REPOSITORY, type IUserRepository } from '../../../../user/domain';
 import { AssetTransferResult } from '../../dtos/asset-transfer.result';
 
 @Injectable()
@@ -35,7 +32,7 @@ export class GetAssetTransfersHandler {
     private readonly deptRepo: IDepartmentRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetAssetTransfersQuery,

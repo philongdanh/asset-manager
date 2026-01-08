@@ -61,7 +61,7 @@ export class InventoryCheckController {
     private readonly getListHandler: GetInventoryChecksHandler,
     private readonly getHandler: GetInventoryCheckHandler,
     private readonly getDetailsHandler: GetInventoryCheckDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('INVENTORY_CREATE')

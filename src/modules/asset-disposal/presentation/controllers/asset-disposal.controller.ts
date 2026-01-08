@@ -44,7 +44,7 @@ export class AssetDisposalController {
     private readonly cancelHandler: CancelAssetDisposalHandler,
     private readonly getListHandler: GetAssetDisposalsHandler,
     private readonly getDetailsHandler: GetAssetDisposalDetailsHandler,
-  ) { }
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @Permissions('DISPOSAL_CREATE')

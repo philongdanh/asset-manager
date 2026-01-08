@@ -18,10 +18,7 @@ import {
   DEPARTMENT_REPOSITORY,
   type IDepartmentRepository,
 } from 'src/modules/department/domain';
-import {
-  USER_REPOSITORY,
-  type IUserRepository,
-} from 'src/modules/user/domain';
+import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
 
 @Injectable()
 export class ApproveAssetTransferHandler {
@@ -36,7 +33,7 @@ export class ApproveAssetTransferHandler {
     private readonly deptRepo: IDepartmentRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepo: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(
     cmd: ApproveAssetTransferCommand,

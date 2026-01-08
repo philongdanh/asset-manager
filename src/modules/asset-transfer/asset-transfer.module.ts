@@ -16,8 +16,14 @@ import { ID_GENERATOR } from 'src/shared/domain/interfaces';
 import { UuidGeneratorService } from 'src/shared/infrastructure/id-generator';
 import { ASSET_REPOSITORY } from '../asset/domain';
 import { PrismaAssetRepository } from '../asset/infrastructure/persistence/repositories/prisma-asset.repository';
-import { ORGANIZATION_REPOSITORY, PrismaOrganizationRepository } from '../organization';
-import { DEPARTMENT_REPOSITORY, PrismaDepartmentRepository } from '../department';
+import {
+  ORGANIZATION_REPOSITORY,
+  PrismaOrganizationRepository,
+} from '../organization';
+import {
+  DEPARTMENT_REPOSITORY,
+  PrismaDepartmentRepository,
+} from '../department';
 import { PrismaUserRepository, USER_REPOSITORY } from '../user';
 
 const handlers: Provider[] = [
@@ -62,4 +68,4 @@ const handlers: Provider[] = [
   ],
   exports: [ASSET_TRANSFER_REPOSITORY],
 })
-export class AssetTransferModule { }
+export class AssetTransferModule {}

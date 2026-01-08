@@ -8,7 +8,7 @@ export class GetRolesHandler implements IQueryHandler<GetRolesQuery> {
   constructor(
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepository: IRoleRepository,
-  ) { }
+  ) {}
 
   async execute(
     query: GetRolesQuery,
