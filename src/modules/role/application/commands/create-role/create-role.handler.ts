@@ -12,32 +12,35 @@ import {
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 @CommandHandler(CreateRoleCommand)
-export class CreateRoleHandler implements ICommandHandler<CreateRoleCommand, RoleResult> {
+export class CreateRoleHandler implements ICommandHandler<
+  CreateRoleCommand,
+  RoleResult
+> {
   constructor(
-    @Inject(ID_GENERATOR) private readonly idGenerator: IIdGenerator,
+    private readonly tCtx: TenantContextService,
+    @Inject(ID_GENERATOR)
+    private readonly idGenerator: IIdGenerator,
     @Inject(ROLE_REPOSITORY)
-    private readonly roleRepository: IRoleRepository,
+    private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
-    private readonly permissionRepository: IPermissionRepository,
-    private readonly tenantContext: TenantContextService,
-  ) { }
+    private readonly permRepo: IPermissionRepository,
+  ) {}
 
-  async execute(command: CreateRoleCommand): Promise<RoleResult> {
-    const tenantId = this.tenantContext.getTenantId();
+  async execute(cmd: CreateRoleCommand): Promise<RoleResult> {
+    const tenantId = this.tCtx.getTenantId();
     if (!tenantId) {
       throw new BadRequestException('Organization ID is missing in context');
     }
 
     const id = this.idGenerator.generate();
-    const role = Role.builder(id, tenantId, command.name).build();
-    const savedRole = await this.roleRepository.save(role);
+    const role = Role.builder(id, tenantId, cmd.name).build();
+    const savedRole = await this.roleRepo.save(role);
 
-    if (command.permIds && command.permIds.length > 0) {
-      await this.roleRepository.assignPermissions(savedRole.id, command.permIds);
+    if (cmd.permissionIds && cmd.permissionIds.length > 0) {
+      await this.roleRepo.attachPerms(savedRole.id, cmd.permissionIds);
     }
 
-    const permissions = await this.permissionRepository.findByRoles([savedRole.id]);
-    return new RoleResult(savedRole, permissions, []);
+    const permissions = await this.permRepo.findByRoles([savedRole.id]);
+    return new RoleResult(savedRole, permissions);
   }
 }
-

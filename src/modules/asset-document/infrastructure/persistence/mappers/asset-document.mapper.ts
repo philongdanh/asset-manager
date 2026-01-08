@@ -17,6 +17,14 @@ export class AssetDocumentMapper {
       .withDescription(raw.description)
       .withTimestamps(raw.createdAt, raw.updatedAt);
 
+    if ((raw as any).asset) {
+      builder.withAsset((raw as any).asset);
+    }
+
+    if ((raw as any).uploader) {
+      builder.withUploader((raw as any).uploader);
+    }
+
     return builder.build();
   }
 

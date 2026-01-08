@@ -1,3 +1,3 @@
 export class GetPermissionDetailsQuery {
-  constructor(public readonly permissionId: string) {}
+  constructor(public readonly id: string) {}
 }

@@ -38,9 +38,20 @@ export class AssetDocument extends BaseEntity {
     this._uploadDate = builder.uploadDate;
     this._uploadedByUserId = builder.uploadedByUserId;
     this._description = builder.description;
+    this._asset = builder.asset;
+    this._uploader = builder.uploader;
   }
 
   // --- Getters ---
+  private _asset: any | null = null;
+  public get asset(): any | null {
+    return this._asset;
+  }
+
+  private _uploader: any | null = null;
+  public get uploader(): any | null {
+    return this._uploader;
+  }
   public get assetId(): string {
     return this._assetId;
   }
@@ -197,6 +208,8 @@ export class AssetDocumentBuilder {
   public documentType: AssetDocumentType = AssetDocumentType.OTHER;
   public uploadDate: Date = new Date();
   public description: string | null = null;
+  public asset: any | null = null;
+  public uploader: any | null = null;
   public createdAt: Date;
   public updatedAt: Date;
 
@@ -225,6 +238,16 @@ export class AssetDocumentBuilder {
 
   public withDescription(description: string | null): this {
     this.description = description;
+    return this;
+  }
+
+  public withAsset(asset: any): this {
+    this.asset = asset;
+    return this;
+  }
+
+  public withUploader(uploader: any): this {
+    this.uploader = uploader;
     return this;
   }
 

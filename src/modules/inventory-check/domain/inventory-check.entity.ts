@@ -56,7 +56,11 @@ export class InventoryCheck extends BaseEntity {
     this.markAsUpdated();
   }
 
-  public updateInfo(inventoryName?: string, checkDate?: Date, notes?: string): void {
+  public updateInfo(
+    inventoryName?: string,
+    checkDate?: Date,
+    notes?: string,
+  ): void {
     if (inventoryName !== undefined) this._inventoryName = inventoryName;
     if (checkDate !== undefined) this._checkDate = checkDate;
     if (notes !== undefined) this._notes = notes;

@@ -7,15 +7,23 @@ import {
 
 import { GetPermissionsQuery } from './get-permissions.query';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { PermissionListResult, PermissionResult } from '../../dtos';
 
 @QueryHandler(GetPermissionsQuery)
-export class GetPermissionsHandler implements IQueryHandler<GetPermissionsQuery> {
+export class GetPermissionsHandler implements IQueryHandler<
+  GetPermissionsQuery,
+  PermissionListResult
+> {
   constructor(
     @Inject(PERMISSION_REPOSITORY)
-    private readonly permissionRepository: IPermissionRepository,
+    private readonly permRepo: IPermissionRepository,
   ) {}
 
-  async execute(): Promise<{ data: Permission[]; total: number }> {
-    return await this.permissionRepository.find();
+  async execute(): Promise<PermissionListResult> {
+    const perms = await this.permRepo.find();
+    return new PermissionListResult(
+      perms.length,
+      perms.map((perm) => new PermissionResult(perm)),
+    );
   }
 }

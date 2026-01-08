@@ -6,19 +6,13 @@ import { PrismaService } from 'src/shared/infrastructure/prisma';
 import { PERMISSION_REPOSITORY } from './domain';
 import { PrismaPermissionRepository } from './infrastructure';
 import {
-  CreatePermissionHandler,
-  UpdatePermissionHandler,
-  DeletePermissionHandler,
   GetPermissionsHandler,
   GetPermissionDetailsHandler,
 } from './application';
 import { PermissionController } from './presentation';
+import { PrismaRoleRepository } from '../role/infrastructure';
+import { ROLE_REPOSITORY } from '../role';
 
-const CommandHandlers = [
-  CreatePermissionHandler,
-  UpdatePermissionHandler,
-  DeletePermissionHandler,
-];
 const QueryHandlers = [GetPermissionsHandler, GetPermissionDetailsHandler];
 
 @Module({
@@ -34,7 +28,10 @@ const QueryHandlers = [GetPermissionsHandler, GetPermissionDetailsHandler];
       provide: PERMISSION_REPOSITORY,
       useClass: PrismaPermissionRepository,
     },
-    ...CommandHandlers,
+    {
+      provide: ROLE_REPOSITORY,
+      useClass: PrismaRoleRepository,
+    },
     ...QueryHandlers,
   ],
 })

@@ -6,23 +6,31 @@ import {
   type IPermissionRepository,
   Permission,
 } from '../../../domain';
+import { PermissionResult } from '../../dtos';
+import { EntityNotFoundException } from 'src/shared/domain';
+import { type IRoleRepository, ROLE_REPOSITORY } from 'src/modules/role';
 
 @QueryHandler(GetPermissionDetailsQuery)
-export class GetPermissionDetailsHandler implements IQueryHandler<GetPermissionDetailsQuery> {
+export class GetPermissionDetailsHandler implements IQueryHandler<
+  GetPermissionDetailsQuery,
+  PermissionResult
+> {
   constructor(
     @Inject(PERMISSION_REPOSITORY)
-    private readonly permissionRepository: IPermissionRepository,
+    private readonly permRepo: IPermissionRepository,
+    @Inject(ROLE_REPOSITORY)
+    private readonly roleRepo: IRoleRepository,
   ) {}
 
-  async execute(query: GetPermissionDetailsQuery): Promise<Permission> {
-    const permission = await this.permissionRepository.findById(
-      query.permissionId,
-    );
-    if (!permission) {
-      throw new NotFoundException(
-        `Permission with ID ${query.permissionId} not found`,
+  async execute(query: GetPermissionDetailsQuery): Promise<PermissionResult> {
+    const perm = await this.permRepo.findById(query.id);
+    if (!perm) {
+      throw new EntityNotFoundException(
+        `Permission with ID ${query.id} not found`,
+        GetPermissionDetailsHandler.name,
       );
     }
-    return permission;
+    const roles = await this.roleRepo.findByPerms([perm.id]);
+    return new PermissionResult(perm, roles);
   }
 }

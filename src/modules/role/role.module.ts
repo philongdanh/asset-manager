@@ -18,6 +18,7 @@ import {
   PermissionModule,
   PrismaPermissionRepository,
 } from '../permission';
+import { USER_REPOSITORY, PrismaUserRepository } from '../user';
 
 const CommandHandlers = [
   CreateRoleHandler,
@@ -42,6 +43,10 @@ const QueryHandlers = [GetRolesHandler, GetRoleDetailsHandler];
     {
       provide: PERMISSION_REPOSITORY,
       useClass: PrismaPermissionRepository,
+    },
+    {
+      provide: USER_REPOSITORY,
+      useClass: PrismaUserRepository,
     },
     ...CommandHandlers,
     ...QueryHandlers,

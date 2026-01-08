@@ -65,4 +65,4 @@ import { AssetModule } from '../asset/asset.module';
   ],
   exports: [INVENTORY_CHECK_REPOSITORY, INVENTORY_DETAIL_REPOSITORY],
 })
-export class InventoryCheckModule { }
+export class InventoryCheckModule {}

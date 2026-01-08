@@ -2,6 +2,10 @@ import { PrismaClient } from 'generated/prisma/client';
 import { randomUUID } from 'crypto';
 import * as bcrypt from 'bcrypt';
 
+// Fixed UUIDs for demo users to ensure consistency after re-seeding
+const FIXED_ROOT_USER_ID = '00000000-0000-0000-0000-000000000001';
+const FIXED_DEMO_ADMIN_ID = '00000000-0000-0000-0000-000000000002';
+
 export const seedUsers = async (
     prisma: PrismaClient,
     orgId: string,
@@ -10,7 +14,6 @@ export const seedUsers = async (
     const hashedPassword = await bcrypt.hash('123456', await bcrypt.genSalt(10));
 
     // 5. Create Root User (No Organization)
-    const rootUserId = randomUUID();
     const rootUser = await prisma.user.upsert({
         where: { email: 'root@system.local' },
         update: {
@@ -19,7 +22,7 @@ export const seedUsers = async (
             password: hashedPassword, // Ensure password is also reset if needed
         },
         create: {
-            id: rootUserId,
+            id: FIXED_ROOT_USER_ID,
             organizationId: null, // Root admin has no organization
             username: 'root_admin',
             password: hashedPassword,
@@ -31,12 +34,11 @@ export const seedUsers = async (
     console.log(`Created Root User: ${rootUser.username} (No Org)`);
 
     // 6. Create Demo Admin User (For Demo Organization)
-    const demoAdminId = randomUUID();
     const demoAdminUser = await prisma.user.upsert({
         where: { email: 'admin@demo.local' },
         update: {},
         create: {
-            id: demoAdminId,
+            id: FIXED_DEMO_ADMIN_ID,
             organizationId: orgId,
             username: 'demo_admin',
             password: hashedPassword,

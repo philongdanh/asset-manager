@@ -4,23 +4,22 @@ export const ROLE_REPOSITORY = Symbol('ROLE_REPOSITORY');
 
 export interface IRoleRepository {
   // --- Query Methods ---
-  find(filter?: {}): Promise<{ data: Role[]; total: number }>;
-  findById(roleId: string): Promise<Role | null>;
-  findByUserId(userId: string): Promise<Role[]>;
-  findByPermission(permissionId: string): Promise<Role[]>;
+  find(): Promise<Role[]>;
+  findById(id: string): Promise<Role | null>;
+  findByUser(userId: string): Promise<Role[]>;
+  findByPerms(permIds: string[]): Promise<Role[]>;
 
   // --- Validation Methods ---
-  existsById(roleId: string): Promise<boolean>;
+  existsById(id: string): Promise<boolean>;
 
   // --- Persistence Methods ---
   save(role: Role): Promise<Role>;
-  delete(roleIds: string[]): Promise<void>;
+  delete(ids: string[]): Promise<void>;
 
   // --- Role-Permission Management ---
-  getRolePermissions(roleId: string): Promise<string[]>;
-  hasPermission(roleId: string, permissionId: string): Promise<boolean>;
-  assignPermissions(roleId: string, permissionIds: string[]): Promise<void>;
-  removePermissions(roleId: string, permissionIds: string[]): Promise<void>;
+  hasPerm(id: string, permId: string): Promise<boolean>;
+  attachPerms(id: string, permIds: string[]): Promise<void>;
+  detachPerms(id: string, permIds: string[]): Promise<void>;
 
   // --- User-Role Management ---
   assignToUsers(roleId: string, userIds: string[]): Promise<void>;

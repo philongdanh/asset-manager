@@ -1,25 +1,10 @@
-import {
-  Prisma,
-  Role as PrismaRole,
-  RolePermission as PrismaRolePermission,
-  Permission as PrismaPermission,
-} from 'generated/prisma/client';
-import { Role } from '../../../domain';
+import { Prisma, Role as PrismaRole } from 'generated/prisma/client';
+import { Role } from 'src/modules/role';
 
 export class RoleMapper {
-  static toDomain(
-    prismaRole: PrismaRole & {
-      rolePermissions?: (PrismaRolePermission & {
-        permission?: PrismaPermission;
-      })[];
-    },
-  ): Role {
-    return Role.builder(
-      prismaRole.id,
-      prismaRole.organizationId,
-      prismaRole.roleName,
-    )
-      .withTimestamps(prismaRole.createdAt, prismaRole.updatedAt)
+  static toDomain(raw: PrismaRole): Role {
+    return Role.builder(raw.id, raw.organizationId, raw.roleName)
+      .withTimestamps(raw.createdAt, raw.updatedAt)
       .build();
   }
 

@@ -35,4 +35,4 @@ import { AssetCategoryModule } from '../asset-category/asset-category.module';
   ],
   exports: [ASSET_REPOSITORY],
 })
-export class AssetModule { }
+export class AssetModule {}

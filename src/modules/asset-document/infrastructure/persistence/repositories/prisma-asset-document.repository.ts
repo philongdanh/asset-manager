@@ -13,7 +13,10 @@ export class PrismaAssetDocumentRepository implements IAssetDocumentRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findById(id: string): Promise<AssetDocument | null> {
-    const raw = await this.prisma.assetDocument.findUnique({ where: { id } });
+    const raw = await this.prisma.assetDocument.findUnique({
+      where: { id },
+      include: { asset: true, uploader: true },
+    });
     return raw ? AssetDocumentMapper.toDomain(raw) : null;
   }
 
@@ -108,6 +111,7 @@ export class PrismaAssetDocumentRepository implements IAssetDocumentRepository {
 
   async save(document: AssetDocument): Promise<AssetDocument> {
     const { data } = AssetDocumentMapper.toPersistence(document);
+    console.log('dadjakdjklsjd', data);
     const raw = await this.prisma.assetDocument.create({ data });
     return AssetDocumentMapper.toDomain(raw);
   }

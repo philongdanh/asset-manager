@@ -14,9 +14,9 @@ import {
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
   CreateRoleRequest,
-  GetRolesRequest,
   UpdateRoleRequest,
   RoleResponse,
+  RoleListResponse,
 } from '../dto';
 import {
   CreateRoleCommand,
@@ -34,20 +34,25 @@ export class RoleController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
-  ) { }
+  ) {}
+
+  @HttpCode(HttpStatus.CREATED)
+  @Permissions('ROLE_CREATE')
+  @Post()
+  async create(@Body() dto: CreateRoleRequest): Promise<RoleResponse> {
+    const result = await this.commandBus.execute<CreateRoleCommand, RoleResult>(
+      new CreateRoleCommand(dto.name, dto.permissionIds),
+    );
+    return new RoleResponse(result);
+  }
 
   @Permissions('ROLE_VIEW')
   @Get()
-  async getList(
-    @Query() query: GetRolesRequest,
-  ): Promise<{ data: RoleResponse[]; total: number }> {
+  async getList(): Promise<RoleListResponse> {
     const result = await this.queryBus.execute<GetRolesQuery, RoleListResult>(
       new GetRolesQuery(),
     );
-    return {
-      data: result.data.map((item) => new RoleResponse(item)),
-      total: result.total,
-    };
+    return new RoleListResponse(result);
   }
 
   @Permissions('ROLE_VIEW')
@@ -61,23 +66,15 @@ export class RoleController {
     return new RoleResponse(result);
   }
 
-  @HttpCode(HttpStatus.CREATED)
-  @Permissions('ROLE_CREATE')
-  @Post()
-  async create(@Body() dto: CreateRoleRequest): Promise<RoleResponse> {
-    const cmd = new CreateRoleCommand(dto.name, dto.permissionIds);
-    const result = await this.commandBus.execute<CreateRoleCommand, RoleResult>(cmd);
-    return new RoleResponse(result);
-  }
-
   @Permissions('ROLE_UPDATE')
   @Patch(':id')
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() dto: UpdateRoleRequest,
   ): Promise<RoleResponse> {
-    const cmd = new UpdateRoleCommand(id, dto.name, dto.permissionIds);
-    const result = await this.commandBus.execute<UpdateRoleCommand, RoleResult>(cmd);
+    const result = await this.commandBus.execute<UpdateRoleCommand, RoleResult>(
+      new UpdateRoleCommand(id, dto.name, dto.permissionIds),
+    );
     return new RoleResponse(result);
   }
 
@@ -90,4 +87,3 @@ export class RoleController {
     await this.commandBus.execute(new DeleteRoleCommand(id));
   }
 }
-

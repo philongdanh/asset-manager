@@ -9,7 +9,7 @@ import { Prisma } from 'generated/prisma/client';
 
 @Injectable()
 export class PrismaInventoryCheckRepository implements IInventoryCheckRepository {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   async findById(id: string): Promise<InventoryCheck | null> {
     const raw = await this.prisma.inventoryCheck.findUnique({

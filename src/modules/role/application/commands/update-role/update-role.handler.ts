@@ -10,13 +10,16 @@ import {
 import { RoleResult } from '../../dtos';
 
 @CommandHandler(UpdateRoleCommand)
-export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, RoleResult> {
+export class UpdateRoleHandler implements ICommandHandler<
+  UpdateRoleCommand,
+  RoleResult
+> {
   constructor(
     @Inject(ROLE_REPOSITORY)
     private readonly roleRepo: IRoleRepository,
     @Inject(PERMISSION_REPOSITORY)
     private readonly permRepo: IPermissionRepository,
-  ) { }
+  ) {}
 
   async execute(cmd: UpdateRoleCommand): Promise<RoleResult> {
     const role = await this.roleRepo.findById(cmd.id);
@@ -32,30 +35,29 @@ export class UpdateRoleHandler implements ICommandHandler<UpdateRoleCommand, Rol
     }
 
     if (cmd.permissionIds !== undefined) {
-      // Get current permissions
-      const currentPermissions = await this.roleRepo.getRolePermissions(cmd.id);
+      const currPerms = await this.permRepo.findByRoles([cmd.id]);
 
-      // Remove permissions that are no longer in the list
-      const toRemove = currentPermissions.filter(
-        (id) => !cmd.permissionIds!.includes(id),
+      const toRemove = currPerms.filter(
+        (perm) => !cmd.permissionIds!.includes(perm.id),
       );
       if (toRemove.length > 0) {
-        await this.roleRepo.removePermissions(cmd.id, toRemove);
+        await this.roleRepo.detachPerms(
+          cmd.id,
+          toRemove.map((perm) => perm.id),
+        );
       }
 
-      // Add new permissions
       const toAdd = cmd.permissionIds.filter(
-        (id) => !currentPermissions.includes(id),
+        (id) => !currPerms.map((perm) => perm.id).includes(id),
       );
       if (toAdd.length > 0) {
-        await this.roleRepo.assignPermissions(cmd.id, toAdd);
+        await this.roleRepo.attachPerms(cmd.id, toAdd);
       }
     }
 
     const savedRole = await this.roleRepo.save(role);
     const permissions = await this.permRepo.findByRoles([savedRole.id]);
 
-    return new RoleResult(savedRole, permissions, []);
+    return new RoleResult(savedRole, permissions);
   }
 }
-

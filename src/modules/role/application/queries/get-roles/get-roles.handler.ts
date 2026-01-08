@@ -1,20 +1,27 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { RoleResult, RoleListResult } from '../../dtos/role.result';
 import { GetRolesQuery } from './get-roles.query';
-import { ROLE_REPOSITORY, type IRoleRepository } from '../../../domain';
-import { RoleResult, RoleListResult } from '../../dtos';
+import {
+  ROLE_REPOSITORY,
+  type IRoleRepository,
+} from '../../../domain/repositories/role.repository.interface';
 
 @QueryHandler(GetRolesQuery)
-export class GetRolesHandler implements IQueryHandler<GetRolesQuery, RoleListResult> {
+export class GetRolesHandler implements IQueryHandler<
+  GetRolesQuery,
+  RoleListResult
+> {
   constructor(
     @Inject(ROLE_REPOSITORY)
-    private readonly roleRepository: IRoleRepository,
-  ) { }
+    private readonly roleRepo: IRoleRepository,
+  ) {}
 
-  async execute(query: GetRolesQuery): Promise<RoleListResult> {
-    const { data, total } = await this.roleRepository.find();
-    const roleResults = data.map((role) => new RoleResult(role, [], []));
-    return new RoleListResult(roleResults, total);
+  async execute(): Promise<RoleListResult> {
+    const roles = await this.roleRepo.find();
+    return new RoleListResult(
+      roles.length,
+      roles.map((role) => new RoleResult(role)),
+    );
   }
 }
-

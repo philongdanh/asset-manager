@@ -20,7 +20,8 @@ import {
   GetAssetDocumentDetailsHandler,
   GetAssetDocumentsHandler,
 } from '../../application';
-import { Permissions } from 'src/modules/auth/presentation';
+import { CurrentUser, Permissions } from 'src/modules/auth/presentation';
+import type { JwtPayload } from 'src/modules/auth/presentation/interfaces/jwt-payload.interface';
 import { AssetDocument } from '../../domain';
 import { AssetDocumentResponse, UploadAssetDocumentRequest } from '../dto';
 
@@ -38,13 +39,16 @@ export class AssetDocumentController {
   @Post()
   async upload(
     @Body() dto: UploadAssetDocumentRequest,
-    @Query('userId') userId: string,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetDocumentResponse> {
-    const uploaderId = userId || '00000000-0000-0000-0000-000000000000';
+    // Use organizationId from JWT if not root, otherwise require from body
+    const organizationId = user.isRoot
+      ? dto.organizationId
+      : user.organizationId!;
     const cmd = new UploadAssetDocumentCommand(
       dto.assetId,
-      dto.organizationId,
-      uploaderId,
+      organizationId,
+      user.id, // uploader is the current user
       dto.documentName,
       dto.filePath,
       dto.fileType,
@@ -67,12 +71,15 @@ export class AssetDocumentController {
   @Permissions('DOCUMENT_VIEW')
   @Get()
   async getList(
-    @Query('organizationId') organizationId: string,
+    @CurrentUser() user: JwtPayload,
+    @Query('organizationId') organizationId?: string,
     @Query('assetId') assetId?: string,
     @Query('limit') limit?: number,
     @Query('offset') offset?: number,
   ): Promise<{ data: AssetDocumentResponse[]; total: number }> {
-    const q = new GetAssetDocumentsQuery(organizationId || '', {
+    // Use organizationId from JWT if not root
+    const orgId = user.isRoot ? organizationId || '' : user.organizationId!;
+    const q = new GetAssetDocumentsQuery(orgId, {
       assetId,
       limit: limit ? Number(limit) : 10,
       offset: offset ? Number(offset) : 0,

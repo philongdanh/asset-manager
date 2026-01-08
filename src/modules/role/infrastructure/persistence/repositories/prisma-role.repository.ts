@@ -9,66 +9,50 @@ import { TenantContextService } from 'src/shared/infrastructure/context/tenant-c
 @Injectable()
 export class PrismaRoleRepository
   extends BaseRepository
-  implements IRoleRepository {
+  implements IRoleRepository
+{
   constructor(
+    readonly tCtx: TenantContextService,
     private readonly prisma: PrismaService,
-    tenantContext: TenantContextService,
   ) {
-    super(tenantContext);
+    super(tCtx);
   }
 
   // --- Query Methods ---
-  async find(filter?: {}): Promise<{ data: Role[]; total: number }> {
-    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({});
-
-    const [data, total] = await Promise.all([
-      this.prisma.role.findMany({
-        where,
-        include: {
-          rolePermissions: {
-            include: {
-              permission: true,
-            },
-          },
-        },
-        orderBy: {
-          updatedAt: 'desc',
-        },
-      }),
-      this.prisma.role.count({ where }),
-    ]);
-
-    return {
-      data: data.map((role) => RoleMapper.toDomain(role)),
-      total,
-    };
-  }
-
-  async findById(roleId: string): Promise<Role | null> {
-    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({ id: roleId });
-
-    const role = await this.prisma.role.findFirst({
-      where,
-      include: {
-        rolePermissions: {
-          include: {
-            permission: true,
-          },
-        },
+  async find(): Promise<Role[]> {
+    const roles = await this.prisma.role.findMany({
+      where: this.applyTenantFilter<Prisma.RoleWhereInput>({}),
+      orderBy: {
+        updatedAt: 'desc',
       },
     });
+    return roles.map((role) => RoleMapper.toDomain(role));
+  }
 
+  async findById(id: string): Promise<Role | null> {
+    const role = await this.prisma.role.findUnique({
+      where: this.applyTenantFilter<Prisma.RoleWhereUniqueInput>({ id }),
+    });
     return role ? RoleMapper.toDomain(role) : null;
   }
 
-  async findByUserId(userId: string): Promise<Role[]> {
-    // UserRole relationship implicitly handles the tenant if roles are correctly scoped.
-    // But we might want to ensure the resulting roles belong to the current tenant.
-    const userRoles = await this.prisma.userRole.findMany({
+  async findByPerms(permIds: string[]): Promise<Role[]> {
+    const rolePermissions = await this.prisma.rolePermission.findMany({
       where: {
-        userId,
-        role: this.getTenantFilter(),
+        permissionId: {
+          in: permIds,
+        },
       },
+      include: {
+        role: true,
+      },
+    });
+    return rolePermissions.map((rp) => RoleMapper.toDomain(rp.role));
+  }
+
+  async findByUser(userId: string): Promise<Role[]> {
+    const userRoles = await this.prisma.userRole.findMany({
+      where: this.applyTenantFilter<Prisma.UserRoleWhereInput>({ userId }),
       include: {
         role: {
           include: {
@@ -85,32 +69,11 @@ export class PrismaRoleRepository
     return userRoles.map((userRole) => RoleMapper.toDomain(userRole.role));
   }
 
-  async findByPermission(permissionId: string): Promise<Role[]> {
-    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({
-      rolePermissions: {
-        some: {
-          permissionId,
-        },
-      },
-    });
-
-    const roles = await this.prisma.role.findMany({
-      where,
-      include: {
-        rolePermissions: {
-          include: {
-            permission: true,
-          },
-        },
-      },
-    });
-    return roles.map((role) => RoleMapper.toDomain(role));
-  }
-
   // --- Validation Methods ---
   async existsById(roleId: string): Promise<boolean> {
-    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({ id: roleId });
-    const count = await this.prisma.role.count({ where });
+    const count = await this.prisma.role.count({
+      where: this.applyTenantFilter<Prisma.RoleWhereInput>({ id: roleId }),
+    });
     return count > 0;
   }
 
@@ -118,7 +81,9 @@ export class PrismaRoleRepository
   async save(role: Role): Promise<Role> {
     // For update operations, verify the role belongs to current tenant
     const existingRole = await this.prisma.role.findUnique({
-      where: { id: role.id },
+      where: this.applyTenantFilter<Prisma.RoleWhereUniqueInput>({
+        id: role.id,
+      }),
       select: { id: true, organizationId: true },
     });
 
@@ -186,7 +151,7 @@ export class PrismaRoleRepository
     return role?.rolePermissions.map((rp) => rp.permissionId) || [];
   }
 
-  async hasPermission(roleId: string, permissionId: string): Promise<boolean> {
+  async hasPerm(roleId: string, permissionId: string): Promise<boolean> {
     const where = this.applyTenantFilter<Prisma.RoleWhereInput>({
       id: roleId,
       rolePermissions: {
@@ -198,10 +163,7 @@ export class PrismaRoleRepository
     return count > 0;
   }
 
-  async assignPermissions(
-    roleId: string,
-    permissionIds: string[],
-  ): Promise<void> {
+  async attachPerms(roleId: string, permissionIds: string[]): Promise<void> {
     if (permissionIds.length === 0) return;
 
     // Verify role belongs to tenant
@@ -219,10 +181,7 @@ export class PrismaRoleRepository
     });
   }
 
-  async removePermissions(
-    roleId: string,
-    permissionIds: string[],
-  ): Promise<void> {
+  async detachPerms(roleId: string, permissionIds: string[]): Promise<void> {
     if (permissionIds.length === 0) return;
 
     // Verify role belongs to tenant

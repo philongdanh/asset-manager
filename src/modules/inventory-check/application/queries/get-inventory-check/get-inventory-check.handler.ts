@@ -27,7 +27,7 @@ export class GetInventoryCheckHandler {
     private readonly userRepository: IUserRepository,
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepository: IAssetRepository,
-  ) { }
+  ) {}
 
   async execute(query: GetInventoryCheckQuery): Promise<InventoryCheckResult> {
     const inventoryCheck = await this.repository.findById(query.id);

@@ -39,6 +39,12 @@ export class AssetDocumentResponse {
   @Expose({ name: 'updated_at' })
   updatedAt: Date;
 
+  @Expose()
+  asset: AssetInfo | null;
+
+  @Expose({ name: 'uploaded_by_user' })
+  uploadedByUser: UploaderInfo | null;
+
   constructor(entity: AssetDocument) {
     this.id = entity.id;
     this.assetId = entity.assetId;
@@ -52,5 +58,39 @@ export class AssetDocumentResponse {
     this.description = entity.description;
     this.createdAt = entity.createdAt!;
     this.updatedAt = entity.updatedAt!;
+
+    this.asset = entity.asset
+      ? {
+          id: entity.asset.id,
+          asset_code: entity.asset.assetCode,
+          asset_name: entity.asset.assetName,
+          status: entity.asset.status,
+          model: entity.asset.model,
+          serial_number: entity.asset.serialNumber,
+        }
+      : null;
+
+    this.uploadedByUser = entity.uploader
+      ? {
+          id: entity.uploader.id,
+          username: entity.uploader.username,
+          email: entity.uploader.email,
+        }
+      : null;
   }
+}
+
+interface AssetInfo {
+  id: string;
+  asset_code: string;
+  asset_name: string;
+  status: string;
+  model: string | null;
+  serial_number: string | null;
+}
+
+interface UploaderInfo {
+  id: string;
+  username: string;
+  email: string;
 }

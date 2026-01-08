@@ -67,7 +67,7 @@ export class SignInHandler implements ICommandHandler<
       );
     }
 
-    const roles = await this.roleRepo.findByUserId(user.id);
+    const roles = await this.roleRepo.findByUser(user.id);
     const permissions = await this.permRepo.findByRoles(
       roles.map((role) => role.id),
     );

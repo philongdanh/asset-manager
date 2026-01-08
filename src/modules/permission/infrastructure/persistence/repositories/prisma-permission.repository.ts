@@ -7,6 +7,11 @@ import { PermissionMapper } from '../mappers/permission.mapper';
 export class PrismaPermissionRepository implements IPermissionRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async find(): Promise<Permission[]> {
+    const perms = await this.prisma.permission.findMany({});
+    return perms.map((perm) => PermissionMapper.toDomain(perm));
+  }
+
   async findByRoles(roleIds: string[]): Promise<Permission[]> {
     const permission = await this.prisma.permission.findMany({
       where: {
@@ -43,39 +48,9 @@ export class PrismaPermissionRepository implements IPermissionRepository {
     ]);
   }
 
-  async find(): Promise<{ data: Permission[]; total: number }> {
-    const [data, total] = await Promise.all([
-      this.prisma.permission.findMany({
-        include: {
-          rolePermissions: {
-            include: {
-              role: true,
-            },
-          },
-        },
-        orderBy: {
-          updatedAt: 'desc',
-        },
-      }),
-      this.prisma.permission.count(),
-    ]);
-
-    return {
-      data: data.map((permission) => PermissionMapper.toDomain(permission)),
-      total,
-    };
-  }
-
   async findById(id: string): Promise<Permission | null> {
     const permission = await this.prisma.permission.findUnique({
       where: { id },
-      include: {
-        rolePermissions: {
-          include: {
-            role: true,
-          },
-        },
-      },
     });
     return permission ? PermissionMapper.toDomain(permission) : null;
   }

@@ -55,7 +55,7 @@ export class RefreshTokenHandler implements ICommandHandler<
       throw new UnauthorizedException('Access Denied');
     }
 
-    const roles = await this.roleRepo.findByUserId(user.id);
+    const roles = await this.roleRepo.findByUser(user.id);
     const permissions = await this.permRepo.findByRoles(roles.map((r) => r.id));
     const permissionNames = permissions.map((p) => p.name);
 
