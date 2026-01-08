@@ -13,3 +13,19 @@ services:
     image: redis:8.4
     ports:
       - '6379:6379'
+
+  api:
+    build: .
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://asset:assetpass@db:5432/assetdb?schema=public
+      - ACCESS_TOKEN_SECRET="djaskdlajdakl"
+      - ACCESS_TOKEN_EXPIRED_TIME="20s"
+      - REFRESH_TOKEN_SECRET="djsadakldj"
+      - REFRESH_TOKEN_EXPIRED_TIME="20s"
+    volumes:
+      - ./uploads:/app/uploads

@@ -1,0 +1,10 @@
+node_modules
+dist
+# generated (removed to allow copy in Dockerfile)
+postgres-data
+uploads
+.git
+.env
+Dockerfile
+docker-compose.yml
+README.md
