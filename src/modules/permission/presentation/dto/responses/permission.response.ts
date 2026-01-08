@@ -1,11 +1,10 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Permission } from 'src/modules/permission';
 import {
   PermissionListResult,
   PermissionResult,
 } from 'src/modules/permission/application/dtos';
-import { RoleResponse, RoleResult } from 'src/modules/role';
-import { UserResponse } from 'src/modules/user';
+import { RoleResult } from 'src/modules/role';
+import { RoleResponse } from 'src/modules/role/presentation/dto/responses/role.response';
 
 @Exclude()
 export class PermissionResponse {
@@ -21,15 +20,11 @@ export class PermissionResponse {
   @Expose()
   roles?: RoleResponse[];
 
-  @Expose()
-  users?: UserResponse[];
-
   constructor(result: PermissionResult) {
     this.id = result.permission.id;
     this.name = result.permission.name;
     this.description = result.permission.description;
     this.roles = result.roles?.map((r) => new RoleResponse(new RoleResult(r)));
-    this.users = result.users?.map((u) => new UserResponse(u));
   }
 }
 
