@@ -1,6 +1,6 @@
 node_modules
 dist
-# generated (removed to allow copy in Dockerfile)
+generated
 postgres-data
 uploads
 .git

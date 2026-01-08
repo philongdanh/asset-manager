@@ -22,7 +22,7 @@ services:
       - db
       - redis
     environment:
-      - DATABASE_URL=postgresql://asset:assetpass@db:5432/assetdb?schema=public
+      - DATABASE_URL="postgres://asset:assetpass@localhost:5432/assetdb"
       - ACCESS_TOKEN_SECRET="djaskdlajdakl"
       - ACCESS_TOKEN_EXPIRED_TIME="20s"
       - REFRESH_TOKEN_SECRET="djsadakldj"
