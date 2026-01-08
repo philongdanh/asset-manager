@@ -1,4 +1,5 @@
 import { BaseEntity, BusinessRuleViolationException } from 'src/shared/domain';
+import { InventoryDetail } from './inventory-detail.entity';
 
 export class InventoryCheck extends BaseEntity {
   private _organizationId: string;
@@ -7,6 +8,7 @@ export class InventoryCheck extends BaseEntity {
   private _status: string;
   private _inventoryName: string;
   private _notes?: string;
+  private _details: InventoryDetail[] = [];
 
   protected constructor(builder: InventoryCheckBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt);
@@ -16,6 +18,7 @@ export class InventoryCheck extends BaseEntity {
     this._status = builder.status;
     this._inventoryName = builder.inventoryName;
     this._notes = builder.notes;
+    this._details = builder.details;
   }
 
   // --- Getters ---
@@ -43,6 +46,10 @@ export class InventoryCheck extends BaseEntity {
     return this._notes;
   }
 
+  public get details(): InventoryDetail[] {
+    return [...this._details];
+  }
+
   // --- Business Methods ---
   public finish(): void {
     this._status = 'FINISHED';
@@ -53,6 +60,22 @@ export class InventoryCheck extends BaseEntity {
     if (inventoryName !== undefined) this._inventoryName = inventoryName;
     if (checkDate !== undefined) this._checkDate = checkDate;
     if (notes !== undefined) this._notes = notes;
+    this.markAsUpdated();
+  }
+
+  public addDetail(detail: InventoryDetail): void {
+    if (this._details.some((d) => d.assetId === detail.assetId)) {
+      throw new BusinessRuleViolationException(
+        'INVENTORY_DETAIL_DUPLICATE_ASSET',
+        'Asset is already in this inventory check.',
+      );
+    }
+    this._details.push(detail);
+    this.markAsUpdated();
+  }
+
+  public removeDetail(detailId: string): void {
+    this._details = this._details.filter((d) => d.id !== detailId);
     this.markAsUpdated();
   }
 
@@ -80,6 +103,7 @@ export class InventoryCheckBuilder {
   public status: string = 'IN_PROGRESS';
   public inventoryName: string = '';
   public notes?: string;
+  public details: InventoryDetail[] = [];
   public createdAt: Date = new Date();
   public updatedAt: Date = new Date();
 
@@ -112,6 +136,11 @@ export class InventoryCheckBuilder {
   public withTimestamps(createdAt: Date, updatedAt: Date): this {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    return this;
+  }
+
+  public withDetails(details: InventoryDetail[]): this {
+    this.details = details;
     return this;
   }
 

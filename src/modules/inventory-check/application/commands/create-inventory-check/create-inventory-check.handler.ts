@@ -4,6 +4,7 @@ import {
   INVENTORY_CHECK_REPOSITORY,
   type IInventoryCheckRepository,
   InventoryCheck,
+  InventoryDetail,
 } from 'src/modules/inventory-check/domain';
 import { CreateInventoryCheckCommand } from './create-inventory-check.command';
 import { InventoryCheckResult } from '../../dtos/inventory-check.result';
@@ -12,6 +13,11 @@ import {
   type IOrganizationRepository,
 } from 'src/modules/organization/domain';
 import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
+
+import {
+  ASSET_REPOSITORY,
+  type IAssetRepository,
+} from 'src/modules/asset/domain';
 
 @Injectable()
 export class CreateInventoryCheckHandler {
@@ -23,6 +29,8 @@ export class CreateInventoryCheckHandler {
     private readonly organizationRepository: IOrganizationRepository,
     @Inject(USER_REPOSITORY)
     private readonly userRepository: IUserRepository,
+    @Inject(ASSET_REPOSITORY)
+    private readonly assetRepository: IAssetRepository,
   ) { }
 
   async execute(
@@ -39,6 +47,31 @@ export class CreateInventoryCheckHandler {
 
     if (cmd.checkDate) builder.withCheckDate(cmd.checkDate);
     if (cmd.notes) builder.withNotes(cmd.notes);
+
+    if (cmd.assetIds && cmd.assetIds.length > 0) {
+      const assetPromises = cmd.assetIds.map((assetId) =>
+        this.assetRepository.findById(assetId),
+      );
+      const assets = await Promise.all(assetPromises);
+
+      const details: InventoryDetail[] = [];
+      for (const asset of assets) {
+        if (!asset) continue;
+        if (asset.organizationId !== cmd.organizationId) continue;
+
+        const detailId = this.idGenerator.generate();
+        const detailBuilder = InventoryDetail.builder(
+          detailId,
+          id,
+          asset.id,
+          asset.status.toString(),
+        );
+
+        detailBuilder.withExpectedLocation(asset.location);
+        details.push(detailBuilder.build());
+      }
+      builder.withDetails(details);
+    }
 
     const inventoryCheck = builder.build();
     const savedCheck = await this.repository.save(inventoryCheck);

@@ -4,6 +4,8 @@ import {
 } from 'generated/prisma/client';
 import { InventoryCheck } from 'src/modules/inventory-check/domain';
 
+import { InventoryDetailMapper } from './inventory-detail.mapper';
+
 export class InventoryCheckMapper {
   static toDomain(raw: PrismaInventoryCheck): InventoryCheck {
     const builder = InventoryCheck.builder(
@@ -16,6 +18,8 @@ export class InventoryCheckMapper {
     builder.status = raw.status;
     builder.inventoryName = raw.inventoryName;
     if (raw.notes) builder.notes = raw.notes;
+
+    // TODO: Map details relation back to domain if included in raw query
 
     return builder.build();
   }
@@ -34,6 +38,19 @@ export class InventoryCheckMapper {
         notes: inventoryCheck.notes,
         createdAt: inventoryCheck.createdAt,
         updatedAt: inventoryCheck.updatedAt,
+        details: {
+          create: inventoryCheck.details.map((detail) => ({
+            id: detail.id,
+            assetId: detail.assetId,
+            checkedByUserId: inventoryCheck.checkerUserId,
+            physicalStatus: detail.actualStatus || 'UNKNOWN',
+            isMatched: detail.isMatch,
+            notes: detail.notes,
+            checkedDate: new Date(),
+            createdAt: detail.createdAt,
+            updatedAt: detail.updatedAt,
+          })),
+        },
       },
     };
   }

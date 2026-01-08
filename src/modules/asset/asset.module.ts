@@ -33,5 +33,6 @@ import { AssetCategoryModule } from '../asset-category/asset-category.module';
     GetAssetsHandler,
     GetAssetDetailsHandler,
   ],
+  exports: [ASSET_REPOSITORY],
 })
-export class AssetModule {}
+export class AssetModule { }

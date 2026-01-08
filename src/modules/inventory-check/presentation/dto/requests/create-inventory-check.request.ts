@@ -21,4 +21,9 @@ export class CreateInventoryCheckRequest {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @Expose({ name: 'asset_ids' })
+  @IsOptional()
+  @IsString({ each: true })
+  assetIds?: string[];
 }

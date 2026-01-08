@@ -27,7 +27,10 @@ import {
 } from '../organization';
 import { USER_REPOSITORY, PrismaUserRepository } from '../user';
 
+import { AssetModule } from '../asset/asset.module';
+
 @Module({
+  imports: [AssetModule],
   controllers: [InventoryCheckController],
   providers: [
     PrismaService,
@@ -62,4 +65,4 @@ import { USER_REPOSITORY, PrismaUserRepository } from '../user';
   ],
   exports: [INVENTORY_CHECK_REPOSITORY, INVENTORY_DETAIL_REPOSITORY],
 })
-export class InventoryCheckModule {}
+export class InventoryCheckModule { }

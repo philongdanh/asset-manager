@@ -5,5 +5,6 @@ export class CreateInventoryCheckCommand {
     public readonly name: string,
     public readonly checkDate?: Date,
     public readonly notes?: string,
+    public readonly assetIds?: string[],
   ) { }
 }

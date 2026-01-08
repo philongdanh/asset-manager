@@ -88,6 +88,7 @@ export class InventoryCheckController {
       dto.name,
       dto.inventoryDate ? new Date(dto.inventoryDate) : undefined,
       dto.notes,
+      dto.assetIds,
     );
     const result = await this.createHandler.execute(cmd);
     return this.toResponse(result);
