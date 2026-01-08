@@ -12,7 +12,7 @@ export class RoleMapper {
     return {
       id: role.id,
       organization: {
-        connect: { id: role.organizationId },
+        connect: { id: role.tenantId },
       },
       roleName: role.name,
       createdAt: role.createdAt,

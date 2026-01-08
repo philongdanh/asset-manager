@@ -79,62 +79,20 @@ export class PrismaRoleRepository
 
   // --- Persistence Methods ---
   async save(role: Role): Promise<Role> {
-    // For update operations, verify the role belongs to current tenant
-    const existingRole = await this.prisma.role.findUnique({
-      where: this.applyTenantFilter<Prisma.RoleWhereUniqueInput>({
-        id: role.id,
-      }),
-      select: { id: true, organizationId: true },
-    });
-
-    if (existingRole) {
-      // Update case: verify tenant ownership
-      const tenantId = this.tenantContext.getTenantId();
-      if (tenantId && existingRole.organizationId !== tenantId) {
-        throw new Error('Role not found or access denied');
-      }
-    }
-
-    const upsertArgs = RoleMapper.toUpsertArgs(role);
-    const savedRole = await this.prisma.role.upsert({
-      ...upsertArgs,
-      include: {
-        rolePermissions: {
-          include: {
-            permission: true,
-          },
-        },
-      },
-    });
+    const savedRole = await this.prisma.role.upsert(
+      RoleMapper.toUpsertArgs(role),
+    );
     return RoleMapper.toDomain(savedRole);
   }
 
-  async delete(roleIds: string[]): Promise<void> {
-    if (roleIds.length === 0) return;
-
-    // Safety check: ensure all roleIds belong to the current organization
-    const tenantFilter = this.getTenantFilter();
-
-    await this.prisma.$transaction([
-      this.prisma.rolePermission.deleteMany({
-        where: {
-          roleId: { in: roleIds },
-          role: tenantFilter,
+  async delete(ids: string[]): Promise<void> {
+    await this.prisma.role.deleteMany({
+      where: this.applyTenantFilter<Prisma.RoleWhereInput>({
+        id: {
+          in: ids,
         },
       }),
-      this.prisma.userRole.deleteMany({
-        where: {
-          roleId: { in: roleIds },
-          role: tenantFilter,
-        },
-      }),
-      this.prisma.role.deleteMany({
-        where: {
-          id: { in: roleIds },
-          ...tenantFilter,
-        },
-      }),
-    ]);
+    });
   }
 
   async getRolePermissions(roleId: string): Promise<string[]> {
@@ -161,6 +119,28 @@ export class PrismaRoleRepository
 
     const count = await this.prisma.role.count({ where });
     return count > 0;
+  }
+
+  async syncPerms(id: string, permIds: string[]): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      // Delete all permissions for the role
+      await tx.rolePermission.deleteMany({
+        where: this.applyTenantFilter<Prisma.RolePermissionWhereInput>({
+          roleId: id,
+        }),
+      });
+
+      // Attach new permissions
+      if (permIds.length > 0) {
+        await tx.rolePermission.createMany({
+          data: permIds.map((permissionId) => ({
+            roleId: id,
+            permissionId,
+          })),
+          skipDuplicates: true,
+        });
+      }
+    });
   }
 
   async attachPerms(roleId: string, permissionIds: string[]): Promise<void> {

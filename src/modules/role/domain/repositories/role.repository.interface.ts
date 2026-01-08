@@ -9,17 +9,12 @@ export interface IRoleRepository {
   findByUser(userId: string): Promise<Role[]>;
   findByPerms(permIds: string[]): Promise<Role[]>;
 
-  // --- Validation Methods ---
-  existsById(id: string): Promise<boolean>;
-
   // --- Persistence Methods ---
   save(role: Role): Promise<Role>;
   delete(ids: string[]): Promise<void>;
 
   // --- Role-Permission Management ---
-  hasPerm(id: string, permId: string): Promise<boolean>;
-  attachPerms(id: string, permIds: string[]): Promise<void>;
-  detachPerms(id: string, permIds: string[]): Promise<void>;
+  syncPerms(id: string, permIds: string[]): Promise<void>;
 
   // --- User-Role Management ---
   assignToUsers(roleId: string, userIds: string[]): Promise<void>;

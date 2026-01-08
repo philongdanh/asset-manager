@@ -1,18 +1,18 @@
 import { BaseEntity, BusinessRuleViolationException } from 'src/shared/domain';
 
 export class Role extends BaseEntity {
-  private _organizationId: string;
+  private _tenantId: string;
   private _name: string;
 
   protected constructor(builder: RoleBuilder) {
     super(builder.id, builder.createdAt, builder.updatedAt);
-    this._organizationId = builder.organizationId;
+    this._tenantId = builder.tenantId;
     this._name = builder.name;
   }
 
   // --- Getters --
-  public get organizationId(): string {
-    return this._organizationId;
+  public get tenantId(): string {
+    return this._tenantId;
   }
 
   public get name(): string {
@@ -20,14 +20,14 @@ export class Role extends BaseEntity {
   }
 
   // --- Setters --
-  public set organizationId(organizationId: string) {
-    if (!organizationId) {
+  public set tenantId(tenantId: string) {
+    if (!tenantId) {
       throw new BusinessRuleViolationException(
-        'ORGANIZATION_ID_REQUIRED',
-        'Organization ID is required.',
+        'TENANT_ID_REQUIRED',
+        'Tenant ID is required.',
       );
     }
-    this._organizationId = organizationId;
+    this._tenantId = tenantId;
     this.markAsUpdated();
   }
 
@@ -46,10 +46,10 @@ export class Role extends BaseEntity {
   // --- Static Factory ---
   public static builder(
     id: string,
-    organizationId: string,
+    tenantId: string,
     name: string,
   ): RoleBuilder {
-    return new RoleBuilder(id, organizationId, name);
+    return new RoleBuilder(id, tenantId, name);
   }
 
   public static createFromBuilder(builder: RoleBuilder): Role {
@@ -64,7 +64,7 @@ export class RoleBuilder {
 
   constructor(
     public readonly id: string,
-    public readonly organizationId: string,
+    public readonly tenantId: string,
     public readonly name: string,
   ) {
     this.createdAt = new Date();
@@ -84,10 +84,10 @@ export class RoleBuilder {
         'ID is mandatory for role.',
       );
     }
-    if (!this.organizationId) {
+    if (!this.tenantId) {
       throw new BusinessRuleViolationException(
-        'ORGANIZATION_ID_REQUIRED',
-        'Organization ID is mandatory for role.',
+        'TENANT_ID_REQUIRED',
+        'Tenant ID is mandatory for role.',
       );
     }
     if (!this.name || this.name.trim().length === 0) {

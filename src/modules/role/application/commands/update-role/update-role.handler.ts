@@ -35,29 +35,12 @@ export class UpdateRoleHandler implements ICommandHandler<
     }
 
     if (cmd.permissionIds !== undefined) {
-      const currPerms = await this.permRepo.findByRoles([cmd.id]);
-
-      const toRemove = currPerms.filter(
-        (perm) => !cmd.permissionIds!.includes(perm.id),
-      );
-      if (toRemove.length > 0) {
-        await this.roleRepo.detachPerms(
-          cmd.id,
-          toRemove.map((perm) => perm.id),
-        );
-      }
-
-      const toAdd = cmd.permissionIds.filter(
-        (id) => !currPerms.map((perm) => perm.id).includes(id),
-      );
-      if (toAdd.length > 0) {
-        await this.roleRepo.attachPerms(cmd.id, toAdd);
-      }
+      await this.roleRepo.syncPerms(cmd.id, cmd.permissionIds);
     }
 
     const savedRole = await this.roleRepo.save(role);
-    const permissions = await this.permRepo.findByRoles([savedRole.id]);
+    const perms = await this.permRepo.findByRoles([savedRole.id]);
 
-    return new RoleResult(savedRole, permissions);
+    return new RoleResult(savedRole, perms);
   }
 }

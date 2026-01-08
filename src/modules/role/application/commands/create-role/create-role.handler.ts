@@ -1,4 +1,4 @@
-import { Inject, BadRequestException } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
 import { CreateRoleCommand } from './create-role.command';
 import { ROLE_REPOSITORY, type IRoleRepository, Role } from '../../../domain';
 import { ID_GENERATOR, type IIdGenerator } from 'src/shared/domain/interfaces';
@@ -10,6 +10,7 @@ import {
 } from 'src/modules/permission';
 
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { UseCaseException } from 'src/shared/application/exceptions';
 
 @CommandHandler(CreateRoleCommand)
 export class CreateRoleHandler implements ICommandHandler<
@@ -29,7 +30,10 @@ export class CreateRoleHandler implements ICommandHandler<
   async execute(cmd: CreateRoleCommand): Promise<RoleResult> {
     const tenantId = this.tCtx.getTenantId();
     if (!tenantId) {
-      throw new BadRequestException('Organization ID is missing in context');
+      throw new UseCaseException(
+        'Tenant ID is missing in context',
+        CreateRoleCommand.name,
+      );
     }
 
     const id = this.idGenerator.generate();
@@ -37,7 +41,7 @@ export class CreateRoleHandler implements ICommandHandler<
     const savedRole = await this.roleRepo.save(role);
 
     if (cmd.permissionIds && cmd.permissionIds.length > 0) {
-      await this.roleRepo.attachPerms(savedRole.id, cmd.permissionIds);
+      await this.roleRepo.syncPerms(savedRole.id, cmd.permissionIds);
     }
 
     const permissions = await this.permRepo.findByRoles([savedRole.id]);
