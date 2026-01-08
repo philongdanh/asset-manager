@@ -8,10 +8,7 @@ import {
 } from 'class-validator';
 
 export class CreateRoleRequest {
-  @Expose({ name: 'organization_id' })
-  @IsOptional()
-  @IsUUID()
-  organizationId?: string;
+
 
   @Expose()
   @IsNotEmpty()

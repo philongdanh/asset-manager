@@ -18,12 +18,8 @@ export class PrismaRoleRepository
   }
 
   // --- Query Methods ---
-  async find(filter?: {
-    organizationId?: string;
-  }): Promise<{ data: Role[]; total: number }> {
-    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({
-      organizationId: filter?.organizationId,
-    });
+  async find(filter?: {}): Promise<{ data: Role[]; total: number }> {
+    const where = this.applyTenantFilter<Prisma.RoleWhereInput>({});
 
     const [data, total] = await Promise.all([
       this.prisma.role.findMany({

@@ -13,8 +13,6 @@ export class GetRolesHandler implements IQueryHandler<GetRolesQuery> {
   async execute(
     query: GetRolesQuery,
   ): Promise<{ data: Role[]; total: number }> {
-    return this.roleRepository.find({
-      organizationId: query.organizationId,
-    });
+    return this.roleRepository.find();
   }
 }

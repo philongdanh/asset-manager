@@ -40,19 +40,10 @@ export class RoleController {
   @Permissions('ROLE_VIEW')
   @Get()
   async getList(
-    @CurrentUser() user: JwtPayload,
     @Query() query: GetRolesRequest,
   ): Promise<{ data: RoleResponse[]; total: number }> {
-    if (user.isRoot && !query.organizationId) {
-      throw new BadRequestException(
-        'Organization ID is required for root users',
-      );
-    }
-    // For non-root users, the repository will automatically filter by their organization
-    // via TenantContext, overriding any organizationId passed in the query.
-
     const result: { data: Role[]; total: number } = await this.queryBus.execute(
-      new GetRolesQuery(query.organizationId),
+      new GetRolesQuery(),
     );
     return {
       data: result.data.map((role) => new RoleResponse(role, [])),
@@ -75,24 +66,9 @@ export class RoleController {
   @Permissions('ROLE_CREATE')
   @Post()
   async create(
-    @CurrentUser() user: JwtPayload,
     @Body() dto: CreateRoleRequest,
   ): Promise<RoleResponse> {
-    if (user.isRoot && !dto.organizationId) {
-      throw new BadRequestException(
-        'Organization ID is required for root users',
-      );
-    }
-    // For non-root users, we use their organizationId.
-    const orgId = user.isRoot ? dto.organizationId : user.organizationId;
-
-    if (!orgId) {
-      // Should catch if create request comes from user without org (unlikely if guarded)
-      throw new BadRequestException('Organization ID is missing');
-    }
-
     const cmd = new CreateRoleCommand(
-      orgId,
       dto.name,
       dto.permissionIds,
     );
