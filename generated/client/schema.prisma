@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/client"
+  provider   = "prisma-client-js"
+  output     = "../generated/client"
+  engineType = "library"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 // ---------------------------------------------------------
@@ -483,8 +484,8 @@ model InventoryTransferItem {
   batchId         String? @map("batch_id")
 
   quantity  Int
-  unitCost  Decimal @map("unit_cost") @db.Decimal(19, 4)
-  totalCost Decimal @map("total_cost") @db.Decimal(19, 4)
+  unitCost  Decimal @map("unit_cost")
+  totalCost Decimal @map("total_cost")
 
   notes String?
 
@@ -509,8 +510,8 @@ model InventoryTransaction {
 
   transactionType InventoryTransactionType @map("transaction_type")
   quantity        Int
-  unitCost        Decimal?                 @map("unit_cost") @db.Decimal(19, 4)
-  totalCost       Decimal?                 @map("total_cost") @db.Decimal(19, 4)
+  unitCost        Decimal?                 @map("unit_cost")
+  totalCost       Decimal?                 @map("total_cost")
 
   referenceNumber String? @map("reference_number")
   notes           String?
@@ -542,9 +543,9 @@ model AssetDepreciation {
   assetItemId             String             @map("asset_item_id")
   depreciationDate        DateTime           @map("depreciation_date")
   method                  DepreciationMethod @default(STRAIGHT_LINE)
-  depreciationValue       Decimal            @map("depreciation_value") @db.Decimal(19, 4)
-  accumulatedDepreciation Decimal            @map("accumulated_depreciation") @db.Decimal(19, 4)
-  remainingValue          Decimal            @map("remaining_value") @db.Decimal(19, 4)
+  depreciationValue       Decimal            @map("depreciation_value")
+  accumulatedDepreciation Decimal            @map("accumulated_depreciation")
+  remainingValue          Decimal            @map("remaining_value")
   accountingEntryId       String?            @map("accounting_entry_id")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -564,8 +565,8 @@ model MaintenanceSchedule {
   type              MaintenanceType   @default(PREVENTIVE)
   status            MaintenanceStatus @default(PENDING)
   description       String?
-  estimatedCost     Decimal?          @map("estimated_cost") @db.Decimal(19, 4)
-  actualCost        Decimal?          @map("actual_cost") @db.Decimal(19, 4)
+  estimatedCost     Decimal?          @map("estimated_cost")
+  actualCost        Decimal?          @map("actual_cost")
   performedByUserId String?           @map("performed_by_user_id")
   result            String?
 
@@ -613,7 +614,7 @@ model AssetDisposal {
   tenantId          String   @map("tenant_id")
   disposalDate      DateTime @map("disposal_date")
   disposalType      String   @map("disposal_type")
-  disposalValue     Decimal  @map("disposal_value") @db.Decimal(19, 4)
+  disposalValue     Decimal  @map("disposal_value")
   reason            String?
   approvedByUserId  String?  @map("approved_by_user_id")
   status            String
@@ -731,7 +732,7 @@ model AccountingEntry {
   tenantId    String   @map("tenant_id")
   entryType   String   @map("entry_type")
   entryDate   DateTime @map("entry_date")
-  amount      Decimal  @db.Decimal(19, 4)
+  amount      Decimal
   description String?
 
   assetItemId     String? @map("asset_item_id")
@@ -759,8 +760,8 @@ model BudgetPlan {
   departmentId    String  @map("department_id")
   fiscalYear      Int     @map("fiscal_year")
   budgetType      String  @map("budget_type")
-  allocatedAmount Decimal @map("allocated_amount") @db.Decimal(19, 4)
-  spentAmount     Decimal @default(0) @map("spent_amount") @db.Decimal(19, 4)
+  allocatedAmount Decimal @map("allocated_amount")
+  spentAmount     Decimal @default(0) @map("spent_amount")
   status          String
 
   createdAt DateTime @default(now()) @map("created_at")
