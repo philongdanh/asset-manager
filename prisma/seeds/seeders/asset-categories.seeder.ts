@@ -9,19 +9,33 @@ export const seedAssetCategories = async (
   const categories: AssetCategory[] = [];
 
   for (const tenant of tenants) {
-    for (let i = 0; i < ASSET_CATEGORIES.length; i++) {
-      const catData = ASSET_CATEGORIES[i];
+    const codeToIdMap = new Map<string, string>();
+
+    for (const catData of ASSET_CATEGORIES) {
+      let parentId: string | null = null;
+      if (catData.parentCode) {
+        parentId = codeToIdMap.get(catData.parentCode) || null;
+      }
+
+      const id = `category-${tenant.id}-${catData.code}`;
+
       const category = await prisma.assetCategory.upsert({
-        where: { id: `category-${tenant.id}-${i + 1}` },
-        update: {},
+        where: { id },
+        update: {
+          name: catData.name,
+          code: catData.code,
+          parentId,
+        },
         create: {
-          id: `category-${tenant.id}-${i + 1}`,
+          id,
           tenantId: tenant.id,
           code: catData.code,
           name: catData.name,
+          parentId,
         },
       });
       categories.push(category);
+      codeToIdMap.set(catData.code, category.id);
     }
   }
   return categories;

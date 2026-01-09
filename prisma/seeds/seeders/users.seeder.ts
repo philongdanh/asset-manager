@@ -1,4 +1,5 @@
 import { PrismaClient, Role, Tenant, User, UserStatus } from 'generated/client';
+import { REALISTIC_USERS } from '../data';
 
 export const seedUsers = async (
   prisma: PrismaClient,
@@ -63,20 +64,23 @@ export const seedUsers = async (
       });
     }
 
-    // Regular users
-    for (let i = 1; i <= 5; i++) {
+    // Realistic users
+    for (const userData of REALISTIC_USERS) {
+      const emailDomain = tenant.code?.toLowerCase() + '.com';
+      const email = `${userData.username}@${emailDomain}`;
+
       const user = await prisma.user.upsert({
-        where: { email: `user${i}@${tenant.code?.toLowerCase()}.com` },
+        where: { email },
         update: {},
         create: {
-          id: `user-${tenant.id}-${i}`,
+          id: `user-${tenant.id}-${userData.username}`,
           tenantId: tenant.id,
-          username: `staff${i}_${tenant.code?.toLowerCase()}`,
+          username: `${userData.username}_${tenant.code?.toLowerCase()}`,
           password: '$2b$10$YourHashedPasswordHere',
-          email: `user${i}@${tenant.code?.toLowerCase()}.com`,
+          email,
           isRoot: false,
           status: UserStatus.ACTIVE,
-          avatarUrl: `/avatars/user${i}.png`,
+          avatarUrl: `/avatars/${userData.username}.png`,
         },
       });
 

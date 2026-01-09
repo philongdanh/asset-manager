@@ -1,5 +1,5 @@
 import { Department, PrismaClient, Tenant } from 'generated/client';
-import { DEPARTMENTS, IT_SUB_DEPARTMENTS } from '../data';
+import { DEPARTMENTS } from '../data';
 
 export const seedDepartments = async (
   prisma: PrismaClient,
@@ -9,41 +9,33 @@ export const seedDepartments = async (
   const departments: Department[] = [];
 
   for (const tenant of tenants) {
-    // Main departments
-    for (let i = 0; i < DEPARTMENTS.length; i++) {
-      const deptData = DEPARTMENTS[i];
+    const codeToIdMap = new Map<string, string>();
+
+    for (const deptData of DEPARTMENTS) {
+      let parentId: string | null = null;
+      if (deptData.parentCode) {
+        parentId = codeToIdMap.get(deptData.parentCode) || null;
+      }
+
+      // Ensure unique ID based on code
+      const id = `dept-${tenant.id}-${deptData.code}`;
+
       const department = await prisma.department.upsert({
-        where: { id: `dept-${tenant.id}-${i + 1}` },
-        update: {},
+        where: { id },
+        update: {
+          name: deptData.name,
+          parentId,
+        },
         create: {
-          id: `dept-${tenant.id}-${i + 1}`,
+          id,
           tenantId: tenant.id,
           name: deptData.name,
-          parentId: deptData.parentId,
+          parentId,
         },
       });
+
       departments.push(department);
-    }
-
-    // Sub-departments under IT
-    const itDept = departments.find(
-      (d) => d.tenantId === tenant.id && d.name === 'IT Dept',
-    );
-
-    if (itDept) {
-      for (let i = 0; i < IT_SUB_DEPARTMENTS.length; i++) {
-        const subDept = await prisma.department.upsert({
-          where: { id: `dept-${tenant.id}-it-${i + 1}` },
-          update: {},
-          create: {
-            id: `dept-${tenant.id}-it-${i + 1}`,
-            tenantId: tenant.id,
-            name: IT_SUB_DEPARTMENTS[i],
-            parentId: itDept.id,
-          },
-        });
-        departments.push(subDept);
-      }
+      codeToIdMap.set(deptData.code, department.id);
     }
   }
   return departments;

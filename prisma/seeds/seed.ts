@@ -23,36 +23,44 @@ async function main() {
 
   // Clear existing data (careful in production!)
   console.log('Clearing existing data...');
-  // Clear existing data (careful in production!)
-  console.log('Clearing existing data...');
 
-  await prisma.inventoryDetail.deleteMany({});
-  await prisma.inventoryCheck.deleteMany({});
-  await prisma.inventoryTransaction.deleteMany({});
-  await prisma.inventoryBatchTransaction.deleteMany({});
-  await prisma.inventoryBatch.deleteMany({});
-  await prisma.inventoryTransferItem.deleteMany({});
-  await prisma.inventoryTransfer.deleteMany({});
-  await prisma.assetDocument.deleteMany({});
-  await prisma.assetDisposal.deleteMany({});
-  await prisma.assetTransfer.deleteMany({});
-  await prisma.maintenanceSchedule.deleteMany({});
-  await prisma.assetDepreciation.deleteMany({});
-  await prisma.accountingEntry.deleteMany({});
-  await prisma.budgetPlan.deleteMany({});
-  await prisma.auditLog.deleteMany({});
-  await prisma.assetItem.deleteMany({});
-  await prisma.inventoryItem.deleteMany({});
-  await prisma.assetTemplate.deleteMany({});
-  await prisma.assetCategory.deleteMany({});
-  await prisma.department.deleteMany({});
-  await prisma.userRole.deleteMany({});
-  await prisma.rolePermission.deleteMany({});
-  await prisma.role.deleteMany({});
-  await prisma.user.deleteMany({});
-  await prisma.tenant.deleteMany({});
-
-  console.log('Cleared all data');
+  try {
+    await prisma.inventoryTransaction.deleteMany({});
+    await prisma.inventoryBatchTransaction.deleteMany({});
+    await prisma.inventoryTransferItem.deleteMany({});
+    await prisma.inventoryTransfer.deleteMany({});
+    await prisma.inventoryDetail.deleteMany({});
+    await prisma.inventoryCheck.deleteMany({});
+    await prisma.inventoryBatch.deleteMany({});
+    await prisma.assetDocument.deleteMany({});
+    await prisma.assetDisposal.deleteMany({});
+    await prisma.assetTransfer.deleteMany({});
+    await prisma.maintenanceSchedule.deleteMany({});
+    await prisma.assetDepreciation.deleteMany({});
+    await prisma.accountingEntry.deleteMany({});
+    await prisma.budgetPlan.deleteMany({});
+    await prisma.auditLog.deleteMany({});
+    await prisma.assetItem.deleteMany({});
+    await prisma.inventoryItem.deleteMany({});
+    await prisma.assetTemplate.deleteMany({});
+    await prisma.assetCategory.deleteMany({});
+    await prisma.department.deleteMany({});
+    await prisma.userRole.deleteMany({});
+    await prisma.rolePermission.deleteMany({});
+    await prisma.role.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.tenant.deleteMany({});
+    console.log('Cleared all data');
+  } catch (e: any) {
+    if (e.code === 'P2021') {
+      console.error(
+        '\nError: Database tables do not exist.\nPlease run "npx prisma db push" or "npx prisma migrate dev" to create the database schema before seeding.\n',
+      );
+      process.exit(1);
+    } else {
+      throw e;
+    }
+  }
 
   // 1. Create Tenants
   const tenants = await seedTenants(prisma);

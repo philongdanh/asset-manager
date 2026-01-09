@@ -6,5 +6,5 @@
 
 
 # Files
-.env*
+.env
 *.db
