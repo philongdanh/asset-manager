@@ -10,7 +10,7 @@ import { JwtPayload } from '../../../modules/auth/presentation/interfaces/jwt-pa
 
 @Injectable()
 export class TenantContextInterceptor implements NestInterceptor {
-  constructor(private readonly tenantContextService: TenantContextService) {}
+  constructor(private readonly tCtxService: TenantContextService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
@@ -18,10 +18,10 @@ export class TenantContextInterceptor implements NestInterceptor {
 
     if (user) {
       if (user.organizationId) {
-        this.tenantContextService.setTenantId(user.organizationId);
+        this.tCtxService.setTenantId(user.organizationId);
       }
-      this.tenantContextService.setUserId(user.id);
-      this.tenantContextService.setIsRoot(user.isRoot);
+      this.tCtxService.setUserId(user.id);
+      this.tCtxService.setIsRoot(user.isRoot);
     }
 
     return next.handle();

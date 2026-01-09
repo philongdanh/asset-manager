@@ -15,23 +15,23 @@ export class RoleResponse {
   @Expose()
   name: string;
 
-  @Expose({ name: 'created_at' })
-  createdAt: Date;
-
-  @Expose({ name: 'updated_at' })
-  updatedAt: Date;
-
   @Expose()
   permissions?: PermissionResponse[];
 
   @Expose()
   users?: UserResponse[];
 
+  @Expose({ name: 'created_at' })
+  createdAt: Date | null;
+
+  @Expose({ name: 'updated_at' })
+  updatedAt: Date | null;
+
   constructor(result: RoleResult) {
     this.id = result.role.id;
     this.name = result.role.name;
-    this.createdAt = result.role.createdAt!;
-    this.updatedAt = result.role.updatedAt!;
+    this.createdAt = result.role.createdAt || null;
+    this.updatedAt = result.role.updatedAt || null;
     this.permissions = result.permissions?.map(
       (p) => new PermissionResponse(new PermissionResult(p)),
     );
