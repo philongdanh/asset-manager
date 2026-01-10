@@ -94,17 +94,49 @@ export class MaintenanceSchedule extends BaseEntity {
   }
 
   // --- Business Methods ---
+
+  private validateScheduledDate(date: Date): void {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const checkDate = new Date(date);
+    checkDate.setHours(0, 0, 0, 0);
+
+    if (checkDate < today) {
+      throw new BusinessRuleViolationException(
+        'INVALID_SCHEDULED_DATE',
+        'Scheduled date cannot be in the past.',
+      );
+    }
+  }
+
   public schedule(
     maintenanceType: MaintenanceType,
     scheduledDate: Date,
     description?: string | null,
     estimatedCost?: number | null,
   ): void {
+    this.validateScheduledDate(scheduledDate);
     this._maintenanceType = maintenanceType;
     this._scheduledDate = scheduledDate;
     this._description = description || null;
     this._estimatedCost = estimatedCost || null;
     this._status = MaintenanceStatus.SCHEDULED;
+    this.markAsUpdated();
+  }
+
+  public reschedule(newDate: Date): void {
+    if (
+      this._status !== MaintenanceStatus.SCHEDULED &&
+      this._status !== MaintenanceStatus.APPROVED
+    ) {
+      throw new BusinessRuleViolationException(
+        'CANNOT_RESCHEDULE',
+        'Only scheduled or approved maintenance can be rescheduled.',
+      );
+    }
+    this.validateScheduledDate(newDate);
+    this._scheduledDate = newDate;
     this.markAsUpdated();
   }
 
@@ -185,26 +217,6 @@ export class MaintenanceSchedule extends BaseEntity {
     }
     this._status = MaintenanceStatus.REJECTED;
     this._result = reason;
-    this.markAsUpdated();
-  }
-
-  public reschedule(newDate: Date): void {
-    if (
-      this._status !== MaintenanceStatus.SCHEDULED &&
-      this._status !== MaintenanceStatus.APPROVED
-    ) {
-      throw new BusinessRuleViolationException(
-        'CANNOT_RESCHEDULE',
-        'Only scheduled or approved maintenance can be rescheduled.',
-      );
-    }
-    if (newDate < new Date()) {
-      throw new BusinessRuleViolationException(
-        'INVALID_DATE',
-        'New scheduled date cannot be in the past.',
-      );
-    }
-    this._scheduledDate = newDate;
     this.markAsUpdated();
   }
 
@@ -396,12 +408,19 @@ export class MaintenanceScheduleBuilder {
         'Scheduled date is mandatory.',
       );
     }
-    if (
-      this.scheduledDate < new Date() &&
-      this.status === MaintenanceStatus.SCHEDULED
-    ) {
-      // Only enforce for new/future schedules
-      // But the original code had this check.
+    if (this.scheduledDate) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const checkDate = new Date(this.scheduledDate);
+      checkDate.setHours(0, 0, 0, 0);
+
+      if (checkDate < today && this.status === MaintenanceStatus.SCHEDULED) {
+        throw new BusinessRuleViolationException(
+          'INVALID_SCHEDULED_DATE',
+          'Scheduled date cannot be in the past.',
+        );
+      }
     }
     if (this.estimatedCost !== null && this.estimatedCost < 0) {
       throw new BusinessRuleViolationException(
