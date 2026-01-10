@@ -31,6 +31,16 @@ export class RecordDepreciationHandler {
       );
     }
 
+    const newRemainingValue = asset.currentValue - cmd.depreciationValue;
+    const newAccumulatedDepreciation = asset.originalCost - newRemainingValue;
+
+    if (newRemainingValue < 0) {
+      throw new UseCaseException(
+        'Depreciation value exceeds current asset value',
+        RecordDepreciationCommand.name,
+      );
+    }
+
     const id = this.idGenerator.generate();
     const depreciation = AssetDepreciation.builder(
       id,
@@ -41,8 +51,8 @@ export class RecordDepreciationHandler {
       .atDate(cmd.depreciationDate)
       .withValues(
         cmd.depreciationValue,
-        cmd.accumulatedDepreciation,
-        cmd.remainingValue,
+        newAccumulatedDepreciation,
+        newRemainingValue,
       )
       .build();
 
@@ -51,7 +61,7 @@ export class RecordDepreciationHandler {
     asset.updateFinancials(
       asset.purchasePrice,
       asset.originalCost,
-      cmd.remainingValue,
+      newRemainingValue,
       asset.purchaseDate,
       asset.warrantyExpiryDate,
     );
