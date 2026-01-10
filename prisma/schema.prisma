@@ -62,6 +62,59 @@ enum TransferStatus {
   REJECTED
 }
 
+enum BudgetStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+enum AssetItemStatus {
+  AVAILABLE
+  IN_USE
+  UNDER_MAINTENANCE
+  UNDER_REPAIR
+  RESERVED
+  TRANSFERRING
+  DISPOSED
+  LOST
+  DAMAGED
+  RETIRED
+  SCRAPPED
+  SOLD
+}
+
+enum AssetTransferStatus {
+  PENDING
+  APPROVED
+  IN_TRANSIT
+  COMPLETED
+  CANCELLED
+  REJECTED
+  RETURNED
+}
+
+enum AssetDisposalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+enum InventoryCheckStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
 // ---------------------------------------------------------
 // Core Models
 // ---------------------------------------------------------
@@ -313,7 +366,7 @@ model AssetItem {
   originalCost  Decimal?  @map("original_cost")
   currentValue  Decimal?  @map("current_value")
 
-  status    String
+  status    AssetItemStatus @default(AVAILABLE)
   condition String?
   location  String?
 
@@ -580,18 +633,18 @@ model MaintenanceSchedule {
 }
 
 model AssetTransfer {
-  id               String   @id @default(uuid())
-  tenantId         String   @map("tenant_id")
-  assetItemId      String   @map("asset_item_id")
-  transferDate     DateTime @map("transfer_date")
-  fromDepartmentId String?  @map("from_department_id")
-  toDepartmentId   String?  @map("to_department_id")
-  fromUserId       String?  @map("from_user_id")
-  toUserId         String?  @map("to_user_id")
-  approvedByUserId String?  @map("approved_by_user_id")
-  transferType     String   @map("transfer_type")
+  id               String              @id @default(uuid())
+  tenantId         String              @map("tenant_id")
+  assetItemId      String              @map("asset_item_id")
+  transferDate     DateTime            @map("transfer_date")
+  fromDepartmentId String?             @map("from_department_id")
+  toDepartmentId   String?             @map("to_department_id")
+  fromUserId       String?             @map("from_user_id")
+  toUserId         String?             @map("to_user_id")
+  approvedByUserId String?             @map("approved_by_user_id")
+  transferType     String              @map("transfer_type")
   reason           String?
-  status           String
+  status           AssetTransferStatus @default(PENDING)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -608,16 +661,16 @@ model AssetTransfer {
 }
 
 model AssetDisposal {
-  id                String   @id @default(uuid())
-  assetItemId       String   @map("asset_item_id")
-  tenantId          String   @map("tenant_id")
-  disposalDate      DateTime @map("disposal_date")
-  disposalType      String   @map("disposal_type")
-  disposalValue     Decimal  @map("disposal_value") @db.Decimal(19, 4)
+  id                String              @id @default(uuid())
+  assetItemId       String              @map("asset_item_id")
+  tenantId          String              @map("tenant_id")
+  disposalDate      DateTime            @map("disposal_date")
+  disposalType      String              @map("disposal_type")
+  disposalValue     Decimal             @map("disposal_value") @db.Decimal(19, 4)
   reason            String?
-  approvedByUserId  String?  @map("approved_by_user_id")
-  status            String
-  accountingEntryId String?  @map("accounting_entry_id")
+  approvedByUserId  String?             @map("approved_by_user_id")
+  status            AssetDisposalStatus @default(PENDING)
+  accountingEntryId String?             @map("accounting_entry_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -656,13 +709,13 @@ model AssetDocument {
 // ---------------------------------------------------------
 
 model InventoryCheck {
-  id              String   @id @default(uuid())
-  tenantId        String   @map("tenant_id")
-  inventoryDate   DateTime @map("inventory_date")
-  inventoryName   String   @map("inventory_name")
-  status          String
+  id              String               @id @default(uuid())
+  tenantId        String               @map("tenant_id")
+  inventoryDate   DateTime             @map("inventory_date")
+  inventoryName   String               @map("inventory_name")
+  status          InventoryCheckStatus @default(PLANNED)
   notes           String?
-  createdByUserId String   @map("created_by_user_id")
+  createdByUserId String               @map("created_by_user_id")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -754,14 +807,14 @@ model AccountingEntry {
 }
 
 model BudgetPlan {
-  id              String  @id @default(uuid())
-  tenantId        String  @map("tenant_id")
-  departmentId    String  @map("department_id")
-  fiscalYear      Int     @map("fiscal_year")
-  budgetType      String  @map("budget_type")
-  allocatedAmount Decimal @map("allocated_amount") @db.Decimal(19, 4)
-  spentAmount     Decimal @default(0) @map("spent_amount") @db.Decimal(19, 4)
-  status          String
+  id              String       @id @default(uuid())
+  tenantId        String       @map("tenant_id")
+  departmentId    String       @map("department_id")
+  fiscalYear      Int          @map("fiscal_year")
+  budgetType      String       @map("budget_type")
+  allocatedAmount Decimal      @map("allocated_amount") @db.Decimal(19, 4)
+  spentAmount     Decimal      @default(0) @map("spent_amount") @db.Decimal(19, 4)
+  status          BudgetStatus @default(DRAFT)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
