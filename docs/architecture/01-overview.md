@@ -368,7 +368,5 @@ The Prisma schema defines 15 interconnected models with:
 - **Monitoring**: Prometheus, Grafana, ELK Stack
 
 For detailed information on specific components, refer to the related documentation:
-- [ER Diagram](/docs/architecture/03-erd.md)
-- [Class Diagram](/docs/architecture/04-class-diagram.md)
-- [Cascade Rules](/docs/architecture/05-cascade-rules.md)
-- [Deployment Architecture](/docs/architecture/06-deployment-architecture.md)
+- [ER Diagram](/docs/architecture/02-erd.md)
+- [Cascade Rules](/docs/architecture/03-cascade-rules.md)
