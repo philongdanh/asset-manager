@@ -106,16 +106,29 @@ export class PrismaInventoryCheckRepository implements IInventoryCheckRepository
 
   async save(inventoryCheck: InventoryCheck): Promise<InventoryCheck> {
     const { data } = InventoryCheckMapper.toPersistence(inventoryCheck);
-    const raw = await this.prisma.inventoryCheck.upsert({
+    console.log('Saving inventory check:', JSON.stringify(data, null, 2));
+    const existing = await this.prisma.inventoryCheck.findUnique({
       where: { id: inventoryCheck.id },
-      update: {
-        status: data.status,
-        inventoryDate: data.inventoryDate,
-        inventoryName: data.inventoryName,
-        updatedAt: new Date(),
-      },
-      create: data,
     });
+
+    let raw;
+    if (existing) {
+      raw = await this.prisma.inventoryCheck.update({
+        where: { id: inventoryCheck.id },
+        data: {
+          status: data.status,
+          inventoryDate: data.inventoryDate,
+          inventoryName: data.inventoryName,
+          notes: data.notes,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      raw = await this.prisma.inventoryCheck.create({
+        data,
+      });
+    }
+
     return InventoryCheckMapper.toDomain(raw);
   }
 
