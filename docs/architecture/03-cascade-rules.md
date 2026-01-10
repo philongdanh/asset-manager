@@ -9,8 +9,10 @@ config:
     fontFamily: EB Garamond
 ---
 flowchart LR
- subgraph subGraph0["Direct Cascade from Tenant (onDelete: Cascade)"]
-    direction LR
+    Tenant["Tenant"]
+    
+    subgraph subGraph0["First Level Cascade (Direct from Tenant)"]
+        direction TB
         Department["Department"]
         User["User"]
         AssetCategory["AssetCategory"]
@@ -24,34 +26,30 @@ flowchart LR
         AssetDisposal["AssetDisposal"]
         BudgetPlan["BudgetPlan"]
         AuditLog["AuditLog"]
-  end
- subgraph subGraph1["Restrict Relationships (onDelete: Restrict)"]
-    direction LR
-        DepartmentParent["Department (Parent)"]
-        DepartmentChild["Department (Child)"]
-        CategoryParent["AssetCategory (Parent)"]
-        CategoryChild["AssetCategory (Child)"]
-        TemplateCategory["AssetTemplate -> AssetCategory"]
-        ItemTemplate["AssetItem -> AssetTemplate"]
-  end
- subgraph subGraph2["Cascade from AssetItem (onDelete: Cascade)"]
-    direction LR
+    end
+    
+    subgraph subGraph1["Second Level Cascade (from AssetItem)"]
+        direction TB
         Maintenance["MaintenanceSchedule"]
         Transfer["AssetTransfer"]
         Disposal["AssetDisposal"]
-  end
-    Tenant["Tenant<br>Deletion triggers cascade to all related entities"] --> Department & User & AssetCategory & AssetTemplate & AssetItem & InventoryItem & Supplier & PurchaseOrder & MaintenanceSchedule & AssetTransfer & AssetDisposal & BudgetPlan & AuditLog
-    DepartmentParent -. Restrict .-> DepartmentChild
-    CategoryParent -. Restrict .-> CategoryChild
-    AssetTemplate -. Restrict .-> AssetCategory
-    AssetItem -. Restrict .-> AssetTemplate
+    end
+    
+    subgraph subGraph2["Restrict Relationships (Prevent Deletion)"]
+        direction TB
+        DepartmentParent["Department → Department<br>(parent-child hierarchy)"]
+        CategoryParent["AssetCategory → AssetCategory<br>(parent-child hierarchy)"]
+        TemplateCategory["AssetTemplate → AssetCategory<br>(category reference)"]
+        ItemTemplate["AssetItem → AssetTemplate<br>(template reference)"]
+    end
+    
+    Tenant --> Department & User & AssetCategory & AssetTemplate & AssetItem & InventoryItem & Supplier & PurchaseOrder & MaintenanceSchedule & AssetTransfer & AssetDisposal & BudgetPlan & AuditLog
     AssetItem --> Maintenance & Transfer & Disposal
-    Department -- Cascade to Users --> User
-    Department -- Cascade to BudgetPlans --> BudgetPlan
-    User -- Cascade to AuditLogs --> AuditLog
-    Supplier -- Cascade to AssetItems --> AssetItem
-    Supplier -- Cascade to InventoryItems --> InventoryItem
-    PurchaseOrder -- Cascade to AssetItems --> AssetItem
+    
+    DepartmentParent -.->|RESTRICT| DepartmentParent
+    CategoryParent -.->|RESTRICT| CategoryParent
+    TemplateCategory -.->|RESTRICT| TemplateCategory
+    ItemTemplate -.->|RESTRICT| ItemTemplate
 ```
 
 ## Complete Cascade Hierarchy
@@ -65,7 +63,9 @@ config:
     fontFamily: EB Garamond
 ---
 flowchart TB
- subgraph subGraph0["First Level Cascade (Direct from Tenant)"]
+    Tenant["Tenant"]
+    
+    subgraph subGraph0["Level 1: Direct Tenant Cascade"]
         A1["Department"]
         A2["User"]
         A3["AssetCategory"]
@@ -79,98 +79,86 @@ flowchart TB
         A11["AssetDisposal"]
         A12["BudgetPlan"]
         A13["AuditLog"]
-  end
- subgraph subGraph1["Second Level Cascade (from AssetItem)"]
+    end
+    
+    subgraph subGraph1["Level 2: AssetItem Cascade"]
         B1["MaintenanceSchedule"]
         B2["AssetTransfer"]
         B3["AssetDisposal"]
-  end
- subgraph subGraph2["Third Level Cascade (from Department)"]
-        C1["User (via department)"]
-        C2["BudgetPlan"]
-        C3["AssetTransfer (from/to)"]
-  end
- subgraph subGraph3["Fourth Level Cascade (from User)"]
-        D1["AuditLog"]
-  end
- subgraph subGraph4["Restrict Relationships (Block Deletion)"]
-        R1["Department → Department (parent-child)"]
-        R2["AssetCategory → AssetCategory (parent-child)"]
+    end
+    
+    subgraph subGraph2["Restrict Constraints"]
+        R1["Department → Department<br>(parent-child)"]
+        R2["AssetCategory → AssetCategory<br>(parent-child)"]
         R3["AssetTemplate → AssetCategory"]
         R4["AssetItem → AssetTemplate"]
-  end
- subgraph Legend["Legend"]
-        L1["Solid arrow = Cascade Delete"]
-        L2["Dashed arrow = Restrict Delete"]
-        L3["Thick border = Major entity"]
-  end
-    Tenant["Tenant<br>Deletion cascades to ALL entities"] ==> A1 & A2 & A3 & A4 & A5 & A6 & A7 & A8 & A9 & A10 & A11 & A12 & A13
-    A5 ==> B1 & B2 & B3
-    A1 ==> C1 & C2 & C3
-    A2 ==> D1
-    R1 -. RESTRICT .-> R1
-    R2 -. RESTRICT .-> R2
-    R3 -. RESTRICT .-> R3
-    R4 -. RESTRICT .-> R4
+    end
+    
+    Tenant -- "onDelete: CASCADE" --> subGraph0
+    A5 -- "onDelete: CASCADE" --> subGraph1
+    
+    R1 -. "onDelete: RESTRICT" .-> R1
+    R2 -. "onDelete: RESTRICT" .-> R2
+    R3 -. "onDelete: RESTRICT" .-> R3
+    R4 -. "onDelete: RESTRICT" .-> R4
+    
+    classDef cascade fill:#e3f2fd,stroke:#1976d2
+    classDef restrict fill:#ffebee,stroke:#d32f2f
+    classDef tenant fill:#e8f5e8,stroke:#388e3c
+    
+    class Tenant tenant
+    class A1,A2,A3,A4,A5,A6,A7,A8,A9,A10,A11,A12,A13,B1,B2,B3 cascade
+    class R1,R2,R3,R4 restrict
 ```
 
 ## Cascade Delete Rules Summary
 
 ### 1. **Full Cascade from Tenant**
-When a **tenant** is deleted, ALL related entities are automatically deleted:
-- **department**, **user**, **asset_category**, **asset_template**, **asset_item**
-- **inventory_item**, **supplier**, **purchase_order**
-- **maintenance_schedule**, **asset_transfer**, **asset_disposal**
-- **budget_plan**, **audit_log**
+When a **Tenant** is deleted, ALL related entities are automatically deleted via **onDelete: Cascade**:
+- **Department**, **User**, **AssetCategory**, **AssetTemplate**, **AssetItem**
+- **InventoryItem**, **Supplier**, **PurchaseOrder**
+- **MaintenanceSchedule**, **AssetTransfer**, **AssetDisposal**
+- **BudgetPlan**, **AuditLog**
 
 **Purpose**: Ensures complete data isolation and cleanup when an organization leaves the system.
 
 ### 2. **Cascade from AssetItem**
-When an **asset_item** is deleted:
-- All **maintenance_schedule** for that item are deleted
-- All **asset_transfer** for that item are deleted
-- All **asset_disposal** for that item are deleted
+When an **AssetItem** is deleted:
+- All **MaintenanceSchedule** records for that item are deleted
+- All **AssetTransfer** records for that item are deleted
+- All **AssetDisposal** records for that item are deleted
 
 **Purpose**: Maintains referential integrity by removing dependent records when an asset is removed.
 
-### 3. **Cascade from Department**
-When a **department** is deleted:
-- All **user** in that department are deleted (cascade from **tenant** relation)
-- All **budget_plan** for that department are deleted
-- **asset_transfer** records referencing the department are affected
-
-**Purpose**: Ensures organizational structure changes are properly propagated.
-
-### 4. **Restrict Relationships** (Prevent deletion)
+### 3. **Restrict Relationships** (Prevent deletion)
 The following relationships use **onDelete: Restrict** to prevent deletion:
 
-1. **department hierarchy**: Cannot delete a department that has child departments
-2. **asset_category hierarchy**: Cannot delete a category that has child categories
-3. **asset_template → asset_category**: Cannot delete a category used by templates
-4. **asset_item → asset_template**: Cannot delete a template used by items
+1. **Department → Department**: Cannot delete a department that has child departments
+2. **AssetCategory → AssetCategory**: Cannot delete a category that has child categories
+3. **AssetTemplate → AssetCategory**: Cannot delete a category used by templates
+4. **AssetItem → AssetTemplate**: Cannot delete a template used by items
 
 **Purpose**: Prevents accidental deletion of hierarchical or referenced data, maintaining structural integrity.
 
-### 5. **Important Notes**
-- **onDelete: Cascade** means deletion automatically propagates to related entities
-- **onDelete: Restrict** means deletion is blocked if related entities exist
-- All foreign keys to **tenant** use Cascade for multi-tenant data isolation
-- **asset_item** has cascade to its maintenance/transfer/disposal records
-- Self-referencing hierarchies (**department**, **asset_category**) use Restrict to maintain structure
+### 4. **Default Behavior for Other Relationships**
+All other foreign key relationships follow the database default behavior (typically **NO ACTION** or **RESTRICT**), meaning:
+- **Department → User**: No cascade (User is deleted via Tenant cascade, not Department)
+- **User → AuditLog**: No cascade (AuditLog is deleted via Tenant cascade, not User)
+- **Supplier → AssetItem/InventoryItem**: No cascade (both cascade from Tenant, not Supplier)
+- **PurchaseOrder → AssetItem**: No cascade (AssetItem cascades from Tenant, not PurchaseOrder)
 
 ## Best Practices
 
 ### When to Use Cascade
 1. **Parent-child relationships** where child data is meaningless without parent
-2. **Audit/logging data** that should be cleaned up with the main entity
-3. **Multi-tenant systems** where tenant deletion should remove all tenant data
-4. **Dependent records** that exist only to support the main entity
+2. **Multi-tenant systems** where tenant deletion should remove all tenant data
+3. **Lifecycle dependencies** where dependent records should be cleaned up with the main entity
 
 ### When to Use Restrict
 1. **Hierarchical structures** where parent-child relationships must be maintained
 2. **Reference data** that may be used by multiple entities
 3. **Templates or categories** that define structure for other entities
-4. **Historical records** that should be preserved even if related entities change
+4. **Core definitions** that should not be deleted while in use
 
 ### Handling Restricted Deletions in Application Code
 When a restrict constraint prevents deletion, the application should:
@@ -183,48 +171,66 @@ When a restrict constraint prevents deletion, the application should:
 ## Common Scenarios
 
 ### Scenario 1: Deleting a Tenant
-**Action**: Delete **tenant** record
+**Action**: Delete **Tenant** record
 **Result**: All related records across all tables are automatically deleted
 **Use Case**: Organization closing their account
 
-### Scenario 2: Deleting an Asset
-**Action**: Delete **asset_item**
-**Result**: **maintenance_schedule**, **asset_transfer**, and **asset_disposal** records for that asset are deleted
+### Scenario 2: Deleting an AssetItem
+**Action**: Delete **AssetItem**
+**Result**: **MaintenanceSchedule**, **AssetTransfer**, and **AssetDisposal** records for that asset are deleted
 **Use Case**: Removing a defective or lost asset from the system
 
-### Scenario 3: Attempting to delete a Category with Child Categories
-**Action**: Delete **asset_category** that has children
+### Scenario 3: Attempting to delete a Department with Child Departments
+**Action**: Delete **Department** that has children
 **Result**: Deletion is blocked by database constraint
-**Use Case**: Prevent breaking hierarchical classification system
+**Resolution**: Must delete or reassign child departments first
 
-### Scenario 4: Deleting a Department
-**Action**: Delete **department**
-**Result**: **user** and **budget_plan** are deleted; transfers referencing the department are affected
-**Use Case**: Organizational restructuring
+### Scenario 4: Attempting to delete an AssetTemplate used by AssetItems
+**Action**: Delete **AssetTemplate** that has associated **AssetItem** records
+**Result**: Deletion is blocked by database constraint
+**Resolution**: Must delete or reassign all associated AssetItems first
 
 ## Database-Level Constraints
 
-### Foreign Key Constraints
+### Foreign Key Constraints (Explicit in Schema)
 
-| Parent Entity | Child Entity | Constraint Type | Description |
-|--------------|--------------|-----------------|-------------|
-| **tenant** | All entities | **Cascade** | Ensures complete tenant data removal |
-| **asset_item** | **maintenance_schedule** | **Cascade** | Remove maintenance history |
-| **asset_item** | **asset_transfer** | **Cascade** | Remove transfer history |
-| **asset_item** | **asset_disposal** | **Cascade** | Remove disposal records |
-| **department** | **department** (parent) | **Restrict** | Prevent orphaned hierarchy |
-| **asset_category** | **asset_category** (parent) | **Restrict** | Maintain classification structure |
-| **asset_template** | **asset_category** | **Restrict** | Preserve template categorization |
-| **asset_item** | **asset_template** | **Restrict** | Maintain item-template relationship |
+| Parent Entity | Child Entity | Constraint Type | Reason |
+|--------------|--------------|-----------------|--------|
+| **Tenant** | All entities | **Cascade** | Complete tenant data removal |
+| **AssetItem** | **MaintenanceSchedule** | **Cascade** | Remove maintenance history |
+| **AssetItem** | **AssetTransfer** | **Cascade** | Remove transfer history |
+| **AssetItem** | **AssetDisposal** | **Cascade** | Remove disposal records |
+| **Department** | **Department** (parent) | **Restrict** | Prevent orphaned hierarchy |
+| **AssetCategory** | **AssetCategory** (parent) | **Restrict** | Maintain classification structure |
+| **AssetTemplate** | **AssetCategory** | **Restrict** | Preserve template categorization |
+| **AssetItem** | **AssetTemplate** | **Restrict** | Maintain item-template relationship |
 
 ### Soft Delete Interaction
 - **Soft delete** (via **deleted_at** field) is independent of cascade rules
 - Cascade only triggers on **hard delete** operations
 - **Soft deleted** records still participate in cascade relationships
-- Applications should filter **deleted_at** IS NULL in queries
+- Applications should filter **deleted_at IS NULL** in queries
 
-### Performance Considerations
+## Performance Considerations
+
 1. **Large tenant deletions**: May cause performance issues due to multiple cascade operations
 2. **Indexed foreign keys**: Ensure proper indexing for cascade operations
 3. **Batch operations**: Consider breaking large deletions into batches
 4. **Transaction management**: Use transactions for atomic cascade operations
+
+## Summary
+
+The cascade delete rules in this system are designed to:
+
+1. **Ensure data integrity** through appropriate constraint enforcement
+2. **Maintain multi-tenant isolation** with tenant-level cascade
+3. **Preserve structural relationships** with restrictive constraints
+4. **Support asset lifecycle management** with asset-level cleanup
+5. **Provide safety mechanisms** through soft delete and validation
+
+**Key Points**:
+- Only **two cascade chains** exist: Tenant→All and AssetItem→Maintenance/Transfer/Disposal
+- All hierarchical and reference relationships use **Restrict** to prevent data loss
+- Cascade operations are **explicitly defined** in the schema, not implicit
+
+Understanding these rules is essential for maintaining data consistency and preventing accidental data loss in the asset management system.
