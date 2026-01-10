@@ -35,150 +35,102 @@ Processes are designed around real-world user needs, with intuitive interfaces a
 ### High-Level Architecture
 
 ```mermaid
-graph TB
-    subgraph "Client Layer"
-        WebApp[Web Application<br/>React/Next.js]
-        MobileApp[Mobile Application<br/>React Native]
-        ThirdParty[Third-party Integrations<br/>ERP, Accounting Systems]
-    end
-    
-    subgraph "API Gateway Layer"
-        APIGateway[NestJS REST API<br/>Authentication & Rate Limiting]
-    end
-    
-    subgraph "Business Logic Layer"
-        AuthModule[Authentication Module<br/>JWT, OAuth2]
-        AssetModule[Asset Management Module]
-        MaintenanceModule[Maintenance Module]
-        ProcurementModule[Procurement Module]
-        ReportModule[Reporting Module]
-        AuditModule[Audit Module]
-    end
-    
-    subgraph "Data Access Layer"
-        PrismaORM[Prisma ORM<br/>Type-safe Database Client]
-    end
-    
-    subgraph "Data Storage Layer"
-        PostgreSQL[(PostgreSQL Database<br/>Multi-tenant Schema)]
-        Redis[(Redis Cache<br/>Sessions & Rate Limiting)]
-        S3[(Object Storage<br/>Documents & Images)]
-    end
-    
-    WebApp --> APIGateway
-    MobileApp --> APIGateway
-    ThirdParty --> APIGateway
-    
-    APIGateway --> AuthModule
-    APIGateway --> AssetModule
-    APIGateway --> MaintenanceModule
-    APIGateway --> ProcurementModule
-    APIGateway --> ReportModule
-    APIGateway --> AuditModule
-    
-    AuthModule --> PrismaORM
-    AssetModule --> PrismaORM
-    MaintenanceModule --> PrismaORM
-    ProcurementModule --> PrismaORM
-    ReportModule --> PrismaORM
-    AuditModule --> PrismaORM
-    
-    PrismaORM --> PostgreSQL
-    AuthModule --> Redis
-    AssetModule --> S3
-    
-    style WebApp fill:#e1f5fe
-    style MobileApp fill:#e1f5fe
-    style ThirdParty fill:#e1f5fe
-    style APIGateway fill:#f3e5f5
-    style AuthModule fill:#e8f5e8
-    style AssetModule fill:#e8f5e8
-    style MaintenanceModule fill:#e8f5e8
-    style ProcurementModule fill:#e8f5e8
-    style ReportModule fill:#e8f5e8
-    style AuditModule fill:#e8f5e8
-    style PrismaORM fill:#fff3e0
-    style PostgreSQL fill:#ffebee
-    style Redis fill:#ffebee
-    style S3 fill:#ffebee
+---
+config:
+  theme: redux
+  layout: dagre
+  themeVariables:
+    fontFamily: EB Garamond
+---
+flowchart TB
+ subgraph subGraph0["Core Modules"]
+        AuthModule["AuthModule"]
+        TenantModule["TenantModule"]
+        UserModule["UserModule"]
+        DepartmentModule["DepartmentModule"]
+  end
+ subgraph subGraph1["Asset Management Modules"]
+        AssetCategoryModule["AssetCategoryModule"]
+        AssetTemplateModule["AssetTemplateModule"]
+        AssetItemModule["AssetItemModule"]
+        MaintenanceModule["MaintenanceModule"]
+        TransferModule["TransferModule"]
+        DisposalModule["DisposalModule"]
+  end
+ subgraph subGraph2["Business Modules"]
+        InventoryModule["InventoryModule"]
+        SupplierModule["SupplierModule"]
+        PurchaseOrderModule["PurchaseOrderModule"]
+        BudgetModule["BudgetModule"]
+        AuditModule["AuditModule"]
+  end
+ subgraph subGraph3["NestJS Modules"]
+        AppModule["AppModule"]
+        subGraph0
+        subGraph1
+        subGraph2
+        CoreModules["CoreModules"]
+        AssetModules["AssetModules"]
+        BusinessModules["BusinessModules"]
+  end
+    AppModule --> CoreModules & AssetModules & BusinessModules
+    CoreModules --> AuthModule & TenantModule & UserModule & DepartmentModule
+    AssetModules --> AssetCategoryModule & AssetTemplateModule & AssetItemModule & MaintenanceModule & TransferModule & DisposalModule
+    BusinessModules --> InventoryModule & SupplierModule & PurchaseOrderModule & BudgetModule & AuditModule
+
+    style AuthModule fill:#c8e6c9
+    style TenantModule fill:#c8e6c9
+    style UserModule fill:#c8e6c9
+    style DepartmentModule fill:#c8e6c9
+    style AssetCategoryModule fill:#fff9c4
+    style AssetTemplateModule fill:#fff9c4
+    style AssetItemModule fill:#fff9c4
+    style MaintenanceModule fill:#fff9c4
+    style TransferModule fill:#fff9c4
+    style DisposalModule fill:#fff9c4
+    style InventoryModule fill:#ffccbc
+    style SupplierModule fill:#ffccbc
+    style PurchaseOrderModule fill:#ffccbc
+    style BudgetModule fill:#ffccbc
+    style AuditModule fill:#ffccbc
+    style AppModule fill:#bbdefb
 ```
 
-### Key Architectural Decisions
+### Module Responsibilities
 
-1. **NestJS Framework**: Chosen for its modular architecture, dependency injection, and strong TypeScript support, providing a scalable foundation for enterprise applications.
+1. **Core Modules**:
+   - `AuthModule`: Authentication, authorization, JWT management
+   - `TenantModule`: Multi-tenant organization management
+   - `UserModule`: User accounts and profiles
+   - `DepartmentModule`: Organizational hierarchy
 
-2. **Prisma ORM**: Selected for its type safety, intuitive data modeling, and excellent developer experience, particularly with complex database relationships.
+2. **Asset Management Modules**:
+   - `AssetCategoryModule`: Asset classification hierarchy
+   - `AssetTemplateModule`: Asset type definitions and specifications
+   - `AssetItemModule`: Individual asset tracking
+   - `MaintenanceModule`: Maintenance scheduling and tracking
+   - `TransferModule`: Asset movement between departments/users
+   - `DisposalModule`: Asset retirement and disposal
 
-3. **PostgreSQL Database**: Provides robustness, ACID compliance, and excellent support for complex queries and relationships required by asset management systems.
-
-4. **Multi-tenancy Implementation**: Row-level isolation using tenant_id on all tenant-specific tables, balancing security with performance.
-
-## Technology Stack
-
-### Backend
-- **Framework**: NestJS 10+
-- **Language**: TypeScript 5+
-- **ORM**: Prisma 5+
-- **Database**: PostgreSQL 14+
-- **Authentication**: JWT with Passport.js
-- **Validation**: class-validator, class-transformer
-
-### Development Tools
-- **Package Manager**: npm/yarn/pnpm
-- **API Documentation**: Swagger/OpenAPI
-- **Code Quality**: ESLint, Prettier
-- **Environment Management**: dotenv
-
-### Deployment & Infrastructure
-- **Containerization**: Docker
-- **Process Management**: PM2 or container orchestration
-- **Monitoring**: Application logs with structured formatting
-- **Database Management**: Prisma Migrate for schema evolution
-
-## Core Modules
-
-The system is organized into logical modules that correspond to business functions:
-
-### 1. Core Module
-- Tenant management and system configuration
-- User authentication and authorization
-- Department hierarchy and organizational structure
-
-### 2. Asset Management Module
-- Asset categorization and templating
-- Individual asset tracking and lifecycle management
-- Condition monitoring and status tracking
-
-### 3. Operations Module
-- Maintenance scheduling and tracking
-- Asset transfers and reassignments
-- Disposal management and approval workflows
-
-### 4. Procurement Module
-- Supplier management and vendor relationships
-- Purchase order creation and tracking
-- Inventory management for consumables
-
-### 5. Financial Module
-- Budget planning and allocation
-- Cost tracking and expense management
-- Depreciation calculation and reporting
-
-### 6. Reporting Module
-- Standard reports for common business needs
-- Custom report builder for specific requirements
-- Dashboard and KPI monitoring
-
-### 7. Audit Module
-- Comprehensive activity logging
-- Change tracking and audit trails
-- Compliance reporting
+3. **Business Modules**:
+   - `InventoryModule`: Consumable stock management
+   - `SupplierModule`: Vendor and supplier management
+   - `PurchaseOrderModule`: Procurement workflows
+   - `BudgetModule`: Financial planning and tracking
+   - `AuditModule`: Activity logging and change tracking
 
 ## Data Flow
 
 ### Typical Asset Lifecycle Flow
 
 ```mermaid
+---
+config:
+  layout: elk
+  theme: redux
+  themeVariables:
+    fontFamily: EB Garamond
+---
 stateDiagram-v2
     [*] --> Procurement
     Procurement --> Registration
@@ -195,158 +147,187 @@ stateDiagram-v2
     Disposal --> [*]
     
     note right of Procurement
-        Purchase Order Created
-        Supplier Delivery
-        Invoice Processing
+        Purchase Order (PurchaseOrder)
+        Supplier (Supplier)
+        Total Amount Tracking
+        Status: DRAFT to RECEIVED
     end note
     
     note right of Registration
-        Asset Information Entry
+        Asset Template (AssetTemplate)
+        Asset Item (AssetItem)
         Serial Number Assignment
         Warranty Registration
-        Initial Valuation
+        Purchase Price & Current Value
     end note
     
     note right of Assignment
-        Department Allocation
-        User Assignment
+        Department (Department)
+        User (User)
         Location Tracking
-        Condition Assessment
+        Condition (AssetCondition)
+        Status (AssetItemStatus)
     end note
     
     note right of ActiveUse
         Daily Operations
         Condition Monitoring
         Value Depreciation
-        Usage Tracking
+        Status Updates
     end note
     
     note right of Maintenance
-        Scheduled Maintenance
-        Repair Requests
+        Maintenance Schedule
+        Type (Preventive/Corrective)
         Cost Tracking
-        Performance Logging
+        Performer Assignment
+        Result Documentation
     end note
     
     note right of Transfer
-        Department Change
-        User Reassignment
+        Asset Transfer Record
+        From/To Departments
+        From/To Users
         Approval Workflow
-        Location Update
+        Status Management
     end note
     
     note right of Disposal
-        End-of-Life Assessment
+        Disposal Record
+        Type (Sale, Donation, etc.)
+        Disposal Value
         Approval Process
-        Financial Reconciliation
-        Audit Trail Completion
+        Status Tracking
     end note
 ```
 
-### Key Processes
+### Database Schema Integration
 
-1. **Asset Registration**: New assets are registered in the system with detailed specifications, purchase information, and warranty details.
+The Prisma schema defines 15 interconnected models with:
 
-2. **Assignment & Tracking**: Assets are assigned to departments or users, with ongoing tracking of location, condition, and status.
+1. **Multi-tenant Foundation**: All models reference `Tenant` via `tenantId`
+2. **Hierarchical Structures**: `Department` and `AssetCategory` with parent-child relationships
+3. **Lifecycle Tracking**: Complete chain from `AssetTemplate` → `AssetItem` → `Maintenance`/`Transfer`/`Disposal`
+4. **Financial Tracking**: Purchase orders, budgets, and cost tracking throughout
+5. **Audit Trail**: Comprehensive logging of all system activities
 
-3. **Maintenance Management**: Scheduled and ad-hoc maintenance activities are planned, executed, and documented.
+## Key Features by Module
 
-4. **Transfer Processes**: Formal workflows for moving assets between departments or users, with approval mechanisms.
-
-5. **Disposal Management**: Controlled processes for asset retirement, including approval workflows and financial reconciliation.
-
-## Design Patterns
-
-### Implemented Patterns
-
-1. **Repository Pattern**: Abstracted data access through Prisma clients
-2. **Service Layer**: Business logic separated from data access and presentation
-3. **DTO Pattern**: Clear separation between internal entities and external interfaces
-4. **Dependency Injection**: Loosely coupled components with centralized configuration
-5. **Middleware Pipeline**: Request processing through configurable middleware chain
-
-### Domain-Driven Design Elements
-
-- **Bounded Contexts**: Clear separation between different business domains
-- **Aggregates**: Transactional boundaries around related entities
-- **Value Objects**: Immutable objects representing domain concepts
-- **Domain Events**: System reactions to important business occurrences
-
-## Scalability Considerations
-
-### Vertical Scaling
-- Stateless API design allows for multiple instances
-- Database connection pooling and query optimization
-- Caching strategies for frequently accessed data
-
-### Horizontal Scaling
-- Multi-tenant isolation enables tenant-based sharding
-- Microservices-ready architecture for component decomposition
-- Event-driven architecture possibilities for future expansion
-
-### Performance Optimizations
-- Selective field queries to reduce payload sizes
-- Pagination and filtering for large datasets
-- Indexed queries on frequently searched fields
-- Efficient relationship loading with Prisma includes
-
-## Security Model
-
-### Authentication
-- JWT-based stateless authentication
-- Refresh token mechanism for extended sessions
-- Password policies and encryption
-
-### Authorization
+### Authentication & Authorization
+- JWT-based authentication with refresh tokens
 - Role-based access control (RBAC)
-- Permission checking at API endpoint level
-- Tenant isolation ensuring data privacy
+- Tenant isolation enforcement
+- Audit logging of all authentication events
 
-### Data Security
-- Row-level security through tenant isolation
-- Input validation and sanitization
-- Audit logging of all significant actions
-- No sensitive data in audit logs
+### Asset Management
+- Hierarchical asset categorization
+- Template-based asset definition
+- Individual asset tracking with serial numbers
+- Condition and status monitoring
+- Warranty management with automated alerts
 
-## Integration Capabilities
+### Maintenance Operations
+- Preventive and corrective maintenance scheduling
+- Cost tracking (estimated vs actual)
+- Maintenance history and reporting
+- Technician assignment and performance tracking
 
-### API-First Design
-- RESTful API with consistent response formats
-- OpenAPI documentation for external consumers
-- Versioning strategy for API evolution
+### Inventory Control
+- Stock level management with min/max thresholds
+- Unit cost and total value calculation
+- Supplier relationship management
+- Storage location tracking
 
-### Webhook Support
-- Event notifications for external systems
-- Configurable endpoints for different event types
-- Retry mechanisms for failed deliveries
+### Financial Management
+- Departmental budget planning
+- Purchase order management with status tracking
+- Asset depreciation calculation
+- Budget utilization reporting
 
-### Import/Export
-- Bulk data import for initial setup and migrations
-- Data export for reporting and external analysis
-- Standardized formats (CSV, JSON, Excel)
+## Security Implementation
 
-## Future Evolution
+### Authentication Flow
+1. User login with credentials → JWT access token + refresh token
+2. Access token used for API requests (short-lived, 15-60 minutes)
+3. Refresh token used to obtain new access token (long-lived, 7-30 days)
+4. Stateless validation with secret key verification
 
-### Planned Enhancements
-1. **Real-time Features**: WebSocket support for live updates
-2. **Mobile Optimization**: Dedicated mobile interfaces and APIs
-3. **Advanced Analytics**: Machine learning for predictive maintenance
-4. **Integration Ecosystem**: Pre-built connectors for common business systems
+### Data Isolation
+- All queries automatically filtered by `tenantId`
+- No cross-tenant data access possible at ORM level
+- Tenant validation on all create/update operations
+- Separate database schemas optional for enhanced isolation
 
-### Extension Points
-- Plugin architecture for custom functionality
-- Webhook system for event-driven integrations
-- Custom field system for tenant-specific requirements
-- Report builder for ad-hoc business intelligence
+### Input Validation
+- Class-validator decorators on all DTOs
+- Prisma type safety at database level
+- SQL injection prevention via parameterized queries
+- XSS protection through output encoding
+
+## Deployment Strategy
+
+### Development Environment
+- Docker Compose for local development
+- Hot-reload with `npm run start:dev`
+- Prisma Studio for database management
+- Seed scripts for test data
+
+### Production Considerations
+- Environment-based configuration
+- Database connection pooling
+- Health check endpoints
+- Log aggregation and monitoring
+- Backup and disaster recovery procedures
+
+## Performance Optimizations
+
+### Database Level
+- Indexed foreign keys for join performance
+- Composite indexes for common query patterns
+- Query optimization with Prisma includes
+- Connection pooling configuration
+
+### Application Level
+- Selective field queries to minimize payload
+- Pagination for large datasets
+- Caching strategies for frequently accessed data
+- Efficient validation pipeline
+
+## Monitoring and Maintenance
+
+### Application Health
+- Health check endpoints (`/health`, `/ready`)
+- Performance metrics collection
+- Error tracking and alerting
+- Log aggregation for debugging
+
+### Database Maintenance
+- Regular backups with retention policies
+- Index maintenance and optimization
+- Connection pool monitoring
+- Query performance analysis
+
+## Future Roadmap
+
+### Short-term Enhancements
+1. Advanced reporting with data visualization
+2. Bulk import/export functionality
+3. Mobile-responsive web interface
+4. Enhanced search capabilities
+
+### Long-term Vision
+1. Predictive maintenance with ML algorithms
+2. IoT integration for real-time asset monitoring
+3. Advanced analytics and business intelligence
+4. Marketplace for asset disposal and acquisition
 
 ## Conclusion
 
-This Asset Management System represents a comprehensive solution built with modern software engineering practices. By combining a robust backend architecture with intuitive workflows and thorough documentation, it provides organizations with the tools they need to effectively manage their physical assets while maintaining flexibility for future growth and customization.
+This Asset Management System provides a robust, scalable foundation for organizations to manage their physical assets efficiently. By leveraging NestJS's modular architecture and Prisma's type-safe database access, the system offers excellent developer experience while ensuring reliability and maintainability.
 
-The system's modular design, multi-tenant architecture, and focus on lifecycle management make it suitable for organizations of various sizes and industries, providing a solid foundation for asset management that can evolve with changing business needs.
+The Docker-based deployment with PostgreSQL ensures consistent environments from development to production, while the comprehensive schema supports complex asset management workflows with full audit capabilities.
 
 For detailed information on specific components, refer to the related documentation:
-- [Database Schema](/docs/architecture/02-database-schema.md)
 - [ER Diagram](/docs/architecture/03-er-diagram.md)
 - [Class Diagram](/docs/architecture/04-class-diagram.md)
 - [Cascade Rules](/docs/architecture/05-cascade-rules.md)

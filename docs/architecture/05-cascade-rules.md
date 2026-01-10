@@ -1,19 +1,16 @@
 # Cascade Delete Rules
 
 ```mermaid
-flowchart TD
-    %% ========================================================
-    %% CENTRAL TENANT NODE
-    %% ========================================================
-    
-    Tenant["Tenant<br>Deletion triggers cascade to all related entities"]
-    
-    %% ========================================================
-    %% IMMEDIATE CASCADE CHILDREN OF TENANT
-    %% ========================================================
-    
-    subgraph "Direct Cascade from Tenant (onDelete: Cascade)"
-        direction LR
+---
+config:
+  theme: redux
+  layout: elk
+  themeVariables:
+    fontFamily: EB Garamond
+---
+flowchart LR
+ subgraph subGraph0["Direct Cascade from Tenant (onDelete: Cascade)"]
+    direction LR
         Department["Department"]
         User["User"]
         AssetCategory["AssetCategory"]
@@ -27,88 +24,48 @@ flowchart TD
         AssetDisposal["AssetDisposal"]
         BudgetPlan["BudgetPlan"]
         AuditLog["AuditLog"]
-    end
-    
-    %% ========================================================
-    %% CASCADE RELATIONSHIPS FROM TENANT
-    %% ========================================================
-    
-    Tenant --> Department
-    Tenant --> User
-    Tenant --> AssetCategory
-    Tenant --> AssetTemplate
-    Tenant --> AssetItem
-    Tenant --> InventoryItem
-    Tenant --> Supplier
-    Tenant --> PurchaseOrder
-    Tenant --> MaintenanceSchedule
-    Tenant --> AssetTransfer
-    Tenant --> AssetDisposal
-    Tenant --> BudgetPlan
-    Tenant --> AuditLog
-    
-    %% ========================================================
-    %% RESTRICT RELATIONSHIPS (Prevent deletion)
-    %% ========================================================
-    
-    subgraph "Restrict Relationships (onDelete: Restrict)"
-        direction LR
+  end
+ subgraph subGraph1["Restrict Relationships (onDelete: Restrict)"]
+    direction LR
         DepartmentParent["Department (Parent)"]
         DepartmentChild["Department (Child)"]
         CategoryParent["AssetCategory (Parent)"]
         CategoryChild["AssetCategory (Child)"]
         TemplateCategory["AssetTemplate -> AssetCategory"]
         ItemTemplate["AssetItem -> AssetTemplate"]
-    end
-    
-    DepartmentParent -.->|"Restrict"| DepartmentChild
-    CategoryParent -.->|"Restrict"| CategoryChild
-    AssetTemplate -.->|"Restrict"| AssetCategory
-    AssetItem -.->|"Restrict"| AssetTemplate
-    
-    %% ========================================================
-    %% CASCADE FROM ASSET ITEM
-    %% ========================================================
-    
-    subgraph "Cascade from AssetItem (onDelete: Cascade)"
-        direction LR
+  end
+ subgraph subGraph2["Cascade from AssetItem (onDelete: Cascade)"]
+    direction LR
         Maintenance["MaintenanceSchedule"]
         Transfer["AssetTransfer"]
         Disposal["AssetDisposal"]
-    end
-    
-    AssetItem --> Maintenance
-    AssetItem --> Transfer
-    AssetItem --> Disposal
-    
-    %% ========================================================
-    %% CASCADE FROM DEPARTMENT
-    %% ========================================================
-    
-    Department -->|"Cascade to Users"| User
-    Department -->|"Cascade to BudgetPlans"| BudgetPlan
-    
-    %% ========================================================
-    %% CASCADE FROM OTHER ENTITIES
-    %% ========================================================
-    
-    User -->|"Cascade to AuditLogs"| AuditLog
-    Supplier -->|"Cascade to AssetItems"| AssetItem
-    Supplier -->|"Cascade to InventoryItems"| InventoryItem
-    PurchaseOrder -->|"Cascade to AssetItems"| AssetItem
+  end
+    Tenant["Tenant<br>Deletion triggers cascade to all related entities"] --> Department & User & AssetCategory & AssetTemplate & AssetItem & InventoryItem & Supplier & PurchaseOrder & MaintenanceSchedule & AssetTransfer & AssetDisposal & BudgetPlan & AuditLog
+    DepartmentParent -. Restrict .-> DepartmentChild
+    CategoryParent -. Restrict .-> CategoryChild
+    AssetTemplate -. Restrict .-> AssetCategory
+    AssetItem -. Restrict .-> AssetTemplate
+    AssetItem --> Maintenance & Transfer & Disposal
+    Department -- Cascade to Users --> User
+    Department -- Cascade to BudgetPlans --> BudgetPlan
+    User -- Cascade to AuditLogs --> AuditLog
+    Supplier -- Cascade to AssetItems --> AssetItem
+    Supplier -- Cascade to InventoryItems --> InventoryItem
+    PurchaseOrder -- Cascade to AssetItems --> AssetItem
 ```
 
 ## Complete Cascade Hierarchy
 
 ```mermaid
+---
+config:
+  layout: elk
+  theme: redux
+  themeVariables:
+    fontFamily: EB Garamond
+---
 flowchart TB
-    %% ========================================================
-    %% COMPLETE CASCADE HIERARCHY
-    %% ========================================================
-    
-    Tenant["Tenant<br>Deletion cascades to ALL entities"]
-    
-    subgraph "First Level Cascade (Direct from Tenant)"
+ subgraph subGraph0["First Level Cascade (Direct from Tenant)"]
         A1["Department"]
         A2["User"]
         A3["AssetCategory"]
@@ -122,74 +79,39 @@ flowchart TB
         A11["AssetDisposal"]
         A12["BudgetPlan"]
         A13["AuditLog"]
-    end
-    
-    subgraph "Second Level Cascade (from AssetItem)"
+  end
+ subgraph subGraph1["Second Level Cascade (from AssetItem)"]
         B1["MaintenanceSchedule"]
         B2["AssetTransfer"]
         B3["AssetDisposal"]
-    end
-    
-    subgraph "Third Level Cascade (from Department)"
+  end
+ subgraph subGraph2["Third Level Cascade (from Department)"]
         C1["User (via department)"]
         C2["BudgetPlan"]
         C3["AssetTransfer (from/to)"]
-    end
-    
-    subgraph "Fourth Level Cascade (from User)"
+  end
+ subgraph subGraph3["Fourth Level Cascade (from User)"]
         D1["AuditLog"]
-    end
-    
-    subgraph "Restrict Relationships (Block Deletion)"
+  end
+ subgraph subGraph4["Restrict Relationships (Block Deletion)"]
         R1["Department → Department (parent-child)"]
         R2["AssetCategory → AssetCategory (parent-child)"]
         R3["AssetTemplate → AssetCategory"]
         R4["AssetItem → AssetTemplate"]
-    end
-    
-    %% ========================================================
-    %% RELATIONSHIP FLOWS
-    %% ========================================================
-    
-    Tenant ==> A1
-    Tenant ==> A2
-    Tenant ==> A3
-    Tenant ==> A4
-    Tenant ==> A5
-    Tenant ==> A6
-    Tenant ==> A7
-    Tenant ==> A8
-    Tenant ==> A9
-    Tenant ==> A10
-    Tenant ==> A11
-    Tenant ==> A12
-    Tenant ==> A13
-    
-    A5 ==> B1
-    A5 ==> B2
-    A5 ==> B3
-    
-    A1 ==> C1
-    A1 ==> C2
-    A1 ==> C3
-    
-    A2 ==> D1
-    
-    %% Restrict relationships (dashed lines)
-    R1 -.->|"RESTRICT"| R1
-    R2 -.->|"RESTRICT"| R2
-    R3 -.->|"RESTRICT"| R3
-    R4 -.->|"RESTRICT"| R4
-    
-    %% ========================================================
-    %% LEGEND
-    %% ========================================================
-    
-    subgraph Legend["Legend"]
+  end
+ subgraph Legend["Legend"]
         L1["Solid arrow = Cascade Delete"]
         L2["Dashed arrow = Restrict Delete"]
         L3["Thick border = Major entity"]
-    end
+  end
+    Tenant["Tenant<br>Deletion cascades to ALL entities"] ==> A1 & A2 & A3 & A4 & A5 & A6 & A7 & A8 & A9 & A10 & A11 & A12 & A13
+    A5 ==> B1 & B2 & B3
+    A1 ==> C1 & C2 & C3
+    A2 ==> D1
+    R1 -. RESTRICT .-> R1
+    R2 -. RESTRICT .-> R2
+    R3 -. RESTRICT .-> R3
+    R4 -. RESTRICT .-> R4
 ```
 
 ## Cascade Delete Rules Summary

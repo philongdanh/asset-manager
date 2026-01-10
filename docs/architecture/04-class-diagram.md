@@ -1,12 +1,15 @@
 # Class Diagram - Asset Management System
 
 ```mermaid
+---
+config:
+  layout: elk
+  theme: redux
+  themeVariables:
+    fontFamily: EB Garamond
+---
 classDiagram
     direction LR
-    
-    %% ========================================================
-    %% ENUMS (Enumerations)
-    %% ========================================================
     
     class AssetCondition {
         <<enumeration>>
@@ -93,10 +96,6 @@ classDiagram
         INACTIVE
     }
 
-    %% ========================================================
-    %% CORE CLASSES
-    %% ========================================================
-
     class Tenant {
         +String id
         +String name
@@ -170,10 +169,6 @@ classDiagram
         +authenticate(password: String) Boolean
         +hasPermission(permission: String) Boolean
     }
-
-    %% ========================================================
-    %% ASSET MANAGEMENT CLASSES
-    %% ========================================================
 
     class AssetCategory {
         +String id
@@ -330,10 +325,6 @@ classDiagram
         +complete() Boolean
     }
 
-    %% ========================================================
-    %% INVENTORY MANAGEMENT CLASSES
-    %% ========================================================
-
     class InventoryItem {
         +String id
         +String tenantId
@@ -363,10 +354,6 @@ classDiagram
         +isBelowMinStock() Boolean
         +isAboveMaxStock() Boolean
     }
-
-    %% ========================================================
-    %% SUPPLIER & PROCUREMENT CLASSES
-    %% ========================================================
 
     class Supplier {
         +String id
@@ -407,10 +394,6 @@ classDiagram
         +calculateTotal() Decimal
     }
 
-    %% ========================================================
-    %% BUDGET MANAGEMENT CLASSES
-    %% ========================================================
-
     class BudgetPlan {
         +String id
         +String tenantId
@@ -429,10 +412,6 @@ classDiagram
         +calculateUtilization() Decimal
     }
 
-    %% ========================================================
-    %% AUDIT LOG CLASS
-    %% ========================================================
-
     class AuditLog {
         +String id
         +String tenantId
@@ -449,10 +428,6 @@ classDiagram
         
         +logAction(action: String, entityType: String, entityId: String, oldValue: String?, newValue: String?) AuditLog
     }
-
-    %% ========================================================
-    %% RELATIONSHIPS
-    %% ========================================================
 
     Tenant "1" -- "*" Department : manages
     Tenant "1" -- "*" User : has
