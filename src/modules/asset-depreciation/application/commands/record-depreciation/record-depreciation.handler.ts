@@ -46,6 +46,17 @@ export class RecordDepreciationHandler {
       )
       .build();
 
-    return await this.depreciationRepo.save(depreciation);
+    await this.depreciationRepo.save(depreciation);
+
+    asset.updateFinancials(
+      asset.purchasePrice,
+      asset.originalCost,
+      cmd.remainingValue,
+      asset.purchaseDate,
+      asset.warrantyExpiryDate,
+    );
+    await this.assetRepo.update(asset);
+
+    return depreciation;
   }
 }
