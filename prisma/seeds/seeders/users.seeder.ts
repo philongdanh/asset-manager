@@ -1,5 +1,6 @@
 import { PrismaClient, Role, Tenant, User, UserStatus } from 'generated/client';
 import { REALISTIC_USERS } from '../data';
+import * as bcrypt from 'bcrypt';
 
 export const seedUsers = async (
   prisma: PrismaClient,
@@ -8,15 +9,22 @@ export const seedUsers = async (
 ): Promise<User[]> => {
   console.log('Seeding users...');
 
+  const defaultPassword = '111111';
+  const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+
+  const rootEmail = process.env.ROOT_USER_EMAIL || 'root@system.com';
+  const rootPassword = process.env.ROOT_USER_PASSWORD || defaultPassword;
+  const rootHashedPassword = await bcrypt.hash(rootPassword, 10);
+
   // Root user (no tenant)
   const rootUser = await prisma.user.upsert({
-    where: { email: 'root@system.com' },
+    where: { email: rootEmail },
     update: {},
     create: {
       id: 'user-root',
       username: 'root',
-      password: '$2b$10$YourHashedPasswordHere', // In production, use proper hashing
-      email: 'root@system.com',
+      password: rootHashedPassword,
+      email: rootEmail,
       isRoot: true,
       status: UserStatus.ACTIVE,
       avatarUrl: '/avatars/root.png',
@@ -39,7 +47,7 @@ export const seedUsers = async (
         id: `user-${tenant.id}-admin`,
         tenantId: tenant.id,
         username: `admin_${tenant.code?.toLowerCase()}`,
-        password: '$2b$10$YourHashedPasswordHere',
+        password: hashedPassword,
         email: `admin@${tenant.code?.toLowerCase()}.com`,
         isRoot: false,
         status: UserStatus.ACTIVE,
@@ -76,7 +84,7 @@ export const seedUsers = async (
           id: `user-${tenant.id}-${userData.username}`,
           tenantId: tenant.id,
           username: `${userData.username}_${tenant.code?.toLowerCase()}`,
-          password: '$2b$10$YourHashedPasswordHere',
+          password: hashedPassword,
           email,
           isRoot: false,
           status: UserStatus.ACTIVE,

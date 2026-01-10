@@ -1,0 +1,826 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------
+// Enums
+// ---------------------------------------------------------
+
+enum TenantStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum MaintenanceType {
+  PREVENTIVE
+  CORRECTIVE
+}
+
+enum MaintenanceStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum DepreciationMethod {
+  STRAIGHT_LINE
+  DECLINING_BALANCE
+}
+
+enum AuditLogAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum InventoryTransactionType {
+  PURCHASE
+  ADJUSTMENT
+  USAGE
+  RETURN
+  TRANSFER_OUT
+  TRANSFER_IN
+  WRITE_OFF
+}
+
+enum TransferStatus {
+  PENDING
+  APPROVED
+  IN_TRANSIT
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+enum BudgetStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+enum AssetItemStatus {
+  AVAILABLE
+  IN_USE
+  UNDER_MAINTENANCE
+  UNDER_REPAIR
+  RESERVED
+  TRANSFERRING
+  DISPOSED
+  LOST
+  DAMAGED
+  RETIRED
+  SCRAPPED
+  SOLD
+}
+
+enum AssetTransferStatus {
+  PENDING
+  APPROVED
+  IN_TRANSIT
+  COMPLETED
+  CANCELLED
+  REJECTED
+  RETURNED
+}
+
+enum AssetDisposalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+enum InventoryCheckStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+// ---------------------------------------------------------
+// Core Models
+// ---------------------------------------------------------
+
+model Tenant {
+  id      String       @id @default(uuid())
+  name    String
+  status  TenantStatus @default(ACTIVE)
+  code    String?      @unique
+  phone   String?
+  email   String?
+  address String?
+  website String?
+  logo    String?
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  departments                Department[]
+  users                      User[]
+  assetCategories            AssetCategory[]
+  assetTemplates             AssetTemplate[]
+  assetItems                 AssetItem[]
+  inventoryItems             InventoryItem[]
+  assetDepreciations         AssetDepreciation[]
+  maintenanceSchedules       MaintenanceSchedule[]
+  assetTransfers             AssetTransfer[]
+  assetDisposals             AssetDisposal[]
+  assetDocuments             AssetDocument[]
+  inventoryChecks            InventoryCheck[]
+  inventoryTransfers         InventoryTransfer[]
+  budgetPlans                BudgetPlan[]
+  auditLogs                  AuditLog[]
+  roles                      Role[]
+  accountingEntries          AccountingEntry[]
+  inventoryTransactions      InventoryTransaction[]
+  inventoryDetails           InventoryDetail[]
+  inventoryBatches           InventoryBatch[]
+  inventoryBatchTransactions InventoryBatchTransaction[]
+  inventoryTransferItems     InventoryTransferItem[]
+
+  @@map("tenants")
+}
+
+model Department {
+  id       String  @id @default(uuid())
+  tenantId String  @map("tenant_id")
+  name     String
+  parentId String? @map("parent_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant   Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  parent   Department?  @relation("DepartmentHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children Department[] @relation("DepartmentHierarchy")
+
+  users             User[]
+  currentAssetItems AssetItem[]     @relation("AssetItemCurrentDepartment")
+  fromTransfers     AssetTransfer[] @relation("TransferFromDepartment")
+  toTransfers       AssetTransfer[] @relation("TransferToDepartment")
+
+  // Inventory transfers
+  inventoryTransfersFrom InventoryTransfer[] @relation("InventoryTransferFrom")
+  inventoryTransfersTo   InventoryTransfer[] @relation("InventoryTransferTo")
+
+  budgetPlans           BudgetPlan[]
+  inventoryTransactions InventoryTransaction[]
+
+  @@unique([tenantId, name])
+  @@map("departments")
+}
+
+model User {
+  id                 String     @id @default(uuid())
+  tenantId           String?    @map("tenant_id")
+  departmentId       String?    @map("department_id")
+  username           String
+  password           String
+  email              String     @unique
+  isRoot             Boolean    @default(false) @map("is_root")
+  status             UserStatus @default(ACTIVE)
+  avatarUrl          String?    @map("avatar_url")
+  hashedRefreshToken String?    @map("hashed_refresh_token")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant     Tenant?     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  department Department? @relation(fields: [departmentId], references: [id])
+
+  userRoles UserRole[]
+
+  createdAssetItems AssetItem[] @relation("AssetItemCreator")
+  currentAssetItems AssetItem[] @relation("AssetItemHolder")
+
+  performedMaintenances MaintenanceSchedule[] @relation("MaintenancePerformer")
+
+  transfersFrom     AssetTransfer[] @relation("TransferFromUser")
+  transfersTo       AssetTransfer[] @relation("TransferToUser")
+  approvedTransfers AssetTransfer[] @relation("TransferApprover")
+
+  approvedDisposals AssetDisposal[] @relation("DisposalApprover")
+
+  uploadedDocuments AssetDocument[] @relation("DocumentUploader")
+
+  createdInventoryChecks  InventoryCheck[]  @relation("InventoryCreator")
+  checkedInventoryDetails InventoryDetail[] @relation("InventoryChecker")
+
+  // Inventory transfers
+  createdInventoryTransfers  InventoryTransfer[] @relation("InventoryTransferCreator")
+  approvedInventoryTransfers InventoryTransfer[] @relation("InventoryTransferApprover")
+  receivedInventoryTransfers InventoryTransfer[] @relation("InventoryTransferReceiver")
+
+  auditLogs             AuditLog[]
+  createdEntries        AccountingEntry[]      @relation("EntryCreator")
+  inventoryTransactions InventoryTransaction[]
+
+  @@unique([tenantId, username])
+  @@map("users")
+}
+
+// ---------------------------------------------------------
+// RBAC
+// ---------------------------------------------------------
+
+model Role {
+  id       String @id @default(uuid())
+  tenantId String @map("tenant_id")
+  name     String
+  color    String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@unique([tenantId, name])
+  @@map("roles")
+}
+
+model Permission {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  rolePermissions RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  userId String @map("user_id")
+  roleId String @map("role_id")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  roleId       String @map("role_id")
+  permissionId String @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// ---------------------------------------------------------
+// Asset Management
+// ---------------------------------------------------------
+
+model AssetCategory {
+  id       String  @id @default(uuid())
+  tenantId String  @map("tenant_id")
+  name     String
+  code     String
+  parentId String? @map("parent_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant   Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  parent   AssetCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Restrict)
+  children AssetCategory[] @relation("CategoryHierarchy")
+
+  assetTemplates AssetTemplate[]
+  inventoryItems InventoryItem[]
+
+  @@unique([tenantId, code])
+  @@map("asset_categories")
+}
+
+model AssetTemplate {
+  id             String  @id @default(uuid())
+  tenantId       String  @map("tenant_id")
+  categoryId     String  @map("category_id")
+  code           String
+  name           String
+  model          String?
+  manufacturer   String?
+  description    String?
+  specifications String?
+  imageUrl       String? @map("image_url")
+
+  defaultPurchasePrice  Decimal? @map("default_purchase_price")
+  defaultWarrantyMonths Int?     @map("default_warranty_months")
+
+  trackQuantity Boolean @default(false) @map("track_quantity")
+  minStock      Int?    @map("min_stock")
+  maxStock      Int?    @map("max_stock")
+
+  requireSerial Boolean @default(false) @map("require_serial")
+  canDepreciate Boolean @default(false) @map("can_depreciate")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant   Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  category AssetCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  assetItems AssetItem[]
+
+  @@unique([tenantId, code])
+  @@map("asset_templates")
+}
+
+model AssetItem {
+  id         String @id @default(uuid())
+  tenantId   String @map("tenant_id")
+  templateId String @map("template_id")
+  code       String
+
+  serialNumber  String?   @map("serial_number")
+  purchaseDate  DateTime? @map("purchase_date")
+  purchasePrice Decimal?  @map("purchase_price")
+  originalCost  Decimal?  @map("original_cost")
+  currentValue  Decimal?  @map("current_value")
+
+  status    AssetItemStatus @default(AVAILABLE)
+  condition String?
+  location  String?
+
+  warrantyStartDate DateTime? @map("warranty_start_date")
+  warrantyEndDate   DateTime? @map("warranty_end_date")
+
+  createdByUserId     String? @map("created_by_user_id")
+  currentDepartmentId String? @map("current_department_id")
+  currentUserId       String? @map("current_user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant            Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  template          AssetTemplate @relation(fields: [templateId], references: [id], onDelete: Restrict)
+  creator           User?         @relation("AssetItemCreator", fields: [createdByUserId], references: [id])
+  currentDepartment Department?   @relation("AssetItemCurrentDepartment", fields: [currentDepartmentId], references: [id])
+  currentUser       User?         @relation("AssetItemHolder", fields: [currentUserId], references: [id])
+
+  depreciations     AssetDepreciation[]
+  maintenances      MaintenanceSchedule[]
+  transfers         AssetTransfer[]
+  disposals         AssetDisposal[]
+  documents         AssetDocument[]
+  inventoryDetails  InventoryDetail[]
+  accountingEntries AccountingEntry[]
+
+  @@unique([tenantId, code])
+  @@unique([tenantId, serialNumber])
+  @@map("asset_items")
+}
+
+model InventoryItem {
+  id          String  @id @default(uuid())
+  tenantId    String  @map("tenant_id")
+  categoryId  String? @map("category_id")
+  sku         String  @map("sku")
+  name        String
+  description String?
+  unit        String  @default("cái")
+
+  currentStock Int  @default(0) @map("current_stock")
+  minStock     Int? @map("min_stock")
+  maxStock     Int? @map("max_stock")
+  reorderPoint Int? @map("reorder_point")
+
+  unitCost   Decimal @map("unit_cost")
+  totalValue Decimal @default(0) @map("total_value")
+
+  manufacturer    String?
+  supplier        String?
+  storageLocation String? @map("storage_location")
+  batchTracking   Boolean @default(false) @map("batch_tracking")
+  expiryTracking  Boolean @default(false) @map("expiry_tracking")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tenant   Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  category AssetCategory? @relation(fields: [categoryId], references: [id])
+
+  transactions      InventoryTransaction[]
+  transferItems     InventoryTransferItem[]
+  inventoryDetails  InventoryDetail[]
+  accountingEntries AccountingEntry[]
+  batches           InventoryBatch[]
+
+  @@unique([tenantId, sku])
+  @@map("inventory_items")
+}
+
+model InventoryBatch {
+  id             String    @id @default(uuid())
+  tenantId       String    @map("tenant_id")
+  inventoryId    String    @map("inventory_id")
+  batchNumber    String    @map("batch_number")
+  quantity       Int
+  remaining      Int       @default(0)
+  unitCost       Decimal   @map("unit_cost")
+  productionDate DateTime? @map("production_date")
+  expiryDate     DateTime? @map("expiry_date")
+  notes          String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant                 Tenant                      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  inventory              InventoryItem               @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  transactions           InventoryBatchTransaction[]
+  inventoryTransferItems InventoryTransferItem[]
+  inventoryTransactions  InventoryTransaction[]
+
+  @@unique([tenantId, inventoryId, batchNumber])
+  @@map("inventory_batches")
+}
+
+model InventoryBatchTransaction {
+  id       String  @id @default(uuid())
+  tenantId String  @map("tenant_id")
+  batchId  String  @map("batch_id")
+  quantity Int
+  type     String // "IN", "OUT", "ADJUST"
+  notes    String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tenant Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  batch  InventoryBatch @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  @@map("inventory_batch_transactions")
+}
+
+// ---------------------------------------------------------
+// Inventory Transfer System
+// ---------------------------------------------------------
+
+model InventoryTransfer {
+  id             String   @id @default(uuid())
+  tenantId       String   @map("tenant_id")
+  transferNumber String   @map("transfer_number")
+  transferDate   DateTime @map("transfer_date")
+
+  fromDepartmentId String @map("from_department_id")
+  toDepartmentId   String @map("to_department_id")
+
+  status       TransferStatus @default(PENDING)
+  transferType String         @map("transfer_type") // INTERNAL, EXTERNAL, RETURN, ADJUSTMENT
+
+  notes           String?
+  trackingNumber  String?   @map("tracking_number")
+  expectedArrival DateTime? @map("expected_arrival")
+
+  // Người thực hiện
+  createdByUserId  String  @map("created_by_user_id")
+  approvedByUserId String? @map("approved_by_user_id")
+  receivedByUserId String? @map("received_by_user_id")
+
+  // Timestamps
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  approvedAt  DateTime? @map("approved_at")
+  completedAt DateTime? @map("completed_at")
+  cancelledAt DateTime? @map("cancelled_at")
+
+  // Relations
+  tenant         Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  fromDepartment Department @relation("InventoryTransferFrom", fields: [fromDepartmentId], references: [id])
+  toDepartment   Department @relation("InventoryTransferTo", fields: [toDepartmentId], references: [id])
+  creator        User       @relation("InventoryTransferCreator", fields: [createdByUserId], references: [id])
+  approver       User?      @relation("InventoryTransferApprover", fields: [approvedByUserId], references: [id])
+  receiver       User?      @relation("InventoryTransferReceiver", fields: [receivedByUserId], references: [id])
+
+  items        InventoryTransferItem[]
+  transactions InventoryTransaction[]
+
+  @@unique([tenantId, transferNumber])
+  @@map("inventory_transfers")
+}
+
+model InventoryTransferItem {
+  id              String  @id @default(uuid())
+  tenantId        String  @map("tenant_id")
+  transferId      String  @map("transfer_id")
+  inventoryItemId String  @map("inventory_item_id")
+  batchId         String? @map("batch_id")
+
+  quantity  Int
+  unitCost  Decimal @map("unit_cost") @db.Decimal(19, 4)
+  totalCost Decimal @map("total_cost") @db.Decimal(19, 4)
+
+  notes String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  tenant        Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  transfer      InventoryTransfer @relation(fields: [transferId], references: [id], onDelete: Cascade)
+  inventoryItem InventoryItem     @relation(fields: [inventoryItemId], references: [id], onDelete: Restrict)
+  batch         InventoryBatch?   @relation(fields: [batchId], references: [id])
+
+  @@map("inventory_transfer_items")
+}
+
+model InventoryTransaction {
+  id          String  @id @default(uuid())
+  tenantId    String  @map("tenant_id")
+  inventoryId String  @map("inventory_id")
+  batchId     String? @map("batch_id")
+  transferId  String? @map("transfer_id")
+
+  transactionType InventoryTransactionType @map("transaction_type")
+  quantity        Int
+  unitCost        Decimal?                 @map("unit_cost") @db.Decimal(19, 4)
+  totalCost       Decimal?                 @map("total_cost") @db.Decimal(19, 4)
+
+  referenceNumber String? @map("reference_number")
+  notes           String?
+
+  performedByUserId String? @map("performed_by_user_id")
+  departmentId      String? @map("department_id")
+
+  transactionDate DateTime @default(now()) @map("transaction_date")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  // Relations
+  tenant     Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  inventory  InventoryItem      @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  batch      InventoryBatch?    @relation(fields: [batchId], references: [id])
+  transfer   InventoryTransfer? @relation(fields: [transferId], references: [id])
+  performer  User?              @relation(fields: [performedByUserId], references: [id])
+  department Department?        @relation(fields: [departmentId], references: [id])
+
+  @@map("inventory_transactions")
+}
+
+// ---------------------------------------------------------
+// Asset Management Continuation
+// ---------------------------------------------------------
+
+model AssetDepreciation {
+  id                      String             @id @default(uuid())
+  tenantId                String             @map("tenant_id")
+  assetItemId             String             @map("asset_item_id")
+  depreciationDate        DateTime           @map("depreciation_date")
+  method                  DepreciationMethod @default(STRAIGHT_LINE)
+  depreciationValue       Decimal            @map("depreciation_value") @db.Decimal(19, 4)
+  accumulatedDepreciation Decimal            @map("accumulated_depreciation") @db.Decimal(19, 4)
+  remainingValue          Decimal            @map("remaining_value") @db.Decimal(19, 4)
+  accountingEntryId       String?            @map("accounting_entry_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  assetItem AssetItem @relation(fields: [assetItemId], references: [id], onDelete: Cascade)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("asset_depreciations")
+}
+
+model MaintenanceSchedule {
+  id                String            @id @default(uuid())
+  tenantId          String            @map("tenant_id")
+  assetItemId       String            @map("asset_item_id")
+  date              DateTime
+  type              MaintenanceType   @default(PREVENTIVE)
+  status            MaintenanceStatus @default(PENDING)
+  description       String?
+  estimatedCost     Decimal?          @map("estimated_cost") @db.Decimal(19, 4)
+  actualCost        Decimal?          @map("actual_cost") @db.Decimal(19, 4)
+  performedByUserId String?           @map("performed_by_user_id")
+  result            String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  assetItem AssetItem @relation(fields: [assetItemId], references: [id], onDelete: Cascade)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  performer User?     @relation("MaintenancePerformer", fields: [performedByUserId], references: [id])
+
+  @@map("maintenance_schedules")
+}
+
+model AssetTransfer {
+  id               String              @id @default(uuid())
+  tenantId         String              @map("tenant_id")
+  assetItemId      String              @map("asset_item_id")
+  transferDate     DateTime            @map("transfer_date")
+  fromDepartmentId String?             @map("from_department_id")
+  toDepartmentId   String?             @map("to_department_id")
+  fromUserId       String?             @map("from_user_id")
+  toUserId         String?             @map("to_user_id")
+  approvedByUserId String?             @map("approved_by_user_id")
+  transferType     String              @map("transfer_type")
+  reason           String?
+  status           AssetTransferStatus @default(PENDING)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  assetItem      AssetItem   @relation(fields: [assetItemId], references: [id], onDelete: Cascade)
+  tenant         Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  fromDepartment Department? @relation("TransferFromDepartment", fields: [fromDepartmentId], references: [id])
+  toDepartment   Department? @relation("TransferToDepartment", fields: [toDepartmentId], references: [id])
+  fromUser       User?       @relation("TransferFromUser", fields: [fromUserId], references: [id])
+  toUser         User?       @relation("TransferToUser", fields: [toUserId], references: [id])
+  approver       User?       @relation("TransferApprover", fields: [approvedByUserId], references: [id])
+
+  @@map("asset_transfers")
+}
+
+model AssetDisposal {
+  id                String              @id @default(uuid())
+  assetItemId       String              @map("asset_item_id")
+  tenantId          String              @map("tenant_id")
+  disposalDate      DateTime            @map("disposal_date")
+  disposalType      String              @map("disposal_type")
+  disposalValue     Decimal             @map("disposal_value") @db.Decimal(19, 4)
+  reason            String?
+  approvedByUserId  String?             @map("approved_by_user_id")
+  status            AssetDisposalStatus @default(PENDING)
+  accountingEntryId String?             @map("accounting_entry_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  assetItem AssetItem @relation(fields: [assetItemId], references: [id], onDelete: Cascade)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  approver  User?     @relation("DisposalApprover", fields: [approvedByUserId], references: [id])
+
+  @@map("asset_disposals")
+}
+
+model AssetDocument {
+  id               String   @id @default(uuid())
+  assetItemId      String   @map("asset_item_id")
+  tenantId         String   @map("tenant_id")
+  documentType     String   @map("document_type")
+  documentName     String   @map("document_name")
+  filePath         String   @map("file_path")
+  fileType         String   @map("file_type")
+  uploadDate       DateTime @default(now()) @map("upload_date")
+  uploadedByUserId String   @map("uploaded_by_user_id")
+  description      String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  assetItem AssetItem @relation(fields: [assetItemId], references: [id], onDelete: Cascade)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  uploader  User      @relation("DocumentUploader", fields: [uploadedByUserId], references: [id])
+
+  @@map("asset_documents")
+}
+
+// ---------------------------------------------------------
+// Inventory & Auditing
+// ---------------------------------------------------------
+
+model InventoryCheck {
+  id              String               @id @default(uuid())
+  tenantId        String               @map("tenant_id")
+  inventoryDate   DateTime             @map("inventory_date")
+  inventoryName   String               @map("inventory_name")
+  status          InventoryCheckStatus @default(PLANNED)
+  notes           String?
+  createdByUserId String               @map("created_by_user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant  Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  creator User              @relation("InventoryCreator", fields: [createdByUserId], references: [id])
+  details InventoryDetail[]
+
+  @@map("inventory_checks")
+}
+
+model InventoryDetail {
+  id              String   @id @default(uuid()) @map("inventory_detail_id")
+  tenantId        String   @map("tenant_id")
+  inventoryId     String   @map("inventory_id")
+  assetItemId     String?  @map("asset_item_id")
+  inventoryItemId String?  @map("inventory_item_id")
+  checkedDate     DateTime @default(now()) @map("checked_date")
+  checkedByUserId String   @map("checked_by_user_id")
+
+  physicalStatus String?  @map("physical_status")
+  isMatched      Boolean? @map("is_matched")
+
+  expectedStock Int? @map("expected_stock")
+  actualStock   Int? @map("actual_stock")
+  variance      Int? @map("variance")
+
+  notes String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  inventoryCheck InventoryCheck @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  assetItem      AssetItem?     @relation(fields: [assetItemId], references: [id], onDelete: SetNull)
+  inventoryItem  InventoryItem? @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
+  checker        User           @relation("InventoryChecker", fields: [checkedByUserId], references: [id])
+
+  @@map("inventory_details")
+}
+
+model AuditLog {
+  id         String         @id @default(uuid())
+  tenantId   String         @map("tenant_id")
+  userId     String         @map("user_id")
+  action     AuditLogAction
+  entityType String         @map("entity_type")
+  entityId   String         @map("entity_id")
+  oldValue   String?        @map("old_value")
+  newValue   String?        @map("new_value")
+  actionTime DateTime       @default(now()) @map("action_time")
+  ipAddress  String?        @map("ip_address")
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}
+
+// ---------------------------------------------------------
+// Finance
+// ---------------------------------------------------------
+
+model AccountingEntry {
+  id          String   @id @default(uuid())
+  tenantId    String   @map("tenant_id")
+  entryType   String   @map("entry_type")
+  entryDate   DateTime @map("entry_date")
+  amount      Decimal  @db.Decimal(19, 4)
+  description String?
+
+  assetItemId     String? @map("asset_item_id")
+  inventoryItemId String? @map("inventory_item_id")
+
+  referenceId   String? @map("reference_id")
+  referenceType String? @map("reference_type")
+
+  createdByUserId String @map("created_by_user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  assetItem     AssetItem?     @relation(fields: [assetItemId], references: [id], onDelete: SetNull)
+  inventoryItem InventoryItem? @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
+  creator       User           @relation("EntryCreator", fields: [createdByUserId], references: [id])
+
+  @@map("accounting_entries")
+}
+
+model BudgetPlan {
+  id              String       @id @default(uuid())
+  tenantId        String       @map("tenant_id")
+  departmentId    String       @map("department_id")
+  fiscalYear      Int          @map("fiscal_year")
+  budgetType      String       @map("budget_type")
+  allocatedAmount Decimal      @map("allocated_amount") @db.Decimal(19, 4)
+  spentAmount     Decimal      @default(0) @map("spent_amount") @db.Decimal(19, 4)
+  status          BudgetStatus @default(DRAFT)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tenant     Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  department Department @relation(fields: [departmentId], references: [id])
+
+  @@map("budget_plans")
+}
