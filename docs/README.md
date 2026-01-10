@@ -337,45 +337,9 @@ I welcome contributions! Here's how you can help:
    ```
 5. **Open a Pull Request**
 
-### Development Guidelines
-
-- Follow NestJS best practices and project structure
-- Write meaningful commit messages
-- Update documentation as needed
-- Ensure all existing functionality continues to work
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Built as a personal project to showcase full-stack development with NestJS and modern tooling
-- Inspired by real-world asset management challenges in organizations
-- Thanks to the NestJS and Prisma communities for excellent documentation and support
-- Special thanks to all open-source contributors whose work made this project possible
-
-## Contact
-
-**Project Maintainer**: [Your Name]
-
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-
-**Project Link**: [https://github.com/yourusername/asset-management-system](https://github.com/yourusername/asset-management-system)
-
----
-
-## Future Enhancements
-
-Here are some features I plan to implement:
-
-1. **Real-time Notifications**: WebSocket integration for real-time updates
-2. **File Attachments**: Support for attaching documents to assets and maintenance records
-3. **Barcode/QR Code Generation**: Automatically generate and print asset labels
-4. **Advanced Search**: Elasticsearch integration for full-text search
-5. **Mobile API**: Optimized endpoints for mobile applications
-6. **Import/Export Tools**: Bulk data import and export functionality
 
 ## Complete Documentation
 
