@@ -58,7 +58,17 @@ export class ApproveAssetTransferHandler {
       toUser,
       approvedByUser,
     ] = await Promise.all([
-      this.assetRepo.findById(updatedTransfer.assetId),
+      this.assetRepo.findById(updatedTransfer.assetId).then(async (asset) => {
+        if (asset) {
+          asset.updateLocation(
+            updatedTransfer.toDepartmentId,
+            updatedTransfer.toUserId,
+          );
+          await this.assetRepo.update(asset);
+          return asset;
+        }
+        return null;
+      }),
       this.orgRepo.findById(updatedTransfer.organizationId),
       updatedTransfer.fromDepartmentId
         ? this.deptRepo.findById(updatedTransfer.fromDepartmentId)

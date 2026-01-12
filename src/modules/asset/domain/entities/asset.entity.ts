@@ -237,6 +237,23 @@ export class Asset extends BaseEntity {
     this.markAsUpdated();
   }
 
+  public updateLocation(
+    departmentId: string | null,
+    userId: string | null,
+  ): void {
+    this._currentDepartmentId = departmentId;
+    this._currentUserId = userId;
+
+    if (userId) {
+      this._status = AssetStatus.IN_USE;
+    } else if (departmentId) {
+      // If assigned to a department but no specific user, it's available in that department
+      this._status = AssetStatus.AVAILABLE;
+    }
+
+    this.markAsUpdated();
+  }
+
   public markAsDeleted(): void {
     super.markAsDeleted();
     this._status = AssetStatus.DISPOSED;

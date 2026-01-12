@@ -9,5 +9,8 @@ export class CreateAssetTransferCommand {
     public readonly reason: string | null,
     public readonly toDepartmentId: string | null,
     public readonly toUserId: string | null,
+    public readonly createdByUserId: string,
+    public readonly fromDepartmentId: string | null = null,
+    public readonly fromUserId: string | null = null,
   ) {}
 }

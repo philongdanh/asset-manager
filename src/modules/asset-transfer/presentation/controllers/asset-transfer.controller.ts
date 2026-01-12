@@ -55,6 +55,7 @@ export class AssetTransferController {
   @Post()
   async create(
     @Body() dto: CreateAssetTransferRequest,
+    @CurrentUser() user: JwtPayload,
   ): Promise<AssetTransferResponse> {
     const cmd = new CreateAssetTransferCommand(
       dto.assetId,
@@ -64,6 +65,9 @@ export class AssetTransferController {
       dto.reason || null,
       dto.toDepartmentId || null,
       dto.toUserId || null,
+      (user as any).id || (user as any).userId, // Handle different potential JWT payload structures safely
+      dto.fromDepartmentId || null,
+      dto.fromUserId || null,
     );
     const result = await this.createHandler.execute(cmd);
     return this.toResponseFromEntity(result);

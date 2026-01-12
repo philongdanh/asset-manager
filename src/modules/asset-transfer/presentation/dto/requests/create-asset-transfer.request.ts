@@ -44,4 +44,14 @@ export class CreateAssetTransferRequest {
   @IsUUID('4')
   @IsOptional()
   toUserId: string | null;
+
+  @Expose({ name: 'from_department_id' })
+  @IsUUID('4')
+  @IsOptional()
+  fromDepartmentId: string | null;
+
+  @Expose({ name: 'from_user_id' })
+  @IsUUID('4')
+  @IsOptional()
+  fromUserId: string | null;
 }

@@ -10,6 +10,7 @@ import {
   ASSET_REPOSITORY,
   type IAssetRepository,
 } from 'src/modules/asset/domain';
+import { USER_REPOSITORY, type IUserRepository } from 'src/modules/user/domain';
 import { CreateAssetTransferCommand } from './create-asset-transfer.command';
 
 @Injectable()
@@ -20,26 +21,28 @@ export class CreateAssetTransferHandler {
     private readonly transferRepo: IAssetTransferRepository,
     @Inject(ASSET_REPOSITORY)
     private readonly assetRepo: IAssetRepository,
+    @Inject(USER_REPOSITORY)
+    private readonly userRepo: IUserRepository,
   ) {}
 
   async execute(cmd: CreateAssetTransferCommand): Promise<AssetTransfer> {
     const asset = await this.assetRepo.findById(cmd.assetId);
-    console.log('dajdkas', asset);
     if (!asset) {
       throw new UseCaseException(
         `Asset with id ${cmd.assetId} not found`,
         CreateAssetTransferCommand.name,
       );
     }
+    const creator = await this.userRepo.findById(cmd.createdByUserId);
 
-    // Check if asset is already in a pending transfer?
-    // const hasPending = await this.transferRepo.hasPendingTransfer(cmd.assetId);
-    // if (hasPending) {
-    //   throw new UseCaseException(
-    //     `Asset ${cmd.assetId} already has a pending transfer`,
-    //     CreateAssetTransferCommand.name,
-    //   );
-    // }
+    // Prioritize explicit values from command, then asset current values, then creator values
+    const fromUserId =
+      cmd.fromUserId || asset.currentUserId || (creator ? creator.id : null);
+
+    const fromDepartmentId =
+      cmd.fromDepartmentId ||
+      asset.currentDepartmentId ||
+      (creator ? creator.departmentId : null);
 
     const id = this.idGenerator.generate();
     const transfer = AssetTransfer.builder(
@@ -49,9 +52,9 @@ export class CreateAssetTransferHandler {
       cmd.transferType,
     )
       .onDate(cmd.transferDate)
-      .fromDepartment(asset.currentDepartmentId)
+      .fromDepartment(fromDepartmentId)
       .toDepartment(cmd.toDepartmentId)
-      .fromUser(asset.currentUserId)
+      .fromUser(fromUserId)
       .toUser(cmd.toUserId)
       .withReason(cmd.reason)
       .build();
