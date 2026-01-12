@@ -8,7 +8,7 @@ import {
   Query,
   Param,
   ParseUUIDPipe,
-  Put,
+  Patch,
   Delete,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -92,7 +92,7 @@ export class OrganizationController {
   }
 
   @Permissions('ORGANIZATION_UPDATE')
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,

@@ -50,6 +50,11 @@ export class UserController {
       dto.email,
       dto.departmentId,
       dto.status,
+      dto.avatarUrl,
+      dto.fullName,
+      dto.dateOfBirth,
+      dto.gender,
+      dto.phoneNumber,
     );
     const result: User = await this.commandBus.execute(cmd);
     return new UserResponse(result);
@@ -101,6 +106,11 @@ export class UserController {
       dto.email,
       dto.departmentId,
       dto.status,
+      dto.avatarUrl,
+      dto.fullName,
+      dto.dateOfBirth,
+      dto.gender,
+      dto.phoneNumber,
     );
     const user: User = await this.commandBus.execute(cmd);
     return new UserResponse(user);

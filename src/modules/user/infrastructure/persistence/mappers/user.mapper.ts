@@ -29,7 +29,14 @@ export class UserMapper {
         prismaUser.deletedAt,
       )
       .asRoot(prismaUser.isRoot)
-      .withRefreshToken(prismaUser.hashedRefreshToken);
+      .withRefreshToken(prismaUser.hashedRefreshToken)
+      .withAvatarUrl(prismaUser.avatarUrl)
+      .withProfile(
+        prismaUser.fullName,
+        prismaUser.dateOfBirth,
+        prismaUser.gender,
+        prismaUser.phoneNumber,
+      );
 
     return builder.build();
   }
@@ -49,6 +56,11 @@ export class UserMapper {
       status: user.status,
       isRoot: user.isRoot,
       hashedRefreshToken: user.hashedRefreshToken,
+      avatarUrl: user.avatarUrl,
+      fullName: user.fullName,
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender,
+      phoneNumber: user.phoneNumber,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       deletedAt: user.deletedAt,
@@ -62,6 +74,11 @@ export class UserMapper {
       status: user.status,
       isRoot: user.isRoot,
       hashedRefreshToken: user.hashedRefreshToken,
+      avatarUrl: user.avatarUrl,
+      fullName: user.fullName,
+      dateOfBirth: user.dateOfBirth,
+      gender: user.gender,
+      phoneNumber: user.phoneNumber,
       updatedAt: user.updatedAt,
     };
 

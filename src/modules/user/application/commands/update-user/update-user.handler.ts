@@ -46,6 +46,20 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
     if (cmd.avatarUrl !== undefined) {
       user.updateAvatar(cmd.avatarUrl);
     }
+
+    if (
+      cmd.fullName !== undefined ||
+      cmd.dateOfBirth !== undefined ||
+      cmd.gender !== undefined ||
+      cmd.phoneNumber !== undefined
+    ) {
+      user.updateProfile(
+        cmd.fullName !== undefined ? cmd.fullName : user.fullName,
+        cmd.dateOfBirth !== undefined ? cmd.dateOfBirth : user.dateOfBirth,
+        cmd.gender !== undefined ? cmd.gender : user.gender,
+        cmd.phoneNumber !== undefined ? cmd.phoneNumber : user.phoneNumber,
+      );
+    }
     return await this.userRepo.update(user);
   }
 }

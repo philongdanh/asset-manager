@@ -44,4 +44,23 @@ export class CreateUserRequest {
   @IsOptional()
   @IsString()
   avatarUrl?: string;
+
+  @Expose({ name: 'full_name' })
+  @IsOptional()
+  @IsString()
+  fullName?: string;
+
+  @Expose({ name: 'date_of_birth' })
+  @IsOptional()
+  dateOfBirth?: Date;
+
+  @Expose()
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @Expose({ name: 'phone_number' })
+  @IsOptional()
+  @IsString()
+  phoneNumber?: string;
 }

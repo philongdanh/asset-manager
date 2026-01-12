@@ -50,6 +50,12 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
       .inDepartment(cmd.departmentId || null)
       .withStatus(cmd.status || UserStatus.ACTIVE)
       .withAvatarUrl(cmd.avatarUrl || null)
+      .withProfile(
+        cmd.fullName || null,
+        cmd.dateOfBirth || null,
+        cmd.gender || null,
+        cmd.phoneNumber || null,
+      )
       .build();
     return await this.userRepo.save(user);
   }

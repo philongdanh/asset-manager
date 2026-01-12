@@ -21,6 +21,18 @@ export class UserResponse {
   @Expose({ name: 'avatar_url' })
   avatarUrl: string | null;
 
+  @Expose({ name: 'full_name' })
+  fullName: string | null;
+
+  @Expose({ name: 'date_of_birth' })
+  dateOfBirth: Date | null;
+
+  @Expose({ name: 'gender' })
+  gender: string | null;
+
+  @Expose({ name: 'phone_number' })
+  phoneNumber: string | null;
+
   @Expose({ name: 'created_at' })
   createdAt: Date;
 
@@ -34,6 +46,10 @@ export class UserResponse {
     this.email = user.email;
     this.status = user.status;
     this.avatarUrl = user.avatarUrl;
+    this.fullName = user.fullName;
+    this.dateOfBirth = user.dateOfBirth;
+    this.gender = user.gender;
+    this.phoneNumber = user.phoneNumber;
     this.createdAt = user.createdAt!;
     this.updatedAt = user.updatedAt!;
   }

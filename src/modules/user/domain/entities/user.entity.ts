@@ -12,6 +12,10 @@ export class User extends BaseEntity {
   private _email: string;
   private _password: string;
   private _hashedRefreshToken: string | null;
+  private _fullName: string | null;
+  private _dateOfBirth: Date | null;
+  private _gender: string | null;
+  private _phoneNumber: string | null;
   private _status: UserStatus;
   private _avatarUrl: string | null;
   private _isRoot: boolean;
@@ -24,6 +28,10 @@ export class User extends BaseEntity {
     this._email = builder.email;
     this._password = builder.password;
     this._hashedRefreshToken = builder.hashedRefreshToken;
+    this._fullName = builder.fullName;
+    this._dateOfBirth = builder.dateOfBirth;
+    this._gender = builder.gender;
+    this._phoneNumber = builder.phoneNumber;
     this._status = builder.status;
     this._avatarUrl = builder.avatarUrl;
     this._isRoot = builder.isRoot;
@@ -56,6 +64,22 @@ export class User extends BaseEntity {
 
   public setHashedRefreshToken(hash: string | null): void {
     this._hashedRefreshToken = hash;
+  }
+
+  public get fullName(): string | null {
+    return this._fullName;
+  }
+
+  public get dateOfBirth(): Date | null {
+    return this._dateOfBirth;
+  }
+
+  public get gender(): string | null {
+    return this._gender;
+  }
+
+  public get phoneNumber(): string | null {
+    return this._phoneNumber;
   }
 
   public get status(): UserStatus {
@@ -95,6 +119,19 @@ export class User extends BaseEntity {
       );
     }
     this._username = newUsername;
+    this.markAsUpdated();
+  }
+
+  public updateProfile(
+    fullName: string | null,
+    dateOfBirth: Date | null,
+    gender: string | null,
+    phoneNumber: string | null,
+  ): void {
+    this._fullName = fullName;
+    this._dateOfBirth = dateOfBirth;
+    this._gender = gender;
+    this._phoneNumber = phoneNumber;
     this.markAsUpdated();
   }
 
@@ -190,6 +227,10 @@ export class UserBuilder {
   public avatarUrl: string | null = null;
   public isRoot: boolean = false;
   public hashedRefreshToken: string | null = null;
+  public fullName: string | null = null;
+  public dateOfBirth: Date | null = null;
+  public gender: string | null = null;
+  public phoneNumber: string | null = null;
   public createdAt: Date;
   public updatedAt: Date;
   public deletedAt: Date | null = null;
@@ -227,6 +268,19 @@ export class UserBuilder {
 
   public withAvatarUrl(url: string | null): this {
     this.avatarUrl = url;
+    return this;
+  }
+
+  public withProfile(
+    fullName: string | null,
+    dateOfBirth: Date | null,
+    gender: string | null,
+    phoneNumber: string | null,
+  ): this {
+    this.fullName = fullName;
+    this.dateOfBirth = dateOfBirth;
+    this.gender = gender;
+    this.phoneNumber = phoneNumber;
     return this;
   }
 
