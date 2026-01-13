@@ -8,6 +8,8 @@ export enum UserStatus {
 export class User extends BaseEntity {
   private _organizationId: string | null;
   private _departmentId: string | null;
+  private _departmentName: string | null = null;
+  private _departmentParentId: string | null = null;
   private _username: string;
   private _email: string;
   private _password: string;
@@ -24,6 +26,8 @@ export class User extends BaseEntity {
     super(builder.id, builder.createdAt, builder.updatedAt, builder.deletedAt);
     this._organizationId = builder.organizationId;
     this._departmentId = builder.departmentId;
+    this._departmentName = builder.departmentName;
+    this._departmentParentId = builder.departmentParentId;
     this._username = builder.username;
     this._email = builder.email;
     this._password = builder.password;
@@ -44,6 +48,14 @@ export class User extends BaseEntity {
 
   public get departmentId(): string | null {
     return this._departmentId;
+  }
+
+  public get departmentName(): string | null {
+    return this._departmentName;
+  }
+
+  public get departmentParentId(): string | null {
+    return this._departmentParentId;
   }
 
   public get username(): string {
@@ -223,6 +235,8 @@ export class User extends BaseEntity {
 // --- Builder Class ---
 export class UserBuilder {
   public departmentId: string | null = null;
+  public departmentName: string | null = null;
+  public departmentParentId: string | null = null;
   public status: UserStatus = UserStatus.ACTIVE;
   public avatarUrl: string | null = null;
   public isRoot: boolean = false;
@@ -251,8 +265,14 @@ export class UserBuilder {
     return this;
   }
 
-  public inDepartment(departmentId: string | null): this {
-    this.departmentId = departmentId;
+  public inDepartment(
+    id: string | null,
+    name: string | null = null,
+    parentId: string | null = null,
+  ): this {
+    this.departmentId = id;
+    this.departmentName = name;
+    this.departmentParentId = parentId;
     return this;
   }
 

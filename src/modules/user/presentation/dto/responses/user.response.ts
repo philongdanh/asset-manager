@@ -1,13 +1,19 @@
 import { Exclude, Expose } from 'class-transformer';
 import { User, UserStatus } from '../../../domain';
 
+interface DepartmentInfo {
+  id: string;
+  name: string;
+  parent_id: string | null;
+}
+
 @Exclude()
 export class UserResponse {
   @Expose({ name: 'id' })
   id: string;
 
-  @Expose({ name: 'department_id' })
-  departmentId: string | null;
+  @Expose({ name: 'department' })
+  department: DepartmentInfo | null;
 
   @Expose({ name: 'username' })
   username: string;
@@ -41,7 +47,14 @@ export class UserResponse {
 
   constructor(user: User) {
     this.id = user.id;
-    this.departmentId = user.departmentId;
+    this.department =
+      user.departmentId && user.departmentName
+        ? {
+            id: user.departmentId,
+            name: user.departmentName,
+            parent_id: user.departmentParentId,
+          }
+        : null;
     this.username = user.username;
     this.email = user.email;
     this.status = user.status;

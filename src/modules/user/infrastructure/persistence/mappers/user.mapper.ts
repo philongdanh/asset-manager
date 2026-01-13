@@ -10,6 +10,7 @@ export class UserMapper {
   static toDomain(
     prismaUser: PrismaUser & {
       userRoles?: (PrismaUserRole & { role?: PrismaRole })[];
+      department?: { name: string; parentId: string | null } | null;
     },
   ): User {
     // toDomain update
@@ -21,7 +22,11 @@ export class UserMapper {
       prismaUser.email,
       prismaUser.password,
     )
-      .inDepartment(prismaUser.departmentId)
+      .inDepartment(
+        prismaUser.departmentId,
+        prismaUser.department?.name || null,
+        prismaUser.department?.parentId || null,
+      )
       .withStatus(prismaUser.status as UserStatus)
       .withTimestamps(
         prismaUser.createdAt,
@@ -41,15 +46,11 @@ export class UserMapper {
     return builder.build();
   }
 
-  static toPersistence(user: User): Prisma.UserCreateInput {
+  static toPersistence(user: User): Prisma.UserUncheckedCreateInput {
     return {
       id: user.id,
-      organization: user.organizationId
-        ? { connect: { id: user.organizationId } }
-        : undefined,
-      department: user.departmentId
-        ? { connect: { id: user.departmentId } }
-        : undefined,
+      organizationId: user.organizationId,
+      departmentId: user.departmentId,
       username: user.username,
       password: user.password,
       email: user.email,
@@ -67,8 +68,8 @@ export class UserMapper {
     };
   }
 
-  static toUpdatePersistence(user: User): Prisma.UserUpdateInput {
-    const updateData: Prisma.UserUpdateInput = {
+  static toUpdatePersistence(user: User): Prisma.UserUncheckedUpdateInput {
+    const updateData: Prisma.UserUncheckedUpdateInput = {
       username: user.username,
       email: user.email,
       status: user.status,
@@ -80,14 +81,8 @@ export class UserMapper {
       gender: user.gender,
       phoneNumber: user.phoneNumber,
       updatedAt: user.updatedAt,
+      departmentId: user.departmentId,
     };
-
-    // Handle department relation update
-    if (user.departmentId === null) {
-      updateData.department = { disconnect: true };
-    } else if (user.departmentId !== undefined) {
-      updateData.department = { connect: { id: user.departmentId } };
-    }
 
     // Handle deletedAt - only include if it's explicitly set
     if (user.deletedAt !== undefined) {

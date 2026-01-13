@@ -39,7 +39,7 @@ export class UpdateUserHandler implements ICommandHandler<UpdateUserCommand> {
       else if (cmd.status === UserStatus.INACTIVE) user.deactivate();
     }
 
-    if (cmd.departmentId) {
+    if (cmd.departmentId !== undefined) {
       user.changeDepartment(cmd.departmentId);
     }
 

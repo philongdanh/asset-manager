@@ -9,12 +9,12 @@ import { PrismaService } from 'src/shared/infrastructure/prisma';
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  // --- Query Methods ---
   async findById(id: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
         organization: true,
+        department: true,
         userRoles: {
           include: {
             role: true,
@@ -29,6 +29,7 @@ export class PrismaUserRepository implements IUserRepository {
     const user = await this.prisma.user.findFirst({
       where: { email },
       include: {
+        department: true,
         userRoles: {
           include: {
             role: true,
@@ -52,6 +53,7 @@ export class PrismaUserRepository implements IUserRepository {
           },
         },
         include: {
+          department: true,
           userRoles: {
             include: {
               role: true,
@@ -68,6 +70,7 @@ export class PrismaUserRepository implements IUserRepository {
           deletedAt: null, // Good practice to include deletedAt check finding by non-unique
         },
         include: {
+          department: true,
           userRoles: {
             include: {
               role: true,
@@ -129,6 +132,7 @@ export class PrismaUserRepository implements IUserRepository {
               role: true,
             },
           },
+          department: true,
         },
       }),
       this.prisma.user.count({ where }),
@@ -152,6 +156,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return users.map((user) => UserMapper.toDomain(user));
@@ -169,6 +174,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return users.map((user) => UserMapper.toDomain(user));
@@ -188,6 +194,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return users.map((user) => UserMapper.toDomain(user));
@@ -215,6 +222,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return users.map((user) => UserMapper.toDomain(user));
@@ -266,6 +274,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return UserMapper.toDomain(savedUser);
@@ -282,6 +291,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return UserMapper.toDomain(updatedUser);
@@ -519,6 +529,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return users.map((user) => UserMapper.toDomain(user));
@@ -540,6 +551,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
 
@@ -570,6 +582,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
 
@@ -591,6 +604,7 @@ export class PrismaUserRepository implements IUserRepository {
             role: true,
           },
         },
+        department: true,
       },
     });
     return users.map((user) => UserMapper.toDomain(user));

@@ -1,0 +1,2572 @@
+{
+  "info": {
+    "_postman_id": "0dc3caf0-ec4e-44dd-822d-cd9e3a070bdd",
+    "name": "Asset Manager API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "6a47ab41-1362-4c0b-847c-ab05c00cb804",
+                "exec": [
+                  "pm.test(\"Store tokens\", function () {\r",
+                  "    pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);\r",
+                  "    pm.collectionVariables.set(\"refresh_token\", pm.response.json().refresh_token);\r",
+                  "});\r",
+                  "\r",
+                  "// store organization id\r",
+                  "pm.test(\"Store organization id\", function () {\r",
+                  "    pm.collectionVariables.set(\"organization_id\", pm.response.json().user.organization_id);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "id": "5ebd2222-1fb9-42e3-8675-6371a772c254",
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "e4d4eb04-44d9-487a-9ef9-ab4830681540",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"\",\n  \"username\": \"root_admin\",\n  \"password\": \"123456\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "id": "d72244da-4f84-41ac-88df-4b3ede836cef",
+                "exec": [
+                  "pm.test(\"Store tokens\", () => {\r",
+                  "    pm.collectionVariables.set(\"access_token\", pm.response.json().access_token);\r",
+                  "    pm.collectionVariables.set(\"refresh_token\", pm.response.json().refresh_token);\r",
+                  "});\r",
+                  "\r",
+                  "// store organization id\r",
+                  "pm.test(\"Store tenant\", () => {\r",
+                  "    pm.collectionVariables.set(\"tenant_id\", pm.response.json().user.organization_id);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "id": "f8129ea0-de30-498e-86ab-d3818a728a04",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "3427ed65-1fb1-4b55-b7bd-854660c7d83b"
+    },
+    {
+      "name": "Asset",
+      "item": [
+        {
+          "name": "Create Asset",
+          "id": "85d7a6f9-cd44-4724-b491-b40508d49201",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"asset_code\": \"text5\",\n  \"asset_name\": \"text\",\n  \"category_id\": \"ae3844fc-c230-4991-86f8-87941c362e71\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"model\": \"text\",\n  \"serial_number\": \"text\",\n  \"manufacturer\": \"text\",\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-02T00:00:00Z\",\n  \"location\": \"text\",\n  \"image_url\": \"https://example.com/file.jpg\",\n  \"specifications\": {},\n  \"condition\": \"EXCELLENT\",\n  \"status\": \"AVAILABLE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/assets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Asset",
+          "id": "44e20021-185c-4031-95b4-af2fc4902b52",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_name\": \"text\",\n  \"category_id\": \"{{uuid}}\",\n  \"model\": \"text\",\n  \"serial_number\": \"text\",\n  \"manufacturer\": \"text\",\n  \"purchase_price\": 1000,\n  \"original_cost\": 1000,\n  \"current_value\": 1000,\n  \"purchase_date\": \"2024-01-01T00:00:00Z\",\n  \"warranty_expiry_date\": \"2024-01-01T00:00:00Z\",\n  \"condition\": \"EXCELLENT | GOOD | FAIR | POOR | BROKEN | NEW | USED\",\n  \"location\": \"text\",\n  \"specifications\": {},\n  \"status\": \"AVAILABLE | IN_USE | MAINTENANCE | DISPOSED\",\n  \"image_url\": \"https://example.com/file.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/assets/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Asset",
+          "id": "5bcc6c2a-1f78-4036-ad09-a5d0b9b65347",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/assets/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Asset List",
+          "id": "80bffa89-0c91-4676-ad29-c8fc1bc61a4a",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/assets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "string",
+                  "disabled": true
+                },
+                {
+                  "key": "category_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "department_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "0",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Asset Details",
+          "id": "fb21d898-d851-4094-bc67-99a85b8da115",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/assets/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ddf902bc-8088-4a83-a270-a807dee2928b"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "fcdf91e2-a7b5-47d1-8385-18b127e996a1"
+    },
+    {
+      "name": "Accounting Entry",
+      "item": [
+        {
+          "name": "Create Entry",
+          "id": "498e4188-7b6a-437e-bb2f-e76a885319ae",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"entry_type\": \"text\",\n  \"amount\": 1000,\n  \"entry_date\": \"2024-01-01T00:00:00Z\",\n  \"description\": \"Description here\",\n  \"asset_id\": \"{{asset_id}}\",\n  \"reference_type\": \"text\",\n  \"reference_id\": \"{{uuid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/accounting-entries",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "accounting-entries"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Entries",
+          "id": "7a88a958-9357-4141-b629-103034442917",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounting-entries?organization_id=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "accounting-entries"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "uuid"
+                },
+                {
+                  "key": "entry_type",
+                  "value": "string",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_id",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Entry Details",
+          "id": "5468daaf-17df-4d6e-b990-9947ae2987aa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/accounting-entries/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "accounting-entries",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "3f85c596-1fc5-4340-a32b-c961ebe09a90"
+    },
+    {
+      "name": "Asset Category",
+      "item": [
+        {
+          "name": "Create Category",
+          "id": "4083ec68-1685-430c-9535-9e12ddd879d8",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"code\": \"text\",\n  \"category_name\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-categories"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "id": "f3e4530a-1ef8-42a0-b7ad-4ad5bd79326c",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_name\": \"text\",\n  \"code\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-categories/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "id": "2815d6b7-8db6-446e-ac29-796d803e78dd",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-categories/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Categories",
+          "id": "7c70b432-8258-49cd-92f8-a2e1cd9ba11f",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-categories?organization_id={{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-categories"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "{{organization_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Details",
+          "id": "0b5925d2-18a0-43c1-8bf4-96888d33f9fd",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-categories/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-categories",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "27e6ba1c-f74f-41f9-aafb-e25379d72667"
+    },
+    {
+      "name": "Asset Depreciation",
+      "item": [
+        {
+          "name": "Record Depreciation",
+          "id": "97700946-6588-411e-867a-f47ceb5a7ad8",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"asset_id\": \"{{asset_id}}\",\n  \"method\": \"text\",\n  \"depreciation_date\": \"2024-01-01T00:00:00Z\",\n  \"depreciation_value\": 1000,\n  \"accumulated_depreciation\": 10,\n  \"remaining_value\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-depreciations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-depreciations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Depreciations",
+          "id": "3bbb4981-b4c6-412c-8335-4de17c0328b4",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-depreciations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-depreciations"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "asset_id",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Depreciation Details",
+          "id": "a3cf85c4-7a17-4a49-8035-5de4cafa2765",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-depreciations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-depreciations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "8247bbb9-bb17-4509-b085-7219a3822888"
+    },
+    {
+      "name": "Asset Disposal",
+      "item": [
+        {
+          "name": "Create Disposal",
+          "id": "d24949be-186a-48d5-8563-cdcf4453c29d",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": \"{{asset_id}}\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"disposal_type\": \"SALE | SCRAP | DONATION\",\n  \"disposal_date\": \"2024-01-01T00:00:00Z\",\n  \"disposal_value\": 1000,\n  \"reason\": \"Routine check\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-disposals",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-disposals"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Disposal",
+          "id": "e69bd92c-8a66-4257-9ee2-f093df12c855",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-disposals/:id/approve?user_id=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-disposals",
+                ":id",
+                "approve"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Disposal",
+          "id": "cdec1c95-c8d8-4227-83a5-36a19a3ff75e",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Routine check\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-disposals/:id/reject?user_id=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-disposals",
+                ":id",
+                "reject"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Disposal",
+          "id": "30255e71-6b2f-4cb4-a838-90ba81cf9740",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-disposals/:id/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-disposals",
+                ":id",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Disposals",
+          "id": "8f036b30-79e6-4006-8b9e-4fccad24fdc7",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-disposals",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-disposals"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "string",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Disposal Details",
+          "id": "7a66a4ec-9707-4a3b-8dd8-0e5ae05011ef",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-disposals/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-disposals",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "48609cd9-2436-4873-abc8-932252b2fe40"
+    },
+    {
+      "name": "Asset Document",
+      "item": [
+        {
+          "name": "Upload Document",
+          "id": "b862dd9e-b68c-483b-89fd-0239564ac89e",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": \"{{asset_id}}\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"document_name\": \"text\",\n  \"file_path\": \"https://example.com/file.jpg\",\n  \"file_type\": \"text\",\n  \"document_type\": \"text\",\n  \"description\": \"Description here\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-documents?user_id=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-documents"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Document",
+          "id": "e85652ad-bbd8-4b05-a8b6-c7b52fe7715a",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-documents/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-documents",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Documents",
+          "id": "065a938c-c682-42f9-aba1-d915c3ab73ca",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-documents?organization_id=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-documents"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "uuid"
+                },
+                {
+                  "key": "asset_id",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Document Details",
+          "id": "4720715e-ec0e-4c02-87a5-56ff7c78bbc5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-documents/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-documents",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1f909b31-c616-4639-a595-35102bede672"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "f4f56601-3252-4bcf-b3e5-02ae63c3acd7"
+    },
+    {
+      "name": "Asset Transfer",
+      "item": [
+        {
+          "name": "Create Transfer",
+          "id": "1cc8ee52-1619-44cc-a5cc-2c12d8683960",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": \"25b59cde-597b-488f-a962-2a8aff187b0f\",\n  \"organization_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"transfer_type\": \"DEPARTMENT\",\n  \"transfer_date\": \"2024-01-01T00:00:00Z\",\n  \"reason\": \"Routine check\",\n  \"to_department_id\": \"2f1cec76-c188-4dcc-bb72-dc5754c04a47\",\n  \"to_user_id\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-transfers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-transfers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Approve Transfer",
+          "id": "d0672ddb-6544-4dbc-aa73-c12be6c81ae3",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-transfers/:id/approve",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-transfers",
+                ":id",
+                "approve"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "deb5433f-7f47-4784-9be7-4116b3961825"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Transfer",
+          "id": "af555153-07a8-4f2a-8d03-f7984e78e770",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Routine check\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-transfers/:id/reject?user_id=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-transfers",
+                ":id",
+                "reject"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Transfer",
+          "id": "106fe7ee-3de3-4dc0-9e26-cf0bee165fde",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-transfers/:id/complete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-transfers",
+                ":id",
+                "complete"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Transfer",
+          "id": "0a8402d5-0417-411f-b303-b46d14691920",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Routine check\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/asset-transfers/:id/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-transfers",
+                ":id",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transfers",
+          "id": "0ca7024a-b1ba-4e06-8a25-f92634d1f677",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-transfers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-transfers"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "string",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transfer Details",
+          "id": "a59ad7f4-71c9-48bf-bdde-0ec1139ec6a8",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/asset-transfers/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "asset-transfers",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "deb5433f-7f47-4784-9be7-4116b3961825"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "144dcf21-f7f4-458d-9c60-73e6fcf4053b"
+    },
+    {
+      "name": "Audit Log",
+      "item": [
+        {
+          "name": "Get Audit Logs",
+          "id": "d98f5707-1b2b-4f8b-bb7d-636d3283dca3",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit-logs?entity_type=uuid&start_date=uuid&end_date=uuid&limit=uuid&offset=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "audit-logs"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "action",
+                  "value": "string",
+                  "disabled": true
+                },
+                {
+                  "key": "entity_type",
+                  "value": "uuid"
+                },
+                {
+                  "key": "start_date",
+                  "value": "uuid"
+                },
+                {
+                  "key": "end_date",
+                  "value": "uuid"
+                },
+                {
+                  "key": "limit",
+                  "value": "uuid"
+                },
+                {
+                  "key": "offset",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Audit Details",
+          "id": "587a49e3-9874-4925-8cd7-107aeeb13d92",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/audit-logs/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "audit-logs",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "6ed30c9c-279d-43ed-945c-7cabb7c867cc"
+    },
+    {
+      "name": "Budget Plan",
+      "item": [
+        {
+          "name": "Create Budget Plan",
+          "id": "bd16b08e-a098-42dd-9485-9f792e48b051",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"department_id\": \"{{department_id}}\",\n  \"fiscal_year\": 2024,\n  \"budget_type\": \"text\",\n  \"allocated_amount\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/budget-plans",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budget-plans"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Budget Plan",
+          "id": "8e890406-3cbf-4c9f-a6fa-683e5a86c9fd",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"allocated_amount\": 1000,\n  \"budget_type\": \"text\",\n  \"fiscal_year\": 2024,\n  \"status\": \"ACTIVE | INACTIVE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/budget-plans/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budget-plans",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Budget Plans",
+          "id": "3372073b-6ed2-437e-ba0f-0770909028ad",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/budget-plans?fiscal_year=uuid&department_id=uuid&status=uuid&budget_type=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budget-plans"
+              ],
+              "query": [
+                {
+                  "key": "fiscal_year",
+                  "value": "uuid"
+                },
+                {
+                  "key": "department_id",
+                  "value": "uuid"
+                },
+                {
+                  "key": "status",
+                  "value": "uuid"
+                },
+                {
+                  "key": "budget_type",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Budget Plan Details",
+          "id": "b4900dca-85ef-4a8e-a0e1-7714ad5ef7f6",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/budget-plans/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budget-plans",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Budget Plan",
+          "id": "ad1b5d0a-fa3d-44e2-a9d3-2e434b42daa2",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/budget-plans/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budget-plans",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "c60de979-6335-4f1b-b53f-bd0f867e01f8"
+    },
+    {
+      "name": "Department",
+      "item": [
+        {
+          "name": "Create Department",
+          "id": "9cefb1b1-d893-4f80-a7bd-102ca70fcee5",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"name\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/departments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department List",
+          "id": "70c10ec3-0cfc-439f-bc2c-ef56009510fd",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/departments?organization_id={{organization_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "{{organization_id}}"
+                },
+                {
+                  "key": "parent_id",
+                  "value": "{{uuid}}",
+                  "disabled": true
+                },
+                {
+                  "key": "include_deleted",
+                  "value": "false",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Department Details",
+          "id": "4808d20f-3ba1-471d-9d43-33eca285913d",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/departments/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{uuid}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Department",
+          "id": "361eec29-1848-4543-a32f-d499a9e07bdd",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"text\",\n  \"parent_id\": \"{{uuid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/departments/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{uuid}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Department",
+          "id": "793ab7ad-66c9-4bc1-a730-a77a85658630",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/departments/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "departments",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{uuid}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "7ddcc353-00db-4608-af26-1f545a8c6193"
+    },
+    {
+      "name": "File",
+      "item": [
+        {
+          "name": "Upload File",
+          "id": "83882a33-45f1-4a9b-9b93-87068f1d17b1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/files/upload",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "files",
+                "upload"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "0d18236d-5c82-494c-948a-7e273d10fb75"
+    },
+    {
+      "name": "Inventory Check",
+      "item": [
+        {
+          "name": "Create Inventory Check",
+          "id": "08db7b27-322f-4ab5-9842-a77d866fd8c3",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"inventory_date\": \"2024-01-01T00:00:00Z\",\n  \"notes\": \"Description here\",\n  \"name\": \"hello\"\n}   ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/inventory-checks",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Inventory Check",
+          "id": "18887fe5-db09-4eb4-b24d-2b7adad29184",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": \"{{uuid}}\",\n  \"is_found\": \"text\",\n  \"actual_status\": \"text\",\n  \"notes\": \"Description here\",\n  \"details\": \"text\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/inventory-checks/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Finish Inventory Check",
+          "id": "c2dc3c63-0607-4c32-8163-68f164258c15",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/inventory-checks/:id/finish",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks",
+                ":id",
+                "finish"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Details",
+          "id": "cf066196-a9bc-49f8-9d18-115421a092f1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"details\": [\n    {\n      \"asset_id\": \"{{asset_id}}\",\n      \"is_found\": true,\n      \"actual_status\": \"text\",\n      \"notes\": \"Description here\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/inventory-checks/:id/details",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks",
+                ":id",
+                "details"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Checks",
+          "id": "415753ae-ea35-4640-a720-be759cf228f5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/inventory-checks",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "string",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Check",
+          "id": "a01c3009-b819-441e-9769-4cd078bfd195",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/inventory-checks/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "3640b21e-9138-45d0-8535-88fb66390bea"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Inventory Details",
+          "id": "64319471-303c-416a-a99f-763f7a208fd1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/inventory-checks/:id/details",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks",
+                ":id",
+                "details"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "fcd4bc8c-cf7c-4761-b64a-41c8185a6095"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Inventory Check",
+          "id": "5568fd56-5379-48b3-9e6a-5065f7aff021",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/inventory-checks/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "inventory-checks",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "f8cfee6f-e8e0-4293-9193-f8547d46bfc5"
+    },
+    {
+      "name": "Maintenance Schedule",
+      "item": [
+        {
+          "name": "Create Schedule",
+          "id": "3176582f-2dba-47cf-8207-db754cd6e0b9",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"asset_id\": \"{{asset_id}}\",\n  \"organization_id\": \"{{organization_id}}\",\n  \"maintenance_type\": \"PREVENTIVE | CORRECTIVE | EMERGENCY\",\n  \"scheduled_date\": \"2024-01-01T00:00:00Z\",\n  \"description\": \"Description here\",\n  \"estimated_cost\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/maintenance-schedules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance-schedules"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start Maintenance",
+          "id": "4ca2e54a-f7be-4c67-a374-32a0ce8a6d9a",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/maintenance-schedules/:id/start?user_id=uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance-schedules",
+                ":id",
+                "start"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "uuid"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Maintenance",
+          "id": "36c443f6-a25f-4cf8-8c98-6d1b687b8b71",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"result\": \"text\",\n  \"actual_cost\": 1000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/maintenance-schedules/:id/complete",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance-schedules",
+                ":id",
+                "complete"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Maintenance",
+          "id": "ce5726c3-659a-4ccb-929b-8b5fbc691fb9",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Routine check\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/maintenance-schedules/:id/cancel",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance-schedules",
+                ":id",
+                "cancel"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Schedules",
+          "id": "172b8538-646d-416d-95a1-00c6f3b25a64",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/maintenance-schedules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance-schedules"
+              ],
+              "query": [
+                {
+                  "key": "organization_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "string",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Schedule Details",
+          "id": "aa896e0d-40d5-49f2-b2dc-52be78ebb19f",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/maintenance-schedules/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance-schedules",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Maintenance Schedule",
+          "id": "f8e46eab-7966-4735-8975-c7d27473a8ae",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/maintenance-schedules/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "maintenance-schedules",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "0d33e5bf-ffe1-472a-ae9f-eb24ed0c6830"
+    },
+    {
+      "name": "Organization",
+      "item": [
+        {
+          "name": "Create Organization",
+          "id": "4aba1f70-5465-4be9-869d-fcce9faeabc2",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"text\",\n  \"status\": \"ACTIVE\",\n  \"phone\": \"text\",\n  \"email\": \"user@example.com\",\n  \"tax_code\": \"text\",\n  \"require_protocol\": \"text\",\n  \"address\": \"text\",\n  \"logo_url\": \"https://example.com/file.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/organizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organizations",
+          "id": "1a17dfda-fe99-4ecd-9467-cdace8658ad5",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/organizations",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE",
+                  "disabled": true
+                },
+                {
+                  "key": "include_deleted",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Organization Details",
+          "id": "d4eb7aec-62d2-4efe-803d-b1408ea30594",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/organizations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "550e8400-e29b-41d4-a716-446655440000"
+                }
+              ]
+            },
+            "description": "# Get Organization Details\n\n## Overview\nThis endpoint retrieves detailed information about a specific organization using its unique identifier. Use this request to fetch comprehensive data about an organization, including its configuration, metadata, and associated properties.\n\n## Path Parameters\n\n| Parameter | Type | Required | Description |\n|-----------|------|----------|-------------|\n| `id` | string (UUID) | Yes | The unique identifier of the organization you want to retrieve. Must be a valid UUID format. |\n\n**Example:** `550e8400-e29b-41d4-a716-446655440000`\n\n## Authentication\n\nThis endpoint requires authentication using a **Bearer Token**. The token is automatically included via the `{{access_token}}` variable.\n\n- **Type:** Bearer Token\n- **Variable:** `{{access_token}}`\n- **Location:** Authorization header\n\nEnsure you have a valid access token before making this request. If the token is expired, you may need to refresh it using the refresh token endpoint.\n\n## Expected Response\n\nA successful request returns detailed information about the organization, including:\n- Organization ID and name\n- Creation and modification timestamps\n- Organization settings and configuration\n- Associated metadata\n- Status information\n\n**Status Code:** `200 OK` - Organization details retrieved successfully\n\n**Common Error Responses:**\n- `401 Unauthorized` - Invalid or missing access token\n- `403 Forbidden` - Insufficient permissions to access this organization\n- `404 Not Found` - Organization with the specified ID does not exist\n\n## Example Use Cases\n\n1. **Verify Organization Details**: Retrieve organization information to confirm settings and configuration before performing administrative actions.\n\n2. **Display Organization Profile**: Fetch organization data to display in a user interface or dashboard.\n\n3. **Audit and Compliance**: Retrieve organization details for audit logs or compliance reporting.\n\n4. **Integration Workflows**: Use this endpoint as part of an automated workflow to validate organization existence and retrieve necessary metadata before executing subsequent operations.\n\n5. **Multi-Organization Management**: When managing multiple organizations, use this endpoint to fetch specific details for each organization by its unique ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Organization",
+          "id": "a8827baa-4f88-48d8-9977-f64bd5e63127",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"text\",\n  \"status\": \"ACTIVE | INACTIVE\",\n  \"phone\": \"text\",\n  \"email\": \"user@example.com\",\n  \"tax_code\": \"text\",\n  \"address\": \"text\",\n  \"logo_url\": \"https://example.com/file.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/organizations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Organization",
+          "id": "e1984bda-04ce-4215-a11d-35f80b856ae1",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/organizations/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "organizations",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "44876056-1b57-4c5b-9c0b-4419c248e838"
+    },
+    {
+      "name": "Permission",
+      "item": [
+        {
+          "name": "Get Permissions",
+          "id": "030736db-fb02-4ade-b7e3-e35664f8439e",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/permissions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "permissions"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Permission Details",
+          "id": "52d5af2b-e27d-4450-952f-aef8220fa90e",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/permissions/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "permissions",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ecabc77e-09e9-4f42-b30c-eaf8f407c2c5"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "d2c79b37-5c05-4492-9653-3775665d4d85"
+    },
+    {
+      "name": "Role",
+      "item": [
+        {
+          "name": "Get Roles",
+          "id": "e42fce49-671c-4968-833b-e30c83d3acbb",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/roles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Role Details",
+          "id": "3031d126-9cef-40b3-abbf-224b4b7c781e",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/roles/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "roles",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6a4d1821-47e1-4586-b7fc-f6ba3e572350"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Role",
+          "id": "43f4aa87-f8d2-4fe8-8e11-cb88bfb25c98",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"manager\",\n  \"permission_ids\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/roles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Role",
+          "id": "cb7ccde4-b018-41dc-a4fc-84dc4f1082c2",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/roles/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "roles",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "6a4d1821-47e1-4586-b7fc-f6ba3e572350"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Role",
+          "id": "cb743da8-7479-423c-a3dd-c6f8a6e01f0c",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"ids\": []\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/roles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "f6f43c0c-3c5a-424a-9c11-91c77a836b9d"
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Create User",
+          "id": "979f1c29-c840-4ed6-9c4a-e64857c2f2d1",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"organization_id\": \"{{organization_id}}\",\n  \"username\": \"text\",\n  \"password\": \"text\",\n  \"email\": \"user@example.com\",\n  \"department_id\": \"{{department_id}}\",\n  \"status\": \"ACTIVE\",\n  \"avatar_url\": \"https://example.com/file.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Users",
+          "id": "42dd35dd-c3ce-4133-a97f-74563565ae3a",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "department_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "role_id",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "offset",
+                  "value": "uuid",
+                  "disabled": true
+                },
+                {
+                  "key": "include_deleted",
+                  "value": "uuid",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Details",
+          "id": "fe378cd5-67c8-4b61-8467-4d13b1ada998",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "4b0534b8-8455-4e03-9456-30b7f2ed2562"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "id": "571e9027-3368-4734-8f8e-185033bbb9b0",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"text\",\n  \"phone_number\": \"0946536986\",\n  \"avatar_url\": \"https://example.com/file.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "f2ee13f2-d4e9-4828-a72e-589d9d2ba557"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "id": "6d5b9f94-ab6b-40bd-a783-fafa4d98f2e2",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "uuid"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "id": "94b44301-7e95-4568-a35f-ddc98f65026e"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhODM4ZDcwLWNhNjUtNDU5Ny05MTQwLTJlMWRkZGI2ZDg1ZiIsInVzZXJuYW1lIjoicm9vdF9hZG1pbiIsIm9yZ2FuaXphdGlvbklkIjpudWxsLCJwZXJtaXNzaW9ucyI6W10sImlzUm9vdCI6dHJ1ZSwiaWF0IjoxNzY4MjA1OTQ0LCJleHAiOjE3NjgyOTIzNDR9.r7LrmD8TbAKxDjDhch-PvK9F6kVhfqG8UwM-qNwDWrg",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "id": "b62575e8-5032-497a-8587-2fb4c337de7c",
+      "key": "base_url",
+      "value": "http://localhost:3000/v1"
+    },
+    {
+      "id": "af424c53-f220-4cdc-89b1-27e12b1293de",
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "id": "83d882e9-1953-4406-92f6-6964a74445c8",
+      "key": "refresh_token",
+      "value": ""
+    },
+    {
+      "id": "9384280c-e3a8-40f3-ac01-db0eed82feac",
+      "key": "organization_id",
+      "value": ""
+    }
+  ]
+}
