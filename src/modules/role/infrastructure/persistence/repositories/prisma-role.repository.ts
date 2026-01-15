@@ -123,21 +123,24 @@ export class PrismaRoleRepository
 
   async syncPerms(id: string, permIds: string[]): Promise<void> {
     await this.prisma.$transaction(async (tx) => {
+      const tenantFilter = this.getTenantFilter();
       // Delete all permissions for the role
       await tx.rolePermission.deleteMany({
-        where: this.applyTenantFilter<Prisma.RolePermissionWhereInput>({
+        where: {
           roleId: id,
-        }),
+          role: tenantFilter,
+        },
       });
 
       // Attach new permissions
       if (permIds.length > 0) {
+        console.log(`Syncing permissions for role ${id}:`, permIds);
         await tx.rolePermission.createMany({
           data: permIds.map((permissionId) => ({
             roleId: id,
             permissionId,
           })),
-          skipDuplicates: true,
+          // skipDuplicates: true, // Removed to see errors
         });
       }
     });

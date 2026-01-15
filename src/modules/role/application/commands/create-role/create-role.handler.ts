@@ -41,6 +41,7 @@ export class CreateRoleHandler implements ICommandHandler<
     const savedRole = await this.roleRepo.save(role);
 
     if (cmd.permissionIds && cmd.permissionIds.length > 0) {
+      console.log('Received permission IDs in handler:', cmd.permissionIds);
       await this.roleRepo.syncPerms(savedRole.id, cmd.permissionIds);
     }
 
